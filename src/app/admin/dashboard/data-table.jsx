@@ -137,7 +137,7 @@ export function DataTable({ columns, data }) {
                                 <IoIosClose className='text-red-500 text-xl' />
                             </button>
                         </div>
-                        <h1 className='text-2xl sticky font-semibold flex  justify-center  min-w-[400px] '>Employee Registration Form</h1>
+                        <h1 className='text-2xl sticky font-semibold flex  justify-center  min-w-[400px] '>New Employee Registration </h1>
 
 
                         <div className="max-h-[450px] mt-[20px]   overflow-x-auto  ">

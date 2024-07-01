@@ -29,7 +29,7 @@ const Sidebar = () => {
                     <Image src='/imgs/logo2.png'  layout="fill" objectFit="contain" className=" h-[60px] w-full mt-[5px] object-contian" />
                  
             </div>
-			<div className="flex mt-4 flex-1 flex-col gap-3 bg-red-500">
+			<div className="flex mt-4 flex-1 flex-col gap-3 ">
 				{sidebarLinks.map((link) => {
 					const isActive =
 						pathname === link.route || pathname.startsWith(link.route);
