@@ -142,7 +142,7 @@ export function DataTable({ columns, data }) {
                             </button>
                         </div>
                         <h1 className='text-2xl sticky font-semibold flex justify-center min-w-[400px]'>New Employee Registration</h1>
-                        <div className="max-h-[450px] mt-[20px] overflow-x-auto">
+                        <div className="max-h-[500px] mt-[20px] ">
                             <RegistrationForm setIsShow={setIsShow} />
                         </div>
                     </div>

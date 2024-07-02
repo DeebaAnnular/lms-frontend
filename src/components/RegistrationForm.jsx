@@ -83,9 +83,20 @@ const RegistrationForm = ({ setIsShow }) => {
 
   return (
     <div>
-      <div className="box md:max-h-[600px] overflow-y-auto relative top-1 flex flex-col items-center">
+      <div className="box md:max-h-[700px]   relative top-1 flex flex-col items-center">
         <div className="mt-6 min-w-[400px]">
           <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-3">
+            <label htmlFor="emp_name" className="font-serif ml-2">
+              Employee Name
+            </label>
+            <input
+              id="emp_name"
+              value={formData.emp_name}
+              className="border border-gray-500 mr-2 rounded-md p-1"
+              type="text"
+              required
+              onChange={handleInputChange}
+            />
             <label
               htmlFor="emp_id"
               className="font-serif ml-2"
@@ -98,34 +109,6 @@ const RegistrationForm = ({ setIsShow }) => {
               id="emp_id"
               value={formData.emp_id}
               className="border border-gray-500 mr-2 rounded-md p-1 focus:border-formblue hover:border-formblue"
-              onChange={handleInputChange}
-            />
-
-            <label
-              htmlFor="date_of_joining"
-              className="font-serif ml-2"
-              type="date"
-              required
-            >
-              Date of Joining
-            </label>
-            <input
-              id="date_of_joining"
-              value={formData.date_of_joining}
-              type="date"
-              className="border border-gray-500 mr-2 rounded-md p-1 focus:border-formblue hover:border-formblue"
-              onChange={handleInputChange}
-            />
-
-            <label htmlFor="emp_name" className="font-serif ml-2">
-              Employee Name
-            </label>
-            <input
-              id="emp_name"
-              value={formData.emp_name}
-              className="border border-gray-500 mr-2 rounded-md p-1"
-              type="text"
-              required
               onChange={handleInputChange}
             />
 
@@ -164,6 +147,8 @@ const RegistrationForm = ({ setIsShow }) => {
               required
               onChange={handleInputChange}
             />
+
+            
 
             <label htmlFor="designation" className="font-serif ml-2">
               Designation
@@ -216,7 +201,7 @@ const RegistrationForm = ({ setIsShow }) => {
 
           <div className="flex mt-3 w-full items-center justify-end">
             <button
-              className="mr-2 p-2 rounded-sm h-fit bg-blue-400 text-lg"
+              className="mr-2 px-2 rounded-sm h-fit text-white bg-blue-400 text-lg"
               onClick={handleSubmit}
             >
               Register
