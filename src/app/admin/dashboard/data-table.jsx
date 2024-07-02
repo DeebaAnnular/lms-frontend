@@ -1,5 +1,5 @@
 "use client";
-import { IoIosClose,IoIosSearch } from "react-icons/io";
+import { IoIosClose, IoIosSearch } from "react-icons/io";
 import RegistrationForm from "../../../components/RegistrationForm";
 
 import {
@@ -28,9 +28,11 @@ import { Input } from "../../../components/ui/input";
 import { useState } from "react";
 import Link from "next/link";
 
-export function DataTable({ columns, data }) { 
+export function DataTable({ columns, data }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
+    const [globalFilter, setGlobalFilter] = useState("");
+
     const table = useReactTable({
         data,
         columns,
@@ -48,19 +50,22 @@ export function DataTable({ columns, data }) {
 
     const [isShow, setIsShow] = useState(false); // initially set to false
 
+    const handleFilterChange = (value) => {
+        setGlobalFilter(value);
+        table.getColumn("emp_name")?.setFilterValue(value);
+        table.getColumn("emp_id")?.setFilterValue(value);
+    };
+
     return (
         <div className="w-full">
             <div className="option-seciton flex justify-between">
                 <div className="flex border-2 items-center px-3 rounded-md mb-3">
-                    <IoIosSearch className='text-gray-500 text-[30px]  '  />
+                    <IoIosSearch className='text-gray-500 text-[30px]' />
                     <Input
-                        placeholder="search by names..."
-                        value={table.getColumn("emp_name")?.getFilterValue() ?? ""}
-                        onChange={(event) =>
-                            table.getColumn("emp_name")?.setFilterValue(event.target.value)
-                        }
-                        className=" searchbar max-w-sm  border-none outline-none "
-                         
+                        placeholder="search by names or IDs..."
+                        value={globalFilter}
+                        onChange={(event) => handleFilterChange(event.target.value)}
+                        className="searchbar max-w-sm border-none outline-none"
                     />
                 </div>
 
@@ -126,26 +131,20 @@ export function DataTable({ columns, data }) {
             </div>
 
             {isShow && (
-                <div className="fixed inset-0 flex items-center justify-center  bg-gray-800 bg-opacity-75">
-
-                    <div className="relative bg-white w-fit mt-5 cursor-pointer  p-5 rounded shadow-lg">
-                        <div className="absolute top-0 right-[20px] z-10  flex justify-end" onClick={() => {setIsShow(false)} } >
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                    <div className="relative bg-white w-fit mt-5 cursor-pointer p-5 rounded shadow-lg">
+                        <div className="absolute top-0 right-[20px] z-10 flex justify-end" onClick={() => { setIsShow(false) }}>
                             <button
                                 onClick={() => setIsShow(false)}
-                                className="mt-[23px]  border-2  rounded-[50%] border-red-500"
+                                className="mt-[23px] border-2 rounded-[50%] border-red-500"
                             >
                                 <IoIosClose className='text-red-500 text-xl' />
                             </button>
                         </div>
-                        <h1 className='text-2xl sticky font-semibold flex  justify-center  min-w-[400px] '>New Employee Registration </h1>
-
-
-                        <div className="max-h-[450px] mt-[20px]   overflow-x-auto  ">
-                            <RegistrationForm  setIsShow={setIsShow}/>
+                        <h1 className='text-2xl sticky font-semibold flex justify-center min-w-[400px]'>New Employee Registration</h1>
+                        <div className="max-h-[450px] mt-[20px] overflow-x-auto">
+                            <RegistrationForm setIsShow={setIsShow} />
                         </div>
-
-
-
                     </div>
                 </div>
             )}

@@ -12,7 +12,7 @@ import Link from "next/link"
 export const columns = [
     {
         accessorKey: "Index",
-        header: "No",
+        header: "S.No",
         cell: ({ row }) => {
             return (
                 <p>{row.index + 1}</p>
@@ -21,7 +21,7 @@ export const columns = [
     },
     {
         accessorKey: "emp_id",
-        header: "Id",
+        header: "Employee Id",
     },
     {
         accessorKey: "emp_name",
@@ -38,7 +38,7 @@ export const columns = [
 
     {
         accessorKey: "work_email",
-        header: "company Email"
+        header: "Company Email"
     },
     {
         accessorKey: "contact_number",

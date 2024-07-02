@@ -14,23 +14,25 @@ import { IoIosClose } from "react-icons/io";
 import { TiTick } from "react-icons/ti";
 import { getAll_leave_req, getEmp_leave_balence } from '../../../actions';
 import LeaveReqTable from '../../../components/LeaveReqTable';
+import { API } from '../../../config/index';
 
 const Page = () => {
     const [leavedata, setLeaveData] = useState([]); // State to store leave requests
+
     const fetchLeaveData = async () => {
         const data = await getAll_leave_req();
         setLeaveData(data);
     };
 
+
+    const fetchData = async () => {
+        const resData = await getEmp_leave_balence(localStorage.getItem("user_id") || null)
+    }
+
     useEffect(() => {
-        
         fetchLeaveData();
     }, []);
 
-    const fetchData = async () => {
-            const resData = await getEmp_leave_balence(localStorage.getItem("user_id") || null)
-             
-        }
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -39,16 +41,16 @@ const Page = () => {
 
     const handleApproveClick = async (leaveRequestId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/leave/update-leave-status`, {
+            const response = await fetch(`${API}/leave/update-leave-status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ leave_request_id: leaveRequestId, status: 'approved' }),
             });
             const data = await response.json();
             console.log(data);
-             fetchData()
-             alert("Leave Aprroved Successfully")
-             fetchLeaveData();
+            fetchData()
+            alert("Leave Aprroved Successfully")
+            fetchLeaveData();
         } catch (error) {
             console.error('Error approving leave request:', error);
         }
@@ -56,7 +58,7 @@ const Page = () => {
 
     const handleRejectClick = async (leaveRequestId, reason) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/leave/update-leave-status`, {
+            const response = await fetch(`${API}/leave/update-leave-status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ leave_request_id: leaveRequestId, status: 'rejected', reason: reason }),

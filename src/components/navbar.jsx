@@ -1,3 +1,5 @@
+"use client"
+
 import Image from 'next/image'
 import React from 'react'
 
@@ -26,7 +28,7 @@ const Navbar = () => {
 
             </div>
 
-            <p className='text-[18px] font-semibold'>User Name</p>
+            <p className='text-[18px] font-semibold'>{localStorage.getItem("user_name") ?localStorage.getItem("user_name")  :"user name"}</p>
 
 
             <DropdownMenu>
@@ -38,6 +40,7 @@ const Navbar = () => {
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
+                    <DropdownMenuItem>{localStorage.getItem('emp_id') ? localStorage.getItem('emp_id'): "emp id"}</DropdownMenuItem>
                     <DropdownMenuItem>Change Password</DropdownMenuItem>
                     <DropdownMenuItem>Logout</DropdownMenuItem>
 
