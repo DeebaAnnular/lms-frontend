@@ -51,6 +51,7 @@ const Signin = () => {
                 localStorage.setItem("user_id",data.user_id);
                 localStorage.setItem("user-type", data.user_type);
                 localStorage.setItem("email", data.email);
+                localStorage.setItem("work_mail", data.work_mail)
                 if(data.emp_type === 'admin'){
                     router.push('/admin/dashboard'); // Use router.push for client-side navigation
                 }else{
