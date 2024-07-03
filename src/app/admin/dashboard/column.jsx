@@ -5,9 +5,11 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "../../../components/ui/button"
 import { cn } from "../../../lib/utils"
 
+import {capitalizeWords} from "../../../utils/index"
 
 
 import Link from "next/link"
+ 
 
 export const columns = [
     {
@@ -31,7 +33,7 @@ export const columns = [
             const url = row.original.user_id
 
             return (
-                <Link href={`/admin/emp/${url}`}>{row.original.emp_name}</Link>
+                <Link href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_name)}</Link>
             )
         },
     },
@@ -47,6 +49,10 @@ export const columns = [
     {
         accessorKey: "work_location",
         header: "Location"
+    },
+    {
+        accessorKey:"Role",
+        header:"Role"
     },
     {
         accessorKey: "active_status",

@@ -9,8 +9,11 @@ const layout = ({ children }) => {
         <div className='flex'>
             <Sidebar />
             <main className='w-full flex flex-col'>
-                <Navbar />
-                {children}
+                <Navbar  />
+                <div className='h-[calc(100vh-70px)] overflow-y-auto'>
+                    {children}
+                </div>
+                 
             </main>
         </div>
 

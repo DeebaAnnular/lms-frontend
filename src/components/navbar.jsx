@@ -12,6 +12,8 @@ import {
     DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
 
+ import {capitalizeWords} from "../utils/index"
+
 
 
 
@@ -19,7 +21,7 @@ const Navbar = () => {
 
 
     return (
-        <nav className='h-[70px] sticky top-0 flex gap-2 items-center justify-end px-5 w-full  shadow-sm' style={{ backgroundColor: 'rgb(247, 249, 253)' }}>
+        <nav className='h-[70px] sticky top-0 flex gap-2 items-center justify-end px-5 w-full  shadow-sm z-10' style={{ backgroundColor: 'rgb(247, 249, 253)' }}>
 
 
             <div className="logo h-[25px] w-[25px] py-[10px] relative   object-contain">
@@ -28,7 +30,7 @@ const Navbar = () => {
 
             </div>
 
-            <p className='text-[18px] font-semibold'>{localStorage.getItem("user_name") ?localStorage.getItem("user_name")  :"user name"}</p>
+            <p className='text-[18px] font-semibold'>{localStorage.getItem("user_name") ?capitalizeWords(localStorage.getItem("user_name"))  :"user name"}</p>
 
 
             <DropdownMenu>
@@ -40,7 +42,7 @@ const Navbar = () => {
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                    <DropdownMenuItem>{localStorage.getItem('work_mail') ? localStorage.getItem('work_email'): "Work Mail"}</DropdownMenuItem>
+                     <DropdownMenuItem>{localStorage.getItem('work_email') ?  localStorage.getItem('work_email'): "Work Mail"}</DropdownMenuItem>
                     <DropdownMenuItem>Change Password</DropdownMenuItem>
                     <DropdownMenuItem>Logout</DropdownMenuItem>
 
