@@ -57,6 +57,7 @@ export const getAll_leave_req = async () => {
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
+        //testing merge
         const data = await response.json();
         return data; // Return the fetched data
     } catch (error) {
@@ -93,6 +94,7 @@ export const getLeave_history_by_id = async () => {
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
+        //testing merge
         const data = await response.json();
         
         return data; // Return the fetched data
@@ -101,3 +103,6 @@ export const getLeave_history_by_id = async () => {
         return []; // Return an empty array or handle error as needed
     }
 }
+
+
+//testing merge
