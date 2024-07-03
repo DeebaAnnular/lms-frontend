@@ -35,7 +35,7 @@ const leaveSchema = z.object({
     }
 });
 
-const LeaveForm = () => {
+const LeaveForm = ({fetchLeaveBalanceById }) => {
     const {
         register,
         handleSubmit,
@@ -99,6 +99,7 @@ const LeaveForm = () => {
             reset(); // Reset the form on successful response
             setTotalDays(0); // Reset the total days
             alert("Form submitted successfully.");
+            fetchLeaveBalanceById();
         } else {
             console.error('There was an error submitting the form');
         }
