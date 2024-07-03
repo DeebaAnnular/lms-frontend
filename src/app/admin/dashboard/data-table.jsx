@@ -1,6 +1,6 @@
 "use client";
 import { IoIosClose, IoIosSearch } from "react-icons/io";
-import RegistrationForm from "../../../components/RegistrationForm";
+import RegistrationForm from "../../../components/feedData/RegistrationForm";
 
 import {
     ColumnDef,
@@ -152,7 +152,7 @@ export function DataTable({ columns, data }) {
             </div>
 
             {isShow && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                <div className="fixed inset-0 flex items-center justify-center z-20 bg-gray-800 bg-opacity-75">
                     <div className="relative bg-white w-fit mt-5 cursor-pointer p-5 rounded shadow-lg">
                         <div className="absolute top-0 right-[20px] z-10 flex justify-end" onClick={() => { setIsShow(false) }}>
                             <button
@@ -163,7 +163,7 @@ export function DataTable({ columns, data }) {
                             </button>
                         </div>
                         <h1 className='text-2xl sticky font-semibold flex justify-center min-w-[400px]'>New Employee Registration </h1>
-                        <div className="max-h-[500px] mt-[20px]">
+                        <div className="max-h-[500px] mt-[20px] Z-20">
                             <RegistrationForm setIsShow={setIsShow} />
                         </div>
                     </div>

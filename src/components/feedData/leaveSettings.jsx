@@ -7,9 +7,9 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "../../src/components/ui/dropdown-menu"
+} from "../ui/dropdown-menu"
 
-import { API } from "../config"
+import { API } from "../../config"
 import React, { useEffect, useState } from 'react'
 
 const LeaveSettings = ({ id }) => {
@@ -42,7 +42,7 @@ const LeaveSettings = ({ id }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(postData),
-            }) 
+            })
         }
         fetchData()
         setEarnedLeave(null)
