@@ -42,7 +42,7 @@ const Navbar = () => {
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                     <DropdownMenuItem>{localStorage.getItem('work_email') ?  localStorage.getItem('work_email'): "Work Mail"}</DropdownMenuItem>
+                     <DropdownMenuItem>{localStorage.getItem('email') ?  localStorage.getItem('email'): "Work Mail"}</DropdownMenuItem>
                     <DropdownMenuItem>Change Password</DropdownMenuItem>
                     <DropdownMenuItem>Logout</DropdownMenuItem>
 
