@@ -50,8 +50,8 @@ const Signin = () => {
                 localStorage.setItem("jwt", data.token); 
                 localStorage.setItem("user_id",data.user_id);
                 localStorage.setItem("user-type", data.user_type);
-                localStorage.setItem("email", data.email);
-                localStorage.setItem("work_mail", data.work_email)
+                localStorage.setItem("work_email", data.email); 
+                localStorage.setItem("work_email", data.work_email)
                 if(data.emp_type === 'admin'){
                     router.push('/admin/dashboard'); // Use router.push for client-side navigation
                 }else{
