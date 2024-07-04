@@ -1,19 +1,17 @@
 import Navbar from '../../components/navbar'
-import Sidebar from '../../components/asidebar'
+import CSidebar from '../../components/csidebar'
 import React from 'react'
+import Sidebar from '../../components/Sidebar'
 
 
 const layout = ({ children }) => {
 
     return (
         <div className='flex'>
-            <Sidebar />
+            <CSidebar />
             <main className='w-full flex flex-col'>
-                <Navbar  />
-                <div className='h-[calc(100vh-70px)] overflow-y-auto'>
-                    {children}
-                </div>
-                 
+                <Navbar />
+                {children}
             </main>
         </div>
 
@@ -22,4 +20,3 @@ const layout = ({ children }) => {
 }
 
 export default layout
-

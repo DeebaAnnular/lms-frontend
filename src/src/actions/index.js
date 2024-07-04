@@ -17,12 +17,15 @@ export const getEmp_details = async () => {
 
 
 export const getEmp_detail_by_id = async ( id ) => {
-    try { 
+    try {
+        console.log(id)
+        console.log("requested")
         const response = await fetch(`${API}/auth/user/${id}`);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
-        const data = await response.json();  
+        const data = await response.json(); 
+        console.log(data)
         return data; // Return the fetched data
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
@@ -85,9 +88,9 @@ export const postLeave_req = async (leaveData) => {
 };
 
 
-export const getLeave_history_by_id = async (id) => {
+export const getLeave_history_by_id = async () => {
     try {
-        const response = await fetch(`${API}/leave/leave-history/${id}`);
+        const response = await fetch(`${API}/leave/leave-history/1`);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -101,24 +104,5 @@ export const getLeave_history_by_id = async (id) => {
     }
 }
 
- 
-export const change_user_role = async (role) => {
-    try {
-        const response = await fetch(`${API}/auth/updateUserRole`,{
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(role),
-        })
-        if(!response.ok){
-            throw new Error('Network response was not ok ' + response.statusText)
-        }
-        const data = await response.json()
-        return data;
-    } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error)
-        return []
-    }
 
-}
+//testing merge

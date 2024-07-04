@@ -7,14 +7,13 @@ import { getEmp_leave_balence } from '../../../actions';
 
 const Page = () => {
 
-    const [leave_balence, setLeave_balence] = useState([]) 
+    const [leave_balence, setLeave_balence] = useState([])
+    console.log(leave_balence)
     
     const fetchLeaveBalanceById = async () => {
         const resData = await getEmp_leave_balence(localStorage.getItem("user_id") || null)
         setLeave_balence([resData])
     }
-
-    console.log(leave_balence)
 
     useEffect(() => {
         // const fetchData = async () => {

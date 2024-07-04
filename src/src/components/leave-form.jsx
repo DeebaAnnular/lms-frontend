@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -5,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-import { postLeave_req, getEmp_leave_balence } from "../actions";
+import { postLeave_req, getEmp_leave_balence } from "../actions"; // Ensure getEmp_leave_balence is correctly imported
 
 // Define the validation schema using zod
 const leaveSchema = z.object({
     leave_type: z.string().nonempty({ message: "Type of leave is required" }),
-    session: z.string().nonempty({ message: "Leave duration is required" }),
+    leave_duration: z.string().nonempty({ message: "Leave duration is required" }),
     total_days: z.string().nonempty({ message: "Total days is required" }),
     from_date: z.string().refine((date) => {
         const selectedDate = new Date(date);
@@ -34,7 +35,7 @@ const leaveSchema = z.object({
         });
     }
 
-    if ((data.session === "morning_section" || data.session === "afternoon_section") && from_date.getTime() !== to_date.getTime()) {
+    if ((data.leave_duration === "morning_section" || data.leave_duration === "afternoon_section") && from_date.getTime() !== to_date.getTime()) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "For half-day leave, start date and end date must be the same",
@@ -50,7 +51,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
         formState: { errors },
         setValue,
         watch,
-        reset
+        reset // Import reset to reset form
     } = useForm({
         resolver: zodResolver(leaveSchema),
     });
@@ -66,27 +67,20 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
         fetchData();
     }, []);
 
-    // Function to calculate total days excluding weekends
     const calculateTotalDays = (from_date, to_date) => {
         const start = new Date(from_date);
         const end = new Date(to_date);
-        let count = 0;
-        while (start <= end) {
-            const day = start.getDay();
-            if (day !== 0 && day !== 6) { // Exclude Sunday (0) and Saturday (6)
-                count++;
-            }
-            start.setDate(start.getDate() + 1);
-        }
-        return count;
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including the start date
+        return diffDays;
     };
 
     const from_date = watch("from_date");
     const to_date = watch("to_date");
-    const session = watch("session");
+    const leave_duration = watch("leave_duration");
 
     useEffect(() => {
-        if (session === "morning_section" || session === "afternoon_section") {
+        if (leave_duration === "morning_section" || leave_duration === "afternoon_section") {
             setValue("to_date", from_date);
             setTotalDays(0.5);
             setValue("total_days", "0.5");
@@ -95,7 +89,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
             setTotalDays(days);
             setValue("total_days", days.toString());
         }
-    }, [session, from_date, to_date, setValue]);
+    }, [leave_duration, from_date, to_date, setValue]);
 
     const onSubmit = async (data) => {
         const leaveType = data.leave_type;
@@ -110,7 +104,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
         data.total_days = totalDaysRequested;
         data.user_id = localStorage.getItem("user_id") || null;
         data.emp_name = localStorage.getItem("user_name") || null;
-        
+        console.log(data)
         const result = await postLeave_req(data);
 
         if (result) {
@@ -119,7 +113,6 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
             alert("Form submitted successfully.");
             fetchLeaveBalanceById();
         } else {
-            alert("There was an error submitting the form. Please check your leave balance.");
             console.error('There was an error submitting the form');
         }
     };
@@ -146,11 +139,11 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                     </div>
                 </div>
                 <div className="leave-duration flex items-center">
-                    <label htmlFor="session" className="font-bold">Leave Duration : </label>
+                    <label htmlFor="leave_duration" className="font-bold">Leave Duration : </label>
                     <div>
                         <select
-                            id="session"
-                            {...register("session")}
+                            id="leave_duration"
+                            {...register("leave_duration")}
                             className="mx-1 p-2 rounded-md border-2"
                         >
                             <option value="full_day">Full Day</option>
@@ -175,7 +168,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                         id="to_date"
                         {...register("to_date")}
                         className="block w-full mx-1 p-2 border-2"
-                        disabled={session === "morning_section" || session === "afternoon_section"}
+                        disabled={leave_duration === "morning_section" || leave_duration === "afternoon_section"}
                     />
                 </div>
             </div>
@@ -196,8 +189,8 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
             {errors.leave_type && (
                 <p className="text-red-500">{errors.leave_type.message}</p>
             )}
-            {errors.session && (
-                <p className="text-red-500">{errors.session.message}</p>
+            {errors.leave_duration && (
+                <p className="text-red-500">{errors.leave_duration.message}</p>
             )}
             {errors.from_date && (
                 <p className="text-red-500">{errors.from_date.message}</p>

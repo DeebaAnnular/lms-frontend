@@ -29,8 +29,6 @@ import { useState } from "react";
 import Link from "next/link";
 
 export function DataTable({ columns, data }) {
-
-    console.log("data",data);
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(""); // state for the search input

@@ -36,7 +36,6 @@ const Page = () => {
     };
 
     const handleApproveClick = async (leaveRequestId) => {
-        console.log(leaveRequestId)
         try {
             const response = await fetch(`${API}/leave/update-leave-status`, {
                 method: 'PUT',
@@ -62,7 +61,7 @@ const Page = () => {
             const data = await response.json();
             alert("Leave Rejected Successfully");
             fetchLeaveData();
-            console.log(data, fetchLeaveData());
+            console.log(data);
         } catch (error) {
             console.error('Error rejecting leave request:', error);
         }
@@ -90,10 +89,10 @@ const Page = () => {
                             <TableHeader className='bg-blue-300 text-black'>
                                 <TableRow className='text-black'>
                                     <TableHead className="w-[100px] text-black">S.No</TableHead>
-                                    <TableHead className='text-black'>Name</TableHead>
+                                    <TableHead className='text-black'>User Name</TableHead>
                                     <TableHead className='text-black'>Leave Type</TableHead>
                                     <TableHead className='text-black'>From Date <br /> <div className='text-gray-400 leading-0 text-[8px]'> YYYY/MM/DD</div> </TableHead>
-                                    <TableHead className='text-black'>To Date <br /> <div className='text-gray-400 leading-0 text-[8px]'> YYYY/MM/DD</div> </TableHead>
+                                    <TableHead className='text-black'>To Date</TableHead>
                                     <TableHead className='text-black'>Total Days</TableHead>
                                     <TableHead className='text-black'>Approve</TableHead>
                                     <TableHead className='text-black'>Reject</TableHead>

@@ -50,7 +50,7 @@ export const columns = [
         header: "Location"
     },
     {
-        accessorKey:"role",
+        accessorKey:"Role",
         header:"Role"
     },
     {

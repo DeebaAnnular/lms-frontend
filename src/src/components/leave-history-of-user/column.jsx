@@ -20,17 +20,17 @@ const formatDate = (dateString) => {
 export const columns = [
     {
         accessorKey: "Index",
-        header: "S.No",
+        header: "No",
         cell: ({ row }) => {
             return (
                 <p>{row.index + 1}</p>
             )
         },
     },
-    // {
-    //     accessorKey: "user_id",
-    //     header: "ID",
-    // },
+    {
+        accessorKey: "user_id",
+        header: "Id",
+    },
     {
         accessorKey: "emp_name",
         header: "Name",

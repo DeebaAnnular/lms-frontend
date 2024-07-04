@@ -9,14 +9,14 @@ import { getLeave_history_by_id } from '../../actions/index'
 import { useSearchParams } from 'next/navigation';
 
 
-const LeaveHistoryOfUser = ({id}) => {
+const LeaveHistoryOfUser = () => {
 
 
     const [res, setRes] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
-            const Response = await getLeave_history_by_id(id);
+            const Response = await getLeave_history_by_id();
             setRes(Response);
         };
 
@@ -26,7 +26,7 @@ const LeaveHistoryOfUser = ({id}) => {
 
     return (
         <div className="content-section bg-[rgb(247, 249, 253)] w-full p-5">
-            <p className='text-[20px] font-bold'>Leave Histroy</p>
+            <p className='text-[20px] font-bold'>Leave Status</p>
             <div className="container mx-auto py-5">
 
                 <DataTable columns={columns} data={res.data ? res.data : []} />
