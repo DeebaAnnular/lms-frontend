@@ -122,3 +122,73 @@ export const change_user_role = async (role) => {
     }
 
 }
+
+
+//task creation 
+export const postTask = async (taskData) => {
+    console.log("got data",taskData)
+    try { 
+        const response = await fetch(`${API}/task/create_task`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(taskData),
+        });
+        if (!response.ok) {
+            console.log(response)
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json(); 
+        return data;
+    }catch(error){
+        console.log("error in creating task", error)
+    }
+}
+
+//get all tasks
+export const getAllTask = async () =>{
+ 
+    const response = await fetch(`${API}/task/get_all_tasks`) 
+    if(!response.ok){
+        throw new Error('Network response was not ok',response.statusText)
+    }
+    const data = response.json() 
+    return data
+}
+
+
+export const editTask = async (id,editedTask ) =>{
+    try {
+        const response = await fetch(`${API}/task/update_task_by_id/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(editedTask),
+        })
+
+        const data = response.json()
+        return data;
+    } catch (error) {
+        console.log("error in editing task", error)
+    }
+}
+
+export const deleteTask = async (id) => {
+    console.log(id);
+    try {
+        const response = await fetch(`${API}/task/delete_task/${id}`, {
+            method: 'DELETE', // Use DELETE method for deleting a resource
+             
+        });
+
+        if (!response.ok) {
+            // If the response status is not OK, throw an error
+            throw new Error(`Failed to delete task with status: ${response.status}`);
+        } 
+    } catch (error) {
+        console.log("error in deleting task", error);
+        throw error; // Rethrow the error for further handling if necessary
+    }
+};

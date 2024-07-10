@@ -37,7 +37,7 @@ const Navbar = () => {
                 <DropdownMenuTrigger style={{outline:0}}>
                     <div className="logo h-[20px] w-[20px] py-[10px] relative object-contain">
 
-                        <Image src='/imgs/menu-dots-vertical.svg' layout="fill" objectFit="contain" className=" h-[20px]   object-contian" />
+                        <Image src='/imgs/menu-dots-vertical.svg' alt='menu' layout="fill" objectFit="contain" className=" h-[20px]   object-contian" />
 
                     </div>
                 </DropdownMenuTrigger>

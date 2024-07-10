@@ -22,11 +22,11 @@ const Sidebar = () => {
 	const pathname = usePathname();
 	return (
 		<section className="sticky left-0 top-0 flex h-screen w-fit flex-col 
-     justify-between bg-blue-100  pt-0  w-[264px]"
+     justify-between bg-blue-100  pt-0  min-w-[264px]"
 		>
             <div className="logo h-[70px] py-[10px] relative w-full  object-contain">
                  
-                    <Image src='/imgs/logo2.png'  layout="fill" objectFit="contain" className=" h-[60px] w-full mt-[5px] object-contian" />
+                    <Image src='/imgs/logo2.png' alt='logo' layout="fill" objectFit="contain" className=" h-[60px] w-full mt-[5px] object-contian" />
                  
             </div>
 			<div className="flex mt-4 flex-1 flex-col gap-3">

@@ -30,7 +30,7 @@ const Sidebar = () => {
 		>
             <div className="logo h-[70px] py-[10px] relative w-full  object-contain">
                  
-                    <Image src='/imgs/logo2.png'  layout="fill" objectFit="contain" className=" h-[60px] w-full mt-[5px] object-contian" />
+                    <Image src='/imgs/logo2.png' alt='logo' layout="fill" objectFit="contain" className=" h-[60px] w-full mt-[5px] object-contian" />
                  
             </div>
 			<div className="flex mt-4 flex-1 flex-col gap-3   ">

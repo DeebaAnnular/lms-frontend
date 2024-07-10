@@ -10,14 +10,10 @@ import LeaveHistoryOfUser from "../../../components/leave-history-of-user/LeaveH
 
 const page = () => {
   const user_id = localStorage.getItem("user_id") || null;
-  const [resData, setResData] = useState([]);
-  console.log("user dashboard");
-
+  const [resData, setResData] = useState([]); 
   useEffect(() => {
-    const fetchData = async () => {
-      console.log("checku", user_id);
-      const resData = await getEmp_detail_by_id(user_id);
-      console.log("check ", resData);
+    const fetchData = async () => { 
+      const resData = await getEmp_detail_by_id(user_id); 
       setResData(resData);
     };
 
@@ -33,8 +29,7 @@ const page = () => {
   const check = resData?.date_of_joining;
 
   if (check) {
-    const dateOnly = new Date(check).toLocaleDateString("en-CA"); // 'en-CA' for 'YYYY-MM-DD' format
-    console.log(dateOnly); // Output: "2022-01-14"
+    const dateOnly = new Date(check).toLocaleDateString("en-CA"); // 'en-CA' for 'YYYY-MM-DD' format 
   }
 
   //  console.log(joiningDate.split(':'))

@@ -12,9 +12,7 @@ const Page = () => {
     const fetchLeaveBalanceById = async () => {
         const resData = await getEmp_leave_balence(localStorage.getItem("user_id") || null)
         setLeave_balence([resData])
-    }
-
-    console.log(leave_balence)
+    } 
 
     useEffect(() => {
         // const fetchData = async () => {
