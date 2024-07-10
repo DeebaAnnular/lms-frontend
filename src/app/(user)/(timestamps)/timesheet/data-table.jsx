@@ -24,13 +24,13 @@ import {
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { useState } from "react";
-import { capitalizeWords } from "../../../../utils/index";
+import { capitalizeWords, convertDate } from "../../../../utils/index";
 import { ArrowUpDown, EditIcon, DeleteIcon } from "lucide-react";
 import { cn } from "../../../../lib/utils";
 
-import { editTask, deleteTask } from "../../../../actions";
+import { editTask, deleteTask, getAllTaskById, submitWeeklyTimeSheet } from "../../../../actions";
 
-export function DataTable({ data }) {
+export function DataTable({ allData, userId, startDate, endDate }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
@@ -39,24 +39,40 @@ export function DataTable({ data }) {
         pageIndex: 0,
     });
 
+    const [data, setData] = useState(allData)
+
     const [show, setShow] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
 
+
+    // edit function
     const sumbitEditedTask = async (id, editedTask) => {
         const response = await editTask(id, editedTask);
-        console.log(response);
+        const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate)
+        setData(updatedData.tasks)
     };
 
-    const handleEditTask = (task, task_date) => {
-        console.log(task_date);
-        setCurrentTask({ ...task, task_date, user_id: localStorage.getItem("user_id") });
+    const handleEditButton = (task, task_date) => {
+
+        setCurrentTask({ ...task, task_date: convertDate(task_date), user_id: localStorage.getItem("user_id") });
         setShow(true);
     };
 
     const handleDeleteTask = async (id) => {
         const response = await deleteTask(id);
-        console.log(response);
+        const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate)
+        setData(updatedData.tasks)
     };
+
+    const handleSubmit = async () => {
+         const data = {
+            userId: localStorage.getItem("user_id"),
+            fromDate: startDate,
+            toDate: endDate, 
+         }
+         const response = await submitWeeklyTimeSheet(data)
+         console.log(response)
+    }
 
     const columns = [
         {
@@ -74,6 +90,8 @@ export function DataTable({ data }) {
                 ));
             },
         },
+
+
         {
             accessorKey: "task_name",
             header: "Tasks",
@@ -82,14 +100,16 @@ export function DataTable({ data }) {
                     <div key={row.original.task_id[index]}>
                         <p className="flex justify-between">
                             {capitalizeWords(taskName)}
+
+                            {/* here is the option to delete and edit the task */}
                             <span className="flex gap-2">
-                                <EditIcon onClick={() => handleEditTask({
+                                <EditIcon onClick={() => handleEditButton({
                                     task_id: row.original.task_id[index],
                                     task_name: taskName
                                 }, row.original.day)} />
                                 <DeleteIcon onClick={() => {
-                                    handleDeleteTask(row.original.task_id[index]) 
-                                    }} />
+                                    handleDeleteTask(row.original.task_id[index])
+                                }} />
                             </span>
                         </p>
                     </div>
@@ -126,7 +146,7 @@ export function DataTable({ data }) {
                 taskName.toLowerCase().includes(value.toLowerCase())
             );
         },
-    }); 
+    });
 
     return (
         <div className="w-full">
@@ -166,6 +186,8 @@ export function DataTable({ data }) {
                         )}
                     </TableBody>
                 </Table>
+
+
             </div>
 
             {show && (
@@ -214,6 +236,11 @@ export function DataTable({ data }) {
                     </div>
                 </div>
             )}
+            <div className="w-full flex justify-end mt-2">
+                <Button className='px-3 py-2 bg-green-400 rounded-md' onClick={handleSubmit}>
+                    Submit
+                </Button>
+            </div>
         </div>
     );
 }

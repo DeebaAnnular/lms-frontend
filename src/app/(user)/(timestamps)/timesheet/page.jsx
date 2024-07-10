@@ -1,36 +1,25 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { getAllTask } from '../../../../actions'
-import { API } from '../../../../config'
-import { convertDateString } from '../../../../utils'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Input } from '../../../../components/ui/input'
-import { Label } from '../../../../components/ui/label'
+ 
 import { Button } from '../../../../components/ui/button'
 
 import { DataTable } from './data-table';
-import { get } from 'http'
+import { getAllTaskById } from '../../../../actions'
 
 const Page = () => { 
 
     //date input process
-    const [startDate, setStartDate] = useState(new Date())
-    const [endDate, setEndDate] = useState(new Date())
+    const [startDate, setStartDate] = useState()
+    const [endDate, setEndDate] = useState()
     
     //data fetching on submitting date
     const [tasks, setTasks] = useState() 
-    const getData = () => { 
-        console.log("clicked")
-        const fetchData = async () => {
-            const res = await fetch(`${API}/task/weekly/${localStorage.getItem('user_id')}?fromDate=${startDate}&toDate=${endDate}`)  
-            const data = await res.json()
-            setTasks(data.tasks) 
-        }
-         fetchData()     
+    const getData = async () => { 
+       const data = await getAllTaskById(localStorage.getItem('user_id'), startDate, endDate)   
+       setTasks(data.tasks) 
+        
     }
- 
+ console.log("tasks", tasks)
     return (
         <div className='p-5 pt-2'>
             <div className="title  ">
@@ -54,10 +43,12 @@ const Page = () => {
             {/* Timesheet table */}
             <div className="container mx-auto py-5">
                 {
-                      tasks && <DataTable  data={tasks}/>
+                      tasks && <DataTable  allData={tasks} userId={localStorage.getItem('user_id')} startDate={startDate} endDate={endDate}/>
                 }
              
             </div>
+
+            
 
 
         </div>

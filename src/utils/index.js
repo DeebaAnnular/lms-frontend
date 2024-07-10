@@ -18,3 +18,11 @@ export function convertDateString(dateString) {
     // Return formatted date string
     return `${year}/${month}/${day}`;
 }
+
+export function convertDate(inputDate) {
+    // Split the input date by the hyphen
+    const [day, month, year] = inputDate.split('-');
+    
+    // Rearrange and return the date in yyyy-mm-dd format
+    return `${year}-${month}-${day}`;
+}

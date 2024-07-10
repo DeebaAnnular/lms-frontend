@@ -22,6 +22,9 @@ export const sidebarLinks = [
     {
         label:"Timesheet",
         route:'/timesheet', 
+    },{
+        label:"TimeSheet Status",
+        route:'/weekly-status'
     }
      
 ]
@@ -39,8 +42,7 @@ const Sidebar = () => {
             </div>
 			<div className="flex mt-4 flex-1 flex-col gap-3 ">
 				{sidebarLinks.map((link) => {
-					const isActive =
-						pathname === link.route || pathname.startsWith(link.route);
+					const isActive = pathname === link.route || pathname.startsWith(link.route);
 					return (
 						<Link
 							href={link.route}

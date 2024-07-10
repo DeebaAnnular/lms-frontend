@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { capitalizeWords } from "../../utils";
 
 const RegistrationForm = ({ setIsShow }) => {
-    console.log(setIsShow);
     const [formData, setFormData] = useState({
         emp_id: "",
         emp_name: "",
@@ -46,7 +45,7 @@ const RegistrationForm = ({ setIsShow }) => {
             date_of_joining: formatDate(formData.date_of_joining),
             active_status: formData.active_status === "true", // Convert to boolean
         };
-
+        console.log(dataToSend)
         try {
             const response = await fetch("http://localhost:3000/api/auth/register", {
                 method: "POST",
@@ -99,6 +98,8 @@ const RegistrationForm = ({ setIsShow }) => {
                             required
                             onChange={handleInputChange}
                         />
+                         
+
                         <label
                             htmlFor="emp_id"
                             className="font-serif ml-2"
@@ -128,6 +129,8 @@ const RegistrationForm = ({ setIsShow }) => {
                             <option value="F">Female</option>
                         </select>
 
+
+
                         <label htmlFor="contact_number" className="font-serif ml-2">
                             Contact No
                         </label>
@@ -149,7 +152,21 @@ const RegistrationForm = ({ setIsShow }) => {
                             required
                             onChange={handleInputChange}
                         />
-
+                        <label
+                            htmlFor="emp_id"
+                            className="font-serif ml-2"
+                            type="number"
+                            required
+                        >
+                            Date of Joining
+                        </label>
+                        <input
+                            id="date_of_joining"
+                            value={formData.date_of_joining}
+                            className="border border-gray-500 mr-2 rounded-md p-1 focus:border-formblue hover:border-formblue"
+                            onChange={handleInputChange}
+                            type="date"
+                        />
 
 
                         <label htmlFor="designation" className="font-serif ml-2">
