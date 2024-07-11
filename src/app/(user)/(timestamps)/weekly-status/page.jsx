@@ -24,7 +24,7 @@ const Page = () => {
             <div className="container mx-auto py-5">
                 {
 
-                    allStatus.length > 0 && <DataTable data={allStatus} userId = {localStorage.getItem('user_id')} />
+                     <DataTable data={allStatus} userId = {localStorage.getItem('user_id')} />
                 }
 
             </div>

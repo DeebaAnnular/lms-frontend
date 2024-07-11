@@ -71,6 +71,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             toDate: endDate, 
          }
          const response = await submitWeeklyTimeSheet(data)
+         alert("Timesheet submitted successfully")
          console.log(response)
     }
 
@@ -84,7 +85,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             header: "Task ID",
             cell: ({ row }) => {
                 return row.original.task_id.map((id) => (
-                    <div key={id}>
+                    <div key={id} className="flex justify-between py-2">
                         <p>{id}</p>
                     </div>
                 ));
@@ -98,11 +99,11 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             cell: ({ row }) => {
                 return row.original.task_name.map((taskName, index) => (
                     <div key={row.original.task_id[index]}>
-                        <p className="flex justify-between">
+                        <p className="flex justify-between py-2">
                             {capitalizeWords(taskName)}
 
                             {/* here is the option to delete and edit the task */}
-                            <span className="flex gap-2">
+                            <span className="flex gap-3">
                                 <EditIcon onClick={() => handleEditButton({
                                     task_id: row.original.task_id[index],
                                     task_name: taskName
@@ -171,7 +172,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} className=''>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
@@ -215,6 +216,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                 <input
                                     type="text"
                                     className="w-full p-2 border rounded"
+                                    placeholder="hh:mm:ss"
                                     value={currentTask ? currentTask.task_time : ""}
                                     onChange={(e) => setCurrentTask({ ...currentTask, task_time: e.target.value })}
                                 />

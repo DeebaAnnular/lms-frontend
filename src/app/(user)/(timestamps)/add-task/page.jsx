@@ -80,6 +80,11 @@ const Calendar = () => {
 
     const submitTask = async (e) => {
         e.preventDefault();
+        const timeFormat = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+        if (!time.match(timeFormat)) {
+            alert('Time must be in the format "hh:mm:ss".');
+            return;
+        }
         const newTask = {
             task_date: selectedDate,
             task_name: task,
@@ -126,23 +131,27 @@ const Calendar = () => {
                 {days.map((day, index) => {
                     const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
                     return (
-                        <div key={index}>
+                        <div key={index}  >
                             <div
-                                className={`day-wrapper flex justify-between px-3 ${day ? 'bg-gray-300' : ''}`}
+                                className={`day-wrapper flex justify-between px-3  ${day ? 'bg-gray-300' : ''}`}
                                 onClick={() => day && handleAddTask(day)}
                             >
                                 <p>{day && day}</p>
                                 <p>{day && "+"}</p>
                             </div>
-                            <div className={`day ${day ? 'text-center p-2 bg-gray-100' : ''}`}>
+                            <div className={`day  min-h-[80px] max-h-[80px] overflow-clip line-clamp-3 ${day ? 'text-center p-2 bg-gray-100' : ''}`}>
                                 {day && (
-                                    <>
-                                        {allTasks.map((task) => (
-                                            formatApiDate(task.task_date) === dateStr && (
-                                                <p key={task.id}>{task.task_name}</p>
+                                    <ul>
+                                        {allTasks
+                                            .filter(
+                                                (task) =>
+                                                    formatApiDate(task.task_date) === dateStr &&
+                                                    task.user_id == localStorage.getItem('user_id')
                                             )
-                                        ))}
-                                    </>
+                                            .map((task) => (
+                                                <li key={task.id} clas> {task.task_name}</li>
+                                            ))}
+                                    </ul>
                                 )}
                             </div>
                         </div>
