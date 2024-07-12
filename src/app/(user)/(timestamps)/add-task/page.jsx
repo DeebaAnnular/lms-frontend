@@ -137,7 +137,7 @@ const Calendar = () => {
                                 onClick={() => day && handleAddTask(day)}
                             >
                                 <p>{day && day}</p>
-                                <p>{day && "+"}</p>
+                                <p className='cursor-pointer'>{day && "+"}</p>
                             </div>
                             <div className={`day  min-h-[80px] max-h-[80px] overflow-clip line-clamp-3 ${day ? 'text-center p-2 bg-gray-100' : ''}`}>
                                 {day && (

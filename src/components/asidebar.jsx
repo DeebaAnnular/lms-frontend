@@ -16,8 +16,8 @@ export const sidebarLinks = [
         route:'/admin/leave-approvel', 
     },
     {
-        label:"menu 2",
-        route:'/admin/menu_2', 
+        label:"Timesheet",
+        route:'/admin/timesheet', 
     },
      
 ]
