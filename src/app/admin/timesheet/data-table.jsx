@@ -1,4 +1,4 @@
- "use client";
+"use client";
 import {
     flexRender,
     getCoreRowModel,
@@ -18,31 +18,44 @@ import {
 } from "../../../components/ui/table";
 
 import { useState } from "react";
-import { Button } from "../../../components/ui/button"; // Make sure this is correct
-import { Input } from "../../../components/ui/input"; // Make sure this is correct
+import { Button } from "../../../components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import { useRouter } from "next/navigation";
+
+
 import Link from "next/link";
-import { convertDateStringWithHifn } from "../../../utils"; // Make sure this is correct
+import { convertDateStringWithHifn } from "../../../utils";
+
+
+
+  
 
 export function DataTable({ allData }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
-    const [userNameFilter, setUserNameFilter] = useState("");
-    const [dateFilter, setDateFilter] = useState("");
     const [pagination, setPagination] = useState({
         pageSize: 5,
         pageIndex: 0,
     });
 
-    const handleClick = (week_id, emp_id, from_date, to_date) => {
-        localStorage.setItem("emp_id", emp_id);
-        localStorage.setItem("week_id", week_id);
-        localStorage.setItem("from_date", convertDateStringWithHifn(from_date));
-        localStorage.setItem("to_date", convertDateStringWithHifn(to_date));
-    };
+    // const dispatch = useDispatch();
+
+    const handleClick = (week_id,emp_id,from_date, to_date) => {
+       
+        console.log("user-id",week_id)
+        localStorage.setItem("emp_id",emp_id);
+        localStorage.setItem("week_id",week_id);
+        localStorage.setItem("from_date", convertDateStringWithHifn(from_date)); 
+        localStorage.setItem("to_date",convertDateStringWithHifn(to_date));
+        // console.log("fromdate-admin-timesheet",localStorage.getItem('from_date'));
+     
+    
+        // console.log("localstoragedata:",localStorage.getItem('week_id'));
+      };
+
+  
 
     const columns = [
         {
@@ -105,7 +118,7 @@ export function DataTable({ allData }) {
         {
             header: "View Report",
             cell: ({ row }) => (
-                <Link variant="outlined" onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)} href="viewreport">
+                <Link variant="outlined"  onClick={() => handleClick(row.original.week_id,row.original.user_id, row.original.from_date, row.original.to_date)} href="viewreport" >
                     View Report
                 </Link>
             ),
@@ -128,41 +141,12 @@ export function DataTable({ allData }) {
             globalFilter,
         },
         globalFilterFn: (row, columnId, value) => {
-            const searchValue = value.toLowerCase();
-            const userNameMatch = row.getValue("user_name").toLowerCase().includes(searchValue);
-            const dateMatch = new Date(row.getValue("from_date")).toLocaleDateString().includes(searchValue) || new Date(row.getValue("to_date")).toLocaleDateString().includes(searchValue);
-            return userNameMatch || dateMatch;
+            return row.getValue("user_name").toLowerCase().includes(value.toLowerCase());
         },
     });
 
-    const handleUserNameFilterChange = (e) => {
-        const value = e.target.value;
-        setUserNameFilter(value);
-        setGlobalFilter(value);
-    };
-
-    const handleDateFilterChange = (e) => {
-        const value = e.target.value;
-        setDateFilter(value);
-        setGlobalFilter(value);
-    };
-
     return (
         <div className="w-full">
-            <div className="mb-4 flex space-x-4">
-                <Input
-                    placeholder="Search by User Name"
-                    value={userNameFilter}
-                    onChange={handleUserNameFilterChange}
-                    className='max-w-[200px]'
-                />
-                {/* <Input
-                    placeholder="Search by Date"
-                    value={dateFilter}
-                    onChange={handleDateFilterChange}
-                    type="date"
-                /> */}
-            </div>
             <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
                 <Table>
                     <TableHeader className="bg-blue-300 text-black">

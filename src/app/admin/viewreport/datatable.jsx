@@ -76,7 +76,8 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
     }
 
-    const handlereject=async()=>{ 
+    const handlereject=async()=>{
+        // setcomment(window.prompt("Enter reject comment"));
         const rejectcomment=window.prompt("enter your rejection")
         try {
             const response = await fetch(`http://localhost:3000/api/task/rejectWeeklyStatus/${localStorage.getItem("week_id")}`, {
@@ -116,8 +117,27 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         setData(updatedData.tasks)
     };
 
- 
- 
+    const handleEditButton = (task, task_date) => {
+
+        setCurrentTask({ ...task, task_date: convertDate(task_date), user_id: localStorage.getItem("user_id") });
+        setShow(true);
+    };
+
+    const handleDeleteTask = async (id) => {
+        const response = await deleteTask(id);
+        const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate)
+        setData(updatedData.tasks)
+    };
+
+    const handleSubmit = async () => {
+         const data = {
+            userId: localStorage.getItem("user_id"),
+            fromDate: startDate,
+            toDate: endDate, 
+         }
+         const response = await submitWeeklyTimeSheet(data)
+         console.log(response)
+    }
 
     const columns = [
         {
