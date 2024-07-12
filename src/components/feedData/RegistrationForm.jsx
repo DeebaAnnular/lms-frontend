@@ -37,7 +37,7 @@ const RegistrationForm = ({ setIsShow }) => {
     };
 
     const handleSubmit = async (e) => {
-        console.log("before try");
+ 
         e.preventDefault();
 
         const dataToSend = {
@@ -45,7 +45,7 @@ const RegistrationForm = ({ setIsShow }) => {
             date_of_joining: formatDate(formData.date_of_joining),
             active_status: formData.active_status === "true", // Convert to boolean
         };
-        console.log(dataToSend)
+ 
         try {
             const response = await fetch("http://localhost:3000/api/auth/register", {
                 method: "POST",
@@ -55,8 +55,7 @@ const RegistrationForm = ({ setIsShow }) => {
                 body: JSON.stringify(dataToSend),
             });
 
-            if (response.ok) {
-                console.log("User registered successfully");
+            if (response.ok) { 
                 alert("User registered successfully");
                 // Optionally reset the form after successful submission
                 setFormData({
@@ -79,7 +78,7 @@ const RegistrationForm = ({ setIsShow }) => {
         } catch (error) {
             console.error("Error:", error);
         }
-        console.log("after try");
+ 
     };
 
     return (

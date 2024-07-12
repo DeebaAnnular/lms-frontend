@@ -7,9 +7,11 @@ import {
   getLeave_history_by_id,
 } from "../../../actions/index";
 import LeaveHistoryOfUser from "../../../components/leave-history-of-user/LeaveHistoryOfUser";
+import { useSelector } from "react-redux";
 
 const page = () => {
-  const user_id = localStorage.getItem("user_id") || null;
+    const user = useSelector(state => state.user.userDetails)
+  const user_id = user.user_id || null;
   const [resData, setResData] = useState([]); 
   useEffect(() => {
     const fetchData = async () => { 
@@ -20,19 +22,13 @@ const page = () => {
     fetchData();
   }, []);
 
-  // const user = resData[0]
-  // console.log("after")
-  // console.log(user)
-
-  //    const check= resData?.date_of_joining
-  //      console.log(joiningDate)
+ 
   const check = resData?.date_of_joining;
 
   if (check) {
     const dateOnly = new Date(check).toLocaleDateString("en-CA"); // 'en-CA' for 'YYYY-MM-DD' format 
   }
-
-  //  console.log(joiningDate.split(':'))
+ 
 
   return (
     <div className="content-sextion w-full flex gap-5 flex-col p-5 h-[calc(100vh-70px)] overflow-x-auto overscroll-y-none">

@@ -2,8 +2,11 @@
 import React, { useEffect, useState } from 'react'
 import { getWeeklyStatus } from '../../../../actions'
 import { DataTable } from './data-table'
+import { useSelector } from 'react-redux'
 
 const Page = () => {
+    const user =useSelector(state => state.user.userDetails)
+    
     const [allStatus, setAllStatus] = useState([])
 
     useEffect(() => {
@@ -15,16 +18,16 @@ const Page = () => {
         fetchData()
     }, [])
 
-    console.log(allStatus)
+ 
 
     return (
-        <div className='p-5 pt-3'>
+        <div className='p-5 pt-3 max-h-[calc(100vh-100px)] overflow-y-auto'>
             <h1 className='text-2xl font-bold'>Weekly Status</h1>
             {/* You can render currUserStatus here */}
             <div className="container mx-auto py-5">
                 {
 
-                     <DataTable data={allStatus} userId = {localStorage.getItem('user_id')} />
+                     <DataTable data={allStatus} userId = {user.user_id} />
                 }
 
             </div>

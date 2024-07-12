@@ -6,7 +6,13 @@ import { IoIosClose } from 'react-icons/io';
 import { postTask, getAllTask } from '../../../../actions';
 import { formatDate } from '../../../../utils';
 
+import { useSelector } from 'react-redux';
+
 const Calendar = () => {
+    
+    const user = useSelector(state => state.user.userDetails) 
+
+    
     const [currentDate, setCurrentDate] = useState(new Date());
     const [days, setDays] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -89,11 +95,10 @@ const Calendar = () => {
             task_date: selectedDate,
             task_name: task,
             task_time: time,
-            user_id: localStorage.getItem('user_id'),
+            user_id: user.user_id,
         };
         try {
-            const res = await postTask(newTask);
-            console.log(res);
+            const res = await postTask(newTask); 
         } catch (error) {
             console.log("error", error);
         }
@@ -146,7 +151,7 @@ const Calendar = () => {
                                             .filter(
                                                 (task) =>
                                                     formatApiDate(task.task_date) === dateStr &&
-                                                    task.user_id == localStorage.getItem('user_id')
+                                                    task.user_id == user.user_id
                                             )
                                             .map((task) => (
                                                 <li key={task.id} clas> {task.task_name}</li>

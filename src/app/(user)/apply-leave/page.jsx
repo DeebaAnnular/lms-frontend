@@ -4,21 +4,19 @@ import React, { useActionState, useEffect, useState } from 'react';
 import LeaveForm from '../../../components/leave-form';
 
 import { getEmp_leave_balence } from '../../../actions';
+import { useSelector } from 'react-redux';
 
 const Page = () => {
 
+    const user = useSelector(state => state.user.userDetails)
     const [leave_balence, setLeave_balence] = useState([]) 
     
     const fetchLeaveBalanceById = async () => {
-        const resData = await getEmp_leave_balence(localStorage.getItem("user_id") || null)
+        const resData = await getEmp_leave_balence(user.user_id || null)
         setLeave_balence([resData])
     } 
 
-    useEffect(() => {
-        // const fetchData = async () => {
-        //     const resData = await getEmp_leave_balence(localStorage.getItem("user_id") || null)
-        //     setLeave_balence([resData])
-        // }
+    useEffect(() => { 
         fetchLeaveBalanceById ()
     }, [])
 

@@ -36,15 +36,14 @@ const Page = () => {
     };
 
     const handleApproveClick = async (leaveRequestId) => {
-        console.log(leaveRequestId)
+ 
         try {
             const response = await fetch(`${API}/leave/update-leave-status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ leave_request_id: leaveRequestId, status: 'approved' }),
             });
-            const data = await response.json();
-            console.log(data)
+            const data = await response.json(); 
             alert("Leave Approved Successfully");
             fetchLeaveData();
         } catch (error) {
@@ -61,8 +60,7 @@ const Page = () => {
             });
             const data = await response.json();
             alert("Leave Rejected Successfully");
-            fetchLeaveData();
-            console.log(data, fetchLeaveData());
+            fetchLeaveData(); 
         } catch (error) {
             console.error('Error rejecting leave request:', error);
         }

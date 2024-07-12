@@ -71,8 +71,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             toDate: endDate, 
          }
          const response = await submitWeeklyTimeSheet(data)
-         alert("Timesheet submitted successfully")
-         console.log(response)
+         alert("Timesheet submitted successfully") 
     }
 
     const columns = [

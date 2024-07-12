@@ -67,8 +67,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             localStorage.removeItem("from_date");
             localStorage.removeItem("to_date"); 
                 router.push("/admin/timesheet");
-            
-            console.log(result);
+ 
         } catch (error) {
             console.error('Error approving weekly status:', error);
         }
@@ -136,7 +135,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             toDate: endDate, 
          }
          const response = await submitWeeklyTimeSheet(data)
-         console.log(response)
+ 
     }
 
     const columns = [

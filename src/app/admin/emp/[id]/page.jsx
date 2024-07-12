@@ -11,10 +11,8 @@ import { capitalizeWords } from '../../../../utils';
 const page = async ({ params }) => {
 
 
-
-console.log("check")
-    const resData = await getEmp_detail_by_id(params.id)
-    console.log("check",resData)
+ 
+    const resData = await getEmp_detail_by_id(params.id) 
 
     
 

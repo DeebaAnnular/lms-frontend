@@ -25,8 +25,10 @@ import { cn } from "../../../lib/utils";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { convertDateStringWithHifn } from "../../../utils"; // Make sure this is correct
+import { useSelector } from "react-redux";
 
 export function DataTable({ allData }) {
+    const user = useSelector(state => state.user.userDetails)
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
@@ -149,7 +151,8 @@ export function DataTable({ allData }) {
 
     return (
         <div className="w-full">
-            <div className="mb-4 flex space-x-4">
+            <div className="mb-4 flex space-x-4 items-center justify-normal">
+                <label htmlFor="userNameFilter">Search by User Name</label>
                 <Input
                     placeholder="Search by User Name"
                     value={userNameFilter}

@@ -5,8 +5,11 @@ import { Button } from '../../../../components/ui/button'
 
 import { DataTable } from './data-table';
 import { getAllTaskById } from '../../../../actions'
+import { useSelector } from 'react-redux';
 
 const Page = () => { 
+
+    const user = useSelector(state => state.user.userDetails) 
 
     //date input process
     const [startDate, setStartDate] = useState()
@@ -15,13 +18,12 @@ const Page = () => {
     //data fetching on submitting date
     const [tasks, setTasks] = useState() 
     const getData = async () => { 
-       const data = await getAllTaskById(localStorage.getItem('user_id'), startDate, endDate)   
+       const data = await getAllTaskById(user.user_id, startDate, endDate)   
        setTasks(data.tasks) 
         
-    }
- console.log("tasks", tasks)
+    } 
     return (
-        <div className='p-5 pt-2'>
+        <div className='p-5 pt-2 max-h-[calc(100vh-100px)] overflow-y-auto'>
             <div className="title  ">
                 <p className='text-[22px] font-bold'>Timesheet</p>
             </div>
@@ -43,7 +45,7 @@ const Page = () => {
             {/* Timesheet table */}
             <div className="container mx-auto py-5">
                 {
-                      tasks && <DataTable  allData={tasks} userId={localStorage.getItem('user_id')} startDate={startDate} endDate={endDate}/>
+                      tasks && <DataTable  allData={tasks} userId={user.user_id} startDate={startDate} endDate={endDate}/>
                 }
              
             </div>

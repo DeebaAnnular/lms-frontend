@@ -27,8 +27,7 @@ const Page = () => {
 
     useEffect( () => {
         getData()
-    },[])
- console.log("tasks", tasks)
+    },[]) 
     return (
         <div className='p-5 pt-2'>
             <div className="title  ">

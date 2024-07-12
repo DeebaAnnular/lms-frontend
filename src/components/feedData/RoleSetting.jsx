@@ -11,9 +11,11 @@ import {
 } from "../ui/dropdown-menu"
 
 import {change_user_role, getEmp_detail_by_id} from '../../actions'
+import { useSelector } from 'react-redux'
 
 const RoleSetting =  () => {
-    const user_id = localStorage.getItem('user_id')
+    const user = useSelector(state => state.user.userDetails)
+    const user_id = user.user_id
      
 
     useEffect( () => {

@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 import { postLeave_req, getEmp_leave_balence } from "../actions";
+import { useSelector } from "react-redux";
 
 // Define the validation schema using zod
 const leaveSchema = z.object({
@@ -44,6 +45,8 @@ const leaveSchema = z.object({
 });
 
 const LeaveForm = ({ fetchLeaveBalanceById }) => {
+    
+    const user = useSelector(state => state.user.userDetails)
     const {
         register,
         handleSubmit,
@@ -60,7 +63,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const resData = await getEmp_leave_balence(localStorage.getItem("user_id") || null);
+            const resData = await getEmp_leave_balence(user.user_id || null);
             setLeaveBalance(resData);
         };
         fetchData();
@@ -108,8 +111,8 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
         }
 
         data.total_days = totalDaysRequested;
-        data.user_id = localStorage.getItem("user_id") || null;
-        data.emp_name = localStorage.getItem("user_name") || null;
+        data.user_id = user.user_id || null;
+        data.emp_name = user.user_id || null;
         
         const result = await postLeave_req(data);
 

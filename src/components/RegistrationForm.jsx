@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 const RegistrationForm = ({ setIsShow }) => {
-  console.log(setIsShow);
+ 
   const [formData, setFormData] = useState({
     emp_id: "",
     emp_name: "",
@@ -37,7 +37,7 @@ const RegistrationForm = ({ setIsShow }) => {
   };
 
   const handleSubmit = async (e) => {
-    console.log("before try");
+ 
     e.preventDefault();
 
     const dataToSend = {
@@ -56,7 +56,7 @@ const RegistrationForm = ({ setIsShow }) => {
       });
 
       if (response.ok) {
-        console.log("User registered successfully");
+ 
         alert("User registered successfully");
         // Optionally reset the form after successful submission
         setFormData({
@@ -78,7 +78,7 @@ const RegistrationForm = ({ setIsShow }) => {
     } catch (error) {
       console.error("Error:", error);
     }
-    console.log("after try");
+ 
   };
 
   return (

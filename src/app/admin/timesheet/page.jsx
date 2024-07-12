@@ -2,9 +2,11 @@
 import React, { useEffect, useState } from 'react'
 import { getWeeklyStatus } from '../../../actions'
 import { DataTable } from './data-table'
+import { useSelector } from 'react-redux'
 
 
 const Page = () => {
+    const user = useSelector(state => state.user.userDetails)
     const [allStatus, setAllStatus] = useState([])
 
     useEffect(() => {
@@ -16,7 +18,7 @@ const Page = () => {
         fetchData()
     }, [])
 
-    console.log(allStatus)
+ 
 
     return (
         <div className='p-5 pt-3'>
@@ -25,7 +27,7 @@ const Page = () => {
             <div className="container mx-auto py-5">
                 {
 
-                    allStatus.length > 0 &&  <DataTable allData={allStatus} userId = {localStorage.getItem('user_id')} />
+                    allStatus.length > 0 &&  <DataTable allData={allStatus} userId = {user.user_id} />
                 }
 
             </div>

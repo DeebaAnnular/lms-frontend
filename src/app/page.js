@@ -3,7 +3,12 @@ import React, { useState } from 'react';
 import { IoIosEyeOff, IoIosEye } from "react-icons/io";
 import { useRouter } from 'next/navigation'; // Correct hook for client-side routing
 
-const Signin = () => {
+//redux
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserDetails } from '../store/slices/userSlice';
+
+
+const Signin = () => { 
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [errors, setErrors] = useState({});
     const [loginData, setLoginData] = useState({
@@ -12,6 +17,9 @@ const Signin = () => {
     });
 
     const router = useRouter(); // Initialize useRouter for client-side routing
+    const dispatch = useDispatch();
+    const userDetail = useSelector(state => state.user.userDetails)
+    console.log(userDetail)
 
     const handlePasswordToggle = () => {
         setPasswordVisible(!passwordVisible);
@@ -43,21 +51,24 @@ const Signin = () => {
                     throw new Error('Network response was not ok');
                 }
 
- 
-                const data = await response.json(); 
-                console.log(data)
+
+                const data = await response.json();
+                
+                dispatch( setUserDetails(data)) ;
+
                 localStorage.setItem("user_name", data.emp_name);
-                localStorage.setItem("jwt", data.token); 
-                localStorage.setItem("user_id",data.user_id);
+                localStorage.setItem("jwt", data.token);
+                localStorage.setItem("user_id", data.user_id);
                 localStorage.setItem("user-type", data.user_type);
-                localStorage.setItem("work_email", data.email); 
-                localStorage.setItem("work_email", data.work_email)
-                if(data.emp_type === 'admin'){
+                localStorage.setItem("work_email", data.email);
+                localStorage.setItem("work_email", data.work_email) 
+
+                if (data.emp_type === 'admin') {
                     router.push('/admin/dashboard'); // Use router.push for client-side navigation
-                }else{
+                } else {
                     router.push('/dashboard')
                 }
-                 
+
 
             } catch (error) {
                 console.error('Error:', error);
