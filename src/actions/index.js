@@ -237,3 +237,19 @@ export const getWeeklyStatus = async () => {
         return []; // Return an empty array or handle error as needed
     }
 }
+
+
+export const getAllTaskByIdAdmin = async (weekId, startDate, endDate) => {
+     
+    try {
+        const response = await fetch(`${API}/task/weekly/${localStorage.getItem('emp_id')}?fromDate=${startDate}&toDate=${endDate}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        return []; // Return an empty array or handle error as needed
+    }
+}
