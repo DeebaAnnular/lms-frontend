@@ -6,8 +6,7 @@ export const getEmp_details = async () => {
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
-        const data = await response.json();
-        console.log(data)
+        const data = await response.json(); 
         return data; // Return the fetched data
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
@@ -134,8 +133,7 @@ export const postTask = async (taskData) => {
             },
             body: JSON.stringify(taskData),
         });
-        if (!response.ok) {
-            console.log(response)
+        if (!response.ok) { 
             throw new Error('Network response was not ok ' + response.statusText);
         }
         const data = await response.json();
@@ -157,8 +155,7 @@ export const getAllTask = async () => {
 }
 
 
-export const editTask = async (id, editedTask) => {
-    console.log(editedTask)
+export const editTask = async (id, editedTask) => { 
     try {
         const response = await fetch(`${API}/task/update_task_by_id/${id}`, {
             method: 'PUT',
@@ -175,8 +172,7 @@ export const editTask = async (id, editedTask) => {
     }
 }
 
-export const deleteTask = async (id) => {
-    console.log(id);
+export const deleteTask = async (id) => { 
     try {
         const response = await fetch(`${API}/task/delete_task/${id}`, {
             method: 'DELETE', // Use DELETE method for deleting a resource

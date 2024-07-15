@@ -19,20 +19,14 @@ const page = () => {
 
     fetchData();
   }, []);
-
-  // const user = resData[0]
-  // console.log("after")
-  // console.log(user)
-
-  //    const check= resData?.date_of_joining
-  //      console.log(joiningDate)
+ 
   const check = resData?.date_of_joining;
 
   if (check) {
     const dateOnly = new Date(check).toLocaleDateString("en-CA"); // 'en-CA' for 'YYYY-MM-DD' format 
   }
 
-  //  console.log(joiningDate.split(':'))
+ 
 
   return (
     <div className="content-sextion w-full flex gap-5 flex-col p-5 h-[calc(100vh-70px)] overflow-x-auto overscroll-y-none">
