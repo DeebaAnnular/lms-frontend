@@ -56,12 +56,16 @@ const Signin = () => {
                 
                 dispatch( setUserDetails(data)) ;
 
-                localStorage.setItem("user_name", data.emp_name);
+                
+                if(typeof window !== 'undefined')  {
+                    localStorage.setItem("user_name", data.emp_name);
                 localStorage.setItem("jwt", data.token);
                 localStorage.setItem("user_id", data.user_id);
                 localStorage.setItem("user-type", data.user_type);
                 localStorage.setItem("work_email", data.email);
                 localStorage.setItem("work_email", data.work_email) 
+
+                } 
 
                 if (data.emp_type === 'admin') {
                     router.push('/admin/dashboard'); // Use router.push for client-side navigation
