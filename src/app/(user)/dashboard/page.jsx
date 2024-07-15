@@ -9,7 +9,7 @@ import {
 import LeaveHistoryOfUser from "../../../components/leave-history-of-user/LeaveHistoryOfUser";
 import { useSelector } from "react-redux";
 
-const page = () => {
+const Page = () => {
     const user = useSelector(state => state.user.userDetails)
   const user_id = user.user_id || null;
   const [resData, setResData] = useState([]); 
@@ -86,4 +86,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
