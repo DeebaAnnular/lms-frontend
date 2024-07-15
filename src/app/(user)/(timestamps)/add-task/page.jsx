@@ -2,31 +2,35 @@
 
 import { useState, useEffect } from 'react';
 import { IoIosClose } from 'react-icons/io';
+import { FaRegCircle } from "react-icons/fa";
 
-import { postTask, getAllTask } from '../../../../actions';
-import { formatDate } from '../../../../utils';
-
+import { postTask, getAllTask, getWeeklyStatus } from '../../../../actions';
 import { useSelector } from 'react-redux';
 
 const Calendar = () => {
-    
-    const user = useSelector(state => state.user.userDetails) 
-
+    const user = useSelector(state => state.user.userDetails);
     
     const [currentDate, setCurrentDate] = useState(new Date());
     const [days, setDays] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [taskId, setTaskId] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
+
     const [task, setTask] = useState('');
     const [time, setTime] = useState('');
     const [show, setShow] = useState(false);
+    const [allTasks, setAllTasks] = useState([]);
+    const [weeklyStatuses, setWeeklyStatuses] = useState([]);
 
     useEffect(() => {
         generateCalendar();
+        fetchData();
     }, [currentDate]);
 
-    // Generating calendar
+    useEffect(() => {
+        fetchWeeklyData();
+    }, []);
+
     const generateCalendar = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
@@ -60,7 +64,7 @@ const Calendar = () => {
 
     const formatApiDate = (date) => {
         return date.toString().split('T')[0];
-    }
+    };
 
     const handleAddTask = (day) => {
         setShow(true);
@@ -74,15 +78,15 @@ const Calendar = () => {
         return response;
     };
 
-    const [allTasks, setAllTasks] = useState([]);
     const fetchData = async () => {
         const response = await getAllTask();
         setAllTasks(response);
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const fetchWeeklyData = async () => {
+        const response = await getWeeklyStatus();
+        setWeeklyStatuses(response.weeklyStatuses);
+    };
 
     const submitTask = async (e) => {
         e.preventDefault();
@@ -106,6 +110,31 @@ const Calendar = () => {
         setTask('');
         setTime('');
         fetchData();
+    };
+
+    const getStatusElement = (status) => {
+        if (status === "approved") {
+            return (
+                <div className='w-24 flex items-center'>
+                    <FaRegCircle className='text-green-500 bg-green-500 rounded-full' />
+                    
+                </div>
+            );
+        } else if (status === "rejected") {
+            return (
+                <div className='w-24 flex items-center'>
+                    <FaRegCircle className='text-red-500 bg-red-500 rounded-full' />
+                   
+                </div>
+            );
+        } else {
+            return (
+                <div className='w-24 flex items-center'>
+                    <FaRegCircle className='text-yellow-500 bg-yellow-500 rounded-full' />
+                    
+                </div>
+            );
+        }
     };
 
     return (
@@ -135,27 +164,24 @@ const Calendar = () => {
                 <div className="flex justify-center font-bold">Sat</div>
                 {days.map((day, index) => {
                     const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    const weeklyStatus = weeklyStatuses.find(status =>
+                        new Date(status.from_date) <= new Date(dateStr) &&
+                        new Date(status.to_date) >= new Date(dateStr) &&
+                        status.user_id === user.user_id
+                    );
                     return (
-                        <div key={index}  >
+                        <div key={index}>
                             <div
-                                className={`day-wrapper flex justify-between px-3  ${day ? 'bg-gray-300' : ''}`}
+                                className={`day-wrapper flex justify-between px-3 ${day ? 'bg-gray-300' : ''}`}
                                 onClick={() => day && handleAddTask(day)}
                             >
                                 <p>{day && day}</p>
                                 <p className='cursor-pointer'>{day && "+"}</p>
                             </div>
-                            <div className={`day  min-h-[80px] max-h-[80px] overflow-clip line-clamp-3 ${day ? 'text-center p-2 bg-gray-100' : ''}`}>
+                            <div className={`day min-h-[40px] max-h-[40px] overflow-clip line-clamp-3 ${day ? 'text-center p-2 bg-gray-100' : ''}`}>
                                 {day && (
                                     <ul>
-                                        {allTasks
-                                            .filter(
-                                                (task) =>
-                                                    formatApiDate(task.task_date) === dateStr &&
-                                                    task.user_id == user.user_id
-                                            )
-                                            .map((task) => (
-                                                <li key={task.id} clas> {task.task_name}</li>
-                                            ))}
+                                        {weeklyStatus && getStatusElement(weeklyStatus.status)}
                                     </ul>
                                 )}
                             </div>
@@ -201,6 +227,23 @@ const Calendar = () => {
                     </div>
                 </div>
             )}
+
+            <div className='mt-4'>
+                <div className='flex justify-center gap-6'>
+                    <div className='w-24 flex items-center'>
+                        <FaRegCircle className='text-green-500 bg-green-500 rounded-full' />
+                        <span className='text-xs ml-2'>Approved</span>
+                    </div>
+                    <div className='w-24 flex items-center'>
+                        <FaRegCircle className='text-red-500 bg-red-500 rounded-full' />
+                        <span className='text-xs ml-2'>Rejected</span>
+                    </div>
+                    <div className='w-24 flex items-center'>
+                        <FaRegCircle className='text-yellow-500 bg-yellow-500 rounded-full' />
+                        <span className='text-xs ml-2'>Pending</span>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
