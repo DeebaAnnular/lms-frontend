@@ -1,9 +1,11 @@
+'use client'
 import Navbar from '../../components/navbar'
 import Sidebar from '../../components/asidebar'
 import React from 'react'
+import AuthRoute from '../../HOC/AuthRoute'
 
 
-const layout = ({ children }) => {
+const Layout = ({ children }) => {
 
     return (
         <div className='flex'>
@@ -21,5 +23,6 @@ const layout = ({ children }) => {
     )
 }
 
-export default layout
+
+export default AuthRoute(Layout, ['admin', 'approver'] )
 

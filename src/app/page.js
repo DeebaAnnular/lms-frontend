@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from 'react';
 import { IoIosEyeOff, IoIosEye } from "react-icons/io";
-import { useRouter } from 'next/navigation'; // Correct hook for client-side routing
+import { useRouter } from 'next/navigation' 
 
 //redux
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserDetails } from '../store/slices/userSlice';
+import { API } from '../config';
 
 
 const Signin = () => { 
@@ -18,8 +19,7 @@ const Signin = () => {
 
     const router = useRouter(); // Initialize useRouter for client-side routing
     const dispatch = useDispatch();
-    const userDetail = useSelector(state => state.user.userDetails)
-    console.log(userDetail)
+    const userDetail = useSelector(state => state.user.userDetails) 
 
     const handlePasswordToggle = () => {
         setPasswordVisible(!passwordVisible);
@@ -39,7 +39,7 @@ const Signin = () => {
             setErrors(loginErrors);
         } else {
             try {
-                const response = await fetch('http://localhost:3000/api/auth/login', {
+                const response = await fetch(`${API}/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const Signin = () => {
                 }
 
 
-                const data = await response.json();
+                const data = await response.json(); 
                 
                 dispatch( setUserDetails(data)) ;
 
@@ -61,22 +61,21 @@ const Signin = () => {
                     localStorage.setItem("user_name", data.emp_name);
                 localStorage.setItem("jwt", data.token);
                 localStorage.setItem("user_id", data.user_id);
-                localStorage.setItem("user-type", data.user_type);
+                localStorage.setItem("user-role", data.user_role);
                 localStorage.setItem("work_email", data.email);
                 localStorage.setItem("work_email", data.work_email) 
 
                 } 
 
-                if (data.emp_type === 'admin') {
-                    router.push('/admin/dashboard'); // Use router.push for client-side navigation
+                if (data.user_role === 'admin' || data.user_role === 'approver') { 
+                    router.push('/admin/dashboard');
                 } else {
                     router.push('/dashboard')
                 }
 
 
             } catch (error) {
-                console.error('Error:', error);
-                // Handle error (e.g., display error message)
+                console.error('Error:', error); 
             }
         }
     }

@@ -12,6 +12,7 @@ import {
 
 import {change_user_role, getEmp_detail_by_id} from '../../actions'
 import { useSelector } from 'react-redux'
+import { capitalizeWords } from '../../utils'
 
 const RoleSetting =  () => {
     const user = useSelector(state => state.user.userDetails)
@@ -45,13 +46,13 @@ const RoleSetting =  () => {
             <div className='flex items-center '>
                 <p className='mr-[5px] font-bold'>Employee Role :</p>
                 <DropdownMenu>
-                    <DropdownMenuTrigger className='p-1 border-2 rounded-sm min-w-[300px]'> {role !== null ? role : "Select the role"}</DropdownMenuTrigger>
+                    <DropdownMenuTrigger className='p-1 border-2 rounded-sm min-w-[300px]'> {role !== null ? capitalizeWords(role) : "Select the role"}</DropdownMenuTrigger>
                     <DropdownMenuContent className=' min-w-[300px]'>
                         <DropdownMenuLabel>Employee Role</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleRole("Admin")}>Admin</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleRole("Approver")}>Approver</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleRole("User")}>User</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleRole("admin")}>Admin</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleRole("approver")}>Approver</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleRole("employee")}>Employee</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

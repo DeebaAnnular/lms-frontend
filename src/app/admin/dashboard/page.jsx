@@ -5,6 +5,7 @@ import { columns } from './column';
 //import Sidebar from '../../../components/sidebar.jsx'
 import { API } from '../../../config';
 
+import AuthRoute from '../../../HOC/AuthRoute';
 import { getEmp_details } from '../../../actions'
 
 
@@ -43,4 +44,5 @@ const Page = () => {
     );
 }
 
-export default Page;
+
+export default AuthRoute(Page, ['admin', 'approver'] )

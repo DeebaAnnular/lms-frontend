@@ -27,7 +27,7 @@ const Page = () => {
             <div className="container mx-auto py-5">
                 {
 
-                    allStatus.length > 0 &&  <DataTable allData={allStatus} userId = {user.user_id} />
+                    <DataTable allData={allStatus} userId = {user.user_id} />
                 }
 
             </div>
