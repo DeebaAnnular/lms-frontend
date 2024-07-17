@@ -1,4 +1,5 @@
- "use client";
+"use client";
+import { useState } from "react";
 import {
     flexRender,
     getCoreRowModel,
@@ -7,7 +8,6 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-
 import {
     Table,
     TableBody,
@@ -16,28 +16,27 @@ import {
     TableHeader,
     TableRow,
 } from "../../../components/ui/table";
-
-import { useState } from "react";
-import { Button } from "../../../components/ui/button"; 
-import { Input } from "../../../components/ui/input";  
-import { ArrowUpDown } from "lucide-react";
-import { cn } from "../../../lib/utils";
-import { useRouter } from "next/navigation";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import Link from "next/link";
-import { convertDateStringWithHifn } from "../../../utils"; 
+import { convertDateStringWithHifn } from "../../../utils";
 import { useSelector } from "react-redux";
 
 export function DataTable({ allData }) {
-    const user = useSelector(state => state.user.userDetails)
+    const user = useSelector((state) => state.user.userDetails);
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [userNameFilter, setUserNameFilter] = useState("");
-    const [dateFilter, setDateFilter] = useState("");
     const [pagination, setPagination] = useState({
         pageSize: 5,
         pageIndex: 0,
     });
+
+    const handleUserNameFilterChange = (e) => {
+        setUserNameFilter(e.target.value);
+        setGlobalFilter(e.target.value);
+    };
 
     const handleClick = (week_id, emp_id, from_date, to_date) => {
         localStorage.setItem("emp_id", emp_id);
@@ -69,11 +68,14 @@ export function DataTable({ allData }) {
                 return <p>{new Date(row.original.to_date).toLocaleDateString()}</p>;
             },
         },
-
         {
             header: "View Report",
             cell: ({ row }) => (
-                <Link variant="outlined" onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)} href="viewreport">
+                <Link
+                    variant="outlined"
+                    onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)}
+                    href="viewreport"
+                >
                     View Report
                 </Link>
             ),
@@ -94,27 +96,28 @@ export function DataTable({ allData }) {
             sorting,
             columnFilters,
             globalFilter,
+            pagination,
         },
         globalFilterFn: (row, columnId, value) => {
             const searchValue = value.toLowerCase();
             const userNameMatch = row.getValue("user_name").toLowerCase().includes(searchValue);
-            const dateMatch = new Date(row.getValue("from_date")).toLocaleDateString().includes(searchValue) || new Date(row.getValue("to_date")).toLocaleDateString().includes(searchValue);
+            const dateMatch = new Date(row.getValue("from_date")).toLocaleDateString().includes(searchValue) ||
+                new Date(row.getValue("to_date")).toLocaleDateString().includes(searchValue);
             return userNameMatch || dateMatch;
         },
     });
- 
+
     return (
         <div className="w-full">
-            {/* <div className="mb-4 flex space-x-4 items-center justify-normal">
+            <div className="mb-4 flex space-x-4 items-center justify-normal">
                 <label htmlFor="userNameFilter">Search by User Name</label>
                 <Input
                     placeholder="Search by User Name"
                     value={userNameFilter}
                     onChange={handleUserNameFilterChange}
-                    className='max-w-[200px]'
+                    className="max-w-[200px]"
                 />
-                 
-            </div> */}
+            </div>
             <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
                 <Table>
                     <TableHeader className="bg-blue-300 text-black">
@@ -151,6 +154,27 @@ export function DataTable({ allData }) {
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between mt-4">
+                <button
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    className="px-4 py-2 border rounded disabled:opacity-50"
+                >
+                    Previous
+                </button>
+                <span>
+                    Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                </span>
+                <button
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    className="px-4 py-2 border rounded disabled:opacity-50"
+                >
+                    Next
+                </button>
             </div>
         </div>
     );
