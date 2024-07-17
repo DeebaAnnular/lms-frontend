@@ -69,41 +69,7 @@ export function DataTable({ allData }) {
                 return <p>{new Date(row.original.to_date).toLocaleDateString()}</p>;
             },
         },
-        {
-            accessorKey: "status",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Status
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => {
-                if (row.original.status === "pending") {
-                    return (
-                        <p className={cn('w-[80px] p-2 flex items-center justify-center rounded-sm text-gray-500')}>
-                            Pending
-                        </p>
-                    );
-                } else if (row.original.status === "approved") {
-                    return (
-                        <p className={cn('w-[80px] p-2 flex items-center justify-center rounded-sm text-green-500')}>
-                            Approved
-                        </p>
-                    );
-                } else {
-                    return (
-                        <p className={cn('w-[80px] p-2 flex items-center justify-center rounded-sm text-red-500')}>
-                            Rejected
-                        </p>
-                    );
-                }
-            },
-        },
+
         {
             header: "View Report",
             cell: ({ row }) => (

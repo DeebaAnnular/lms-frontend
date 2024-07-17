@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 
 const Calendar = () => {
     const user = useSelector(state => state.user.userDetails);
+   
     
     const [currentDate, setCurrentDate] = useState(new Date());
     const [days, setDays] = useState([]);
@@ -21,6 +22,8 @@ const Calendar = () => {
     const [show, setShow] = useState(false);
     const [allTasks, setAllTasks] = useState([]);
     const [weeklyStatuses, setWeeklyStatuses] = useState([]);
+    // console.log("user-pending",weeklyStatuses.status)
+    console.log("weekstatus",weeklyStatuses);
 
     useEffect(() => {
         generateCalendar();
@@ -85,6 +88,7 @@ const Calendar = () => {
 
     const fetchWeeklyData = async () => {
         const response = await getWeeklyStatus();
+        console.log("response--week",response);
         setWeeklyStatuses(response.weeklyStatuses);
     };
 
@@ -127,7 +131,7 @@ const Calendar = () => {
                    
                 </div>
             );
-        } else {
+        } else if(status === "pending") {
             return (
                 <div className='w-24 flex items-center'>
                     <FaRegCircle className='text-yellow-500 bg-yellow-500 rounded-full' />
@@ -168,7 +172,9 @@ const Calendar = () => {
                         new Date(status.from_date) <= new Date(dateStr) &&
                         new Date(status.to_date) >= new Date(dateStr) &&
                         status.user_id === user.user_id
+                        
                     );
+                    console.log(`Day: ${day}, Date: ${dateStr}, Status:`, weeklyStatus ? weeklyStatus.status : "No status");
                     return (
                         <div key={index}>
                             <div
