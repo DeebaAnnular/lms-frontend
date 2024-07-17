@@ -1,6 +1,5 @@
-"use client";
-import { IoIosClose,IoIosSearch } from "react-icons/io";
-
+'use client';
+import { IoIosClose, IoIosSearch } from "react-icons/io";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -11,7 +10,6 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-
 import {
     Table,
     TableBody,
@@ -20,13 +18,13 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
- 
+import { useState } from "react";
 
-import { useState } from "react"; 
-
-export function DataTable({ columns, data }) {  
+export function DataTable({ columns, data }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
+    const [pageIndex, setPageIndex] = useState(0);
+
     const table = useReactTable({
         data,
         columns,
@@ -39,32 +37,31 @@ export function DataTable({ columns, data }) {
         state: {
             sorting,
             columnFilters,
+            pagination: {
+                pageIndex,
+                pageSize: 2, // Customize the page size
+            },
         },
     });
 
-    const [isShow, setIsShow] = useState(false); // initially set to false
-
     return (
-        <div className="w-full">  
-
+        <div className="w-full">
             <div className="rounded-md border bg-white shadow-xl overflow-clip">
                 <Table>
                     {/* table header */}
                     <TableHeader className="bg-blue-300 text-black">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow  key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id} className="text-black">
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    );
-                                })}
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id} className="text-black">
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                    </TableHead>
+                                ))}
                             </TableRow>
                         ))}
                     </TableHeader>
@@ -98,7 +95,26 @@ export function DataTable({ columns, data }) {
                 </Table>
             </div>
 
-             
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between mt-4">
+                <button
+                    onClick={() => setPageIndex(pageIndex - 1)}
+                    disabled={pageIndex === 0}
+                    className="px-4 py-2 border rounded disabled:opacity-50"
+                >
+                    Previous
+                </button>
+                <span>
+                    Page {pageIndex + 1} of {Math.ceil(data.length / 2)} {/* Assuming page size of 2 */}
+                </span>
+                <button
+                    onClick={() => setPageIndex(pageIndex + 1)}
+                    disabled={(pageIndex + 1) * 2 >= data.length}
+                    className="px-4 py-2 border rounded disabled:opacity-50"
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 }

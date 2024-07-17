@@ -26,11 +26,7 @@ export const columns = [
                 <p>{row.index + 1}</p>
             )
         },
-    },
-    // {
-    //     accessorKey: "user_id",
-    //     header: "ID",
-    // },
+    }, 
     {
         accessorKey: "emp_name",
         header: "Name",
@@ -114,17 +110,4 @@ export const columns = [
         },
     },
 ]
-
-// user_id: 4,
-//     emp_id: 'AT0010',
-//     emp_name: 'dora',
-//     gender: 'F',
-//     date_of_joining: '2024-04-01T18:30:00.000Z',
-//     to_date: '1234567890',
-//     work_location: 'chennai',
-//     active_status: 1,
-//     designation: 'frontend developer',
-//     personal_email: 'dora@gmail.com',
-//     from_date: 'dora@annular.com',
-//     created_at: '2024-06-27T04:43:36.000Z',
-//     updated_at: '2024-06-27T04:43:36.000Z'
+ 

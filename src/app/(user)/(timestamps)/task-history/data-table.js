@@ -17,23 +17,30 @@ import {
     TableRow,
 } from "../../../../components/ui/table";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "../../../../components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-import { cn } from "../../../../lib/utils";
+import { convertDateStringWithHifn } from "../../../../utils";
+import { useRouter } from 'next/navigation';
 
 export function DataTable({ data, userId }) {
-    
+    const router = useRouter();
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
-    const [globalFilter, setGlobalFilter] = useState("");
-    const [pagination, setPagination] = useState({
-        pageSize: 5,
-        pageIndex: 0,
-    });
 
     // Filter data by user ID
     const filteredData = data.filter(item => item.user_id === parseInt(userId));
+
+    const handleClick = (row) => {
+         if (typeof window !== 'undefined') {
+            console.log("Setting local storage values...");
+            localStorage.setItem("from_date", convertDateStringWithHifn(row.original.from_date));
+            localStorage.setItem("to_date", convertDateStringWithHifn(row.original.to_date));
+            localStorage.setItem("week_id", row.original.week_id);
+             
+        } 
+            router.replace('/viewreport');
+         
+    };
 
     const columns = [
         {
@@ -59,43 +66,12 @@ export function DataTable({ data, userId }) {
             },
         },
         {
-            accessorKey: "status",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Status
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => {
-                if (row.original.status === "pending") {
-                    return (
-                        <p className={cn('w-[80px] p-2 flex items-center justify-center rounded-sm text-gray-500')}>
-                            Pending
-                        </p>
-                    );
-                } else if (row.original.status === "approved") {
-                    return (
-                        <p className={cn('w-[80px] p-2 flex items-center justify-center rounded-sm text-green-500')}>
-                            Approved
-                        </p>
-                    );
-                } else {
-                    return (
-                        <p className={cn('w-[80px] p-2 flex items-center justify-center rounded-sm text-red-500')}>
-                            Rejected
-                        </p>
-                    );
-                }
-            },
-        },
-        {
-            accessorKey: "approved_by",
-            header: "Approved By",
+            header: "View Report",
+            cell: ({ row }) => (
+                <Button variant="outlined" onClick={() => handleClick(row)}>
+                    View Report
+                </Button>
+            ),
         },
     ];
 
@@ -108,11 +84,9 @@ export function DataTable({ data, userId }) {
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        onPaginationChange: setPagination,
         state: {
             sorting,
             columnFilters,
-            globalFilter,
         },
         globalFilterFn: (row, columnId, value) => {
             return row.getValue("user_name").toLowerCase().includes(value.toLowerCase());

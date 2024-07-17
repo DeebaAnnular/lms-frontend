@@ -136,22 +136,10 @@ export function DataTable({ allData }) {
             return userNameMatch || dateMatch;
         },
     });
-
-    const handleUserNameFilterChange = (e) => {
-        const value = e.target.value;
-        setUserNameFilter(value);
-        setGlobalFilter(value);
-    };
-
-    const handleDateFilterChange = (e) => {
-        const value = e.target.value;
-        setDateFilter(value);
-        setGlobalFilter(value);
-    };
-
+ 
     return (
         <div className="w-full">
-            <div className="mb-4 flex space-x-4 items-center justify-normal">
+            {/* <div className="mb-4 flex space-x-4 items-center justify-normal">
                 <label htmlFor="userNameFilter">Search by User Name</label>
                 <Input
                     placeholder="Search by User Name"
@@ -159,13 +147,8 @@ export function DataTable({ allData }) {
                     onChange={handleUserNameFilterChange}
                     className='max-w-[200px]'
                 />
-                {/* <Input
-                    placeholder="Search by Date"
-                    value={dateFilter}
-                    onChange={handleDateFilterChange}
-                    type="date"
-                /> */}
-            </div>
+                 
+            </div> */}
             <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
                 <Table>
                     <TableHeader className="bg-blue-300 text-black">

@@ -23,8 +23,8 @@ export const sidebarLinks = [
         label:"Timesheet",
         route:'/timesheet', 
     },{
-        label:"TimeSheet Status",
-        route:'/weekly-status'
+        label:"Task History",
+        route:'/task-history'
     }
      
 ]

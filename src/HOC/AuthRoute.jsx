@@ -7,11 +7,11 @@ const AuthRoute = (WrappedComponent, allowedRoles) => {
     const AuthComponent = (props) => {
         const user = useSelector(state => state.user.userDetails);
         const router = useRouter();
-        const [isAuthorized, setIsAuthorized] = useState(false);
+        const [isAuthorized, setIsAuthorized] = useState(false); 
 
         useEffect(() => {
-            const role = user?.user_type;
-            const token = user?.token;
+            const role = user?.user_role;
+            const token = user?.token; 
 
             if (!token) {
                 router.replace('/');
@@ -19,7 +19,7 @@ const AuthRoute = (WrappedComponent, allowedRoles) => {
             }
 
             if (!allowedRoles.includes(role)) {
-                router.push('/not-authorized');
+                 router.push('/not-authorized');
             } else {
                 setIsAuthorized(true);
             }

@@ -22,8 +22,8 @@ import {
 } from "../../../../components/ui/table";
 
 import { Button } from "../../../../components/ui/button";
-import { Input } from "../../../../components/ui/input";
-import { useState } from "react";
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from "react";
 import { capitalizeWords, convertDate } from "../../../../utils/index";
 import { ArrowUpDown, EditIcon, DeleteIcon } from "lucide-react";
 import { cn } from "../../../../lib/utils";
@@ -41,10 +41,18 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         pageIndex: 0,
     });
 
-    const [data, setData] = useState(allData)
 
+    const [data, setData] = useState(allData)
     const [show, setShow] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
+    const router = useRouter()
+
+
+    useEffect(() => {
+        localStorage.removeItem('from_date')
+        localStorage.removeItem('to_date')
+        localStorage.removeItem('week_id')
+    },[])
 
 
     // edit function
@@ -65,16 +73,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate)
         setData(updatedData.tasks)
     };
-
-    const handleSubmit = async () => {
-        const data = {
-            userId: localStorage.getItem("user_id"),
-            fromDate: startDate,
-            toDate: endDate,
-        }
-        const response = await submitWeeklyTimeSheet(data)
-        alert("Timesheet submitted successfully")
-    }
 
     const columns = [
         {
@@ -279,8 +277,8 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                 </div>
             )}
             <div className="w-full flex justify-end mt-2">
-                <Button className='px-3 py-2 bg-green-400 rounded-md' onClick={handleSubmit}>
-                    Submit
+                <Button className='px-3 py-2 bg-green-400 rounded-md' onClick={() => router.back()}>
+                    Close
                 </Button>
             </div>
         </div>

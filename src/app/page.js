@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { IoIosEyeOff, IoIosEye } from "react-icons/io";
-import { useRouter } from 'next/navigation' 
+import { useRouter } from 'next/navigation'
 
 //redux
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +9,7 @@ import { setUserDetails } from '../store/slices/userSlice';
 import { API } from '../config';
 
 
-const Signin = () => { 
+const Signin = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [errors, setErrors] = useState({});
     const [loginData, setLoginData] = useState({
@@ -19,7 +19,7 @@ const Signin = () => {
 
     const router = useRouter(); // Initialize useRouter for client-side routing
     const dispatch = useDispatch();
-    const userDetail = useSelector(state => state.user.userDetails) 
+    const userDetail = useSelector(state => state.user.userDetails)
 
     const handlePasswordToggle = () => {
         setPasswordVisible(!passwordVisible);
@@ -52,22 +52,32 @@ const Signin = () => {
                 }
 
 
-                const data = await response.json(); 
-                
-                dispatch( setUserDetails(data)) ;
+                const data = await response.json();
 
-                
-                if(typeof window !== 'undefined')  {
+                dispatch(setUserDetails(data));
+
+
+                if (typeof window !== 'undefined') {
                     localStorage.setItem("user_name", data.emp_name);
-                localStorage.setItem("jwt", data.token);
-                localStorage.setItem("user_id", data.user_id);
-                localStorage.setItem("user-role", data.user_role);
-                localStorage.setItem("work_email", data.email);
-                localStorage.setItem("work_email", data.work_email) 
+                    localStorage.setItem("jwt", data.token);
+                    localStorage.setItem("user_id", data.user_id);
+                    localStorage.setItem("user_type", data.user_role);
+                    localStorage.setItem("work_email", data.email);
+                    localStorage.setItem("work_email", data.work_email)
+                    console.log(data)
+                    const userData = {
+                        user_name: data.emp_name,
+                        token: data.token,
+                        user_id: data.user_id,
+                        user_role: data.user_role,
+                        work_email: data.email,    
+                    }
+                    dispatch(setUserDetails(data));
+                    console.log(userData)
 
-                } 
+                }
 
-                if (data.user_role === 'admin' || data.user_role === 'approver') { 
+                if (data.user_role === 'admin' || data.user_role === 'approver') {
                     router.push('/admin/dashboard');
                 } else {
                     router.push('/dashboard')
@@ -75,7 +85,7 @@ const Signin = () => {
 
 
             } catch (error) {
-                console.error('Error:', error); 
+                console.error('Error:', error);
             }
         }
     }
