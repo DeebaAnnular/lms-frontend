@@ -28,8 +28,7 @@ import { convertDateStringWithHifn } from "../../../utils";
 import { useSelector } from "react-redux";
 
 export function DataTable({ allData }) {
-    const user = useSelector((state) => state.user.userDetails);
-    const user = useSelector((state) => state.user.userDetails);
+    const user = useSelector((state) => state.user.userDetails); 
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
@@ -38,11 +37,7 @@ export function DataTable({ allData }) {
         pageSize: 5,
         pageIndex: 0,
     });
-
-    const handleUserNameFilterChange = (e) => {
-        setUserNameFilter(e.target.value);
-        setGlobalFilter(e.target.value);
-    };
+ 
 
     const handleUserNameFilterChange = (e) => {
         setUserNameFilter(e.target.value);
@@ -81,12 +76,7 @@ export function DataTable({ allData }) {
         },
         {
             header: "View Report",
-            cell: ({ row }) => (
-                <Link
-                    variant="outlined"
-                    onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)}
-                    href="viewreport"
-                >
+            cell: ({ row }) => ( 
                 <Link
                     variant="outlined"
                     onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)}
@@ -118,8 +108,7 @@ export function DataTable({ allData }) {
         globalFilterFn: (row, columnId, value) => {
             const searchValue = value.toLowerCase();
             const userNameMatch = row.getValue("user_name").toLowerCase().includes(searchValue);
-            const dateMatch = new Date(row.getValue("from_date")).toLocaleDateString().includes(searchValue) ||
-                new Date(row.getValue("to_date")).toLocaleDateString().includes(searchValue);
+             
             const dateMatch = new Date(row.getValue("from_date")).toLocaleDateString().includes(searchValue) ||
                 new Date(row.getValue("to_date")).toLocaleDateString().includes(searchValue);
             return userNameMatch || dateMatch;
@@ -136,8 +125,7 @@ export function DataTable({ allData }) {
                     placeholder="Search by User Name"
                     value={userNameFilter}
                     onChange={handleUserNameFilterChange}
-                    className="max-w-[200px]"
-                    className="max-w-[200px]"
+                    className="max-w-[200px]" 
                 />
             </div>
             </div>
