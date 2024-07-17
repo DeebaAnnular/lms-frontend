@@ -1,3 +1,5 @@
+ "use client";
+import { useState } from "react";
 "use client";
 import { useState } from "react";
 import {
@@ -18,11 +20,15 @@ import {
 } from "../../../components/ui/table";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import Link from "next/link";
+import { convertDateStringWithHifn } from "../../../utils";
 import { convertDateStringWithHifn } from "../../../utils";
 import { useSelector } from "react-redux";
 
 export function DataTable({ allData }) {
+    const user = useSelector((state) => state.user.userDetails);
     const user = useSelector((state) => state.user.userDetails);
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
@@ -32,6 +38,11 @@ export function DataTable({ allData }) {
         pageSize: 5,
         pageIndex: 0,
     });
+
+    const handleUserNameFilterChange = (e) => {
+        setUserNameFilter(e.target.value);
+        setGlobalFilter(e.target.value);
+    };
 
     const handleUserNameFilterChange = (e) => {
         setUserNameFilter(e.target.value);
@@ -76,6 +87,11 @@ export function DataTable({ allData }) {
                     onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)}
                     href="viewreport"
                 >
+                <Link
+                    variant="outlined"
+                    onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)}
+                    href="viewreport"
+                >
                     View Report
                 </Link>
             ),
@@ -97,18 +113,23 @@ export function DataTable({ allData }) {
             columnFilters,
             globalFilter,
             pagination,
+            pagination,
         },
         globalFilterFn: (row, columnId, value) => {
             const searchValue = value.toLowerCase();
             const userNameMatch = row.getValue("user_name").toLowerCase().includes(searchValue);
             const dateMatch = new Date(row.getValue("from_date")).toLocaleDateString().includes(searchValue) ||
                 new Date(row.getValue("to_date")).toLocaleDateString().includes(searchValue);
+            const dateMatch = new Date(row.getValue("from_date")).toLocaleDateString().includes(searchValue) ||
+                new Date(row.getValue("to_date")).toLocaleDateString().includes(searchValue);
             return userNameMatch || dateMatch;
         },
     });
 
+
     return (
         <div className="w-full">
+            <div className="mb-4 flex space-x-4 items-center justify-normal">
             <div className="mb-4 flex space-x-4 items-center justify-normal">
                 <label htmlFor="userNameFilter">Search by User Name</label>
                 <Input
@@ -116,7 +137,9 @@ export function DataTable({ allData }) {
                     value={userNameFilter}
                     onChange={handleUserNameFilterChange}
                     className="max-w-[200px]"
+                    className="max-w-[200px]"
                 />
+            </div>
             </div>
             <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
                 <Table>
@@ -154,6 +177,27 @@ export function DataTable({ allData }) {
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between mt-4">
+                <button
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    className="px-4 py-2 border rounded disabled:opacity-50"
+                >
+                    Previous
+                </button>
+                <span>
+                    Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                </span>
+                <button
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    className="px-4 py-2 border rounded disabled:opacity-50"
+                >
+                    Next
+                </button>
             </div>
 
             {/* Pagination Controls */}
