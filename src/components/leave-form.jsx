@@ -149,7 +149,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                     </div>
                 </div>
                 <div className="leave-duration flex items-center">
-                    <label htmlFor="session" className="font-bold">Leave Duration : </label>
+                    <label htmlFor="session" className="font-bold">session : </label>
                     <div>
                         <select
                             id="session"
@@ -157,8 +157,8 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                             className="mx-1 p-2 rounded-md border-2"
                         >
                             <option value="full_day">Full Day</option>
-                            <option value="morning_section">Morning Section</option>
-                            <option value="afternoon_section">Afternoon Section</option>
+                            <option value="morning_section">FN</option>
+                            <option value="afternoon_section">AN</option>
                         </select>
                     </div>
                 </div>
