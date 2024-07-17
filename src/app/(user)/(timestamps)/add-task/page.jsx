@@ -1,29 +1,22 @@
 "use client";
-
 import { useState, useEffect } from 'react';
 import { IoIosClose } from 'react-icons/io';
 import { FaRegCircle } from "react-icons/fa";
-
 import { postTask, getAllTask, getWeeklyStatus } from '../../../../actions';
 import { useSelector } from 'react-redux';
 
 const Calendar = () => {
     const user = useSelector(state => state.user.userDetails);
-   
-    
     const [currentDate, setCurrentDate] = useState(new Date());
     const [days, setDays] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [taskId, setTaskId] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
-
+    const [allTasks, setAllTasks] = useState([]);
     const [task, setTask] = useState('');
     const [time, setTime] = useState('');
     const [show, setShow] = useState(false);
-    const [allTasks, setAllTasks] = useState([]);
     const [weeklyStatuses, setWeeklyStatuses] = useState([]);
-    // console.log("user-pending",weeklyStatuses.status)
-    console.log("weekstatus",weeklyStatuses);
 
     useEffect(() => {
         generateCalendar();
@@ -32,6 +25,7 @@ const Calendar = () => {
 
     useEffect(() => {
         fetchWeeklyData();
+        fetchalltask();
     }, []);
 
     const generateCalendar = () => {
@@ -88,8 +82,16 @@ const Calendar = () => {
 
     const fetchWeeklyData = async () => {
         const response = await getWeeklyStatus();
-        console.log("response--week",response);
         setWeeklyStatuses(response.weeklyStatuses);
+    };
+
+    const fetchalltask = async () => {
+        const res = await getAllTask();
+        const taskData = res.map(data => ({
+          task_date: data.task_date,
+          approved_status: data.approved_status
+        }));
+        setAllTasks(taskData);
     };
 
     const submitTask = async (e) => {
@@ -106,7 +108,7 @@ const Calendar = () => {
             user_id: user.user_id,
         };
         try {
-            const res = await postTask(newTask); 
+            const res = await postTask(newTask);
         } catch (error) {
             console.log("error", error);
         }
@@ -121,21 +123,18 @@ const Calendar = () => {
             return (
                 <div className='w-24 flex items-center'>
                     <FaRegCircle className='text-green-500 bg-green-500 rounded-full' />
-                    
                 </div>
             );
         } else if (status === "rejected") {
             return (
                 <div className='w-24 flex items-center'>
                     <FaRegCircle className='text-red-500 bg-red-500 rounded-full' />
-                   
                 </div>
             );
-        } else if(status === "pending") {
+        } else if (status === "pending") {
             return (
                 <div className='w-24 flex items-center'>
                     <FaRegCircle className='text-yellow-500 bg-yellow-500 rounded-full' />
-                    
                 </div>
             );
         }
@@ -168,13 +167,7 @@ const Calendar = () => {
                 <div className="flex justify-center font-bold">Sat</div>
                 {days.map((day, index) => {
                     const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-                    const weeklyStatus = weeklyStatuses.find(status =>
-                        new Date(status.from_date) <= new Date(dateStr) &&
-                        new Date(status.to_date) >= new Date(dateStr) &&
-                        status.user_id === user.user_id
-                        
-                    );
-                    console.log(`Day: ${day}, Date: ${dateStr}, Status:`, weeklyStatus ? weeklyStatus.status : "No status");
+                    const taskForDate = allTasks.find(task => task.task_date === dateStr);
                     return (
                         <div key={index}>
                             <div
@@ -187,7 +180,7 @@ const Calendar = () => {
                             <div className={`day min-h-[40px] max-h-[40px] overflow-clip line-clamp-3 ${day ? 'text-center p-2 bg-gray-100' : ''}`}>
                                 {day && (
                                     <ul>
-                                        {weeklyStatus && getStatusElement(weeklyStatus.status)}
+                                        {taskForDate && getStatusElement(taskForDate.approved_status)}
                                     </ul>
                                 )}
                             </div>
@@ -233,23 +226,6 @@ const Calendar = () => {
                     </div>
                 </div>
             )}
-
-            <div className='mt-4'>
-                <div className='flex justify-center gap-6'>
-                    <div className='w-24 flex items-center'>
-                        <FaRegCircle className='text-green-500 bg-green-500 rounded-full' />
-                        <span className='text-xs ml-2'>Approved</span>
-                    </div>
-                    <div className='w-24 flex items-center'>
-                        <FaRegCircle className='text-red-500 bg-red-500 rounded-full' />
-                        <span className='text-xs ml-2'>Rejected</span>
-                    </div>
-                    <div className='w-24 flex items-center'>
-                        <FaRegCircle className='text-yellow-500 bg-yellow-500 rounded-full' />
-                        <span className='text-xs ml-2'>Pending</span>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

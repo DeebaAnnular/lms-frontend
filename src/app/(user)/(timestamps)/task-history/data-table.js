@@ -31,6 +31,7 @@ export function DataTable({ data, userId }) {
     const filteredData = data.filter(item => item.user_id === parseInt(userId));
 
     const handleClick = (row) => {
+        console.log("invoked");
          if (typeof window !== 'undefined') {
             console.log("Setting local storage values...");
             localStorage.setItem("from_date", convertDateStringWithHifn(row.original.from_date));
@@ -68,7 +69,7 @@ export function DataTable({ data, userId }) {
         {
             header: "View Report",
             cell: ({ row }) => (
-                <Button variant="outlined" onClick={() => handleClick(row)}>
+                <Button type="submit" onClick={() => handleClick(row.original.user_id)}>
                     View Report
                 </Button>
             ),
