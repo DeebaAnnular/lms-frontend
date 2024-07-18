@@ -27,7 +27,7 @@ import { capitalizeWords, convertDate } from "../../../../utils/index";
 import { ArrowUpDown, EditIcon, DeleteIcon } from "lucide-react";
 import { cn } from "../../../../lib/utils";
 
-import { editTask, deleteTask, getAllTaskById, submitWeeklyTimeSheet } from "../../../../actions";
+import { editTask, deleteTask, getAllTaskById, submitWeeklyTimeSheet, getTaskById } from "../../../../actions";
 
 export function DataTable({ allData, userId, startDate, endDate }) {
     const [sorting, setSorting] = useState([]);
@@ -38,27 +38,39 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         pageIndex: 0,
     });
 
-    const [data, setData] = useState(allData)
+    const [data, setData] = useState(allData);
 
     const [show, setShow] = useState(false);
-    const [currentTask, setCurrentTask] = useState(null);
+    const [currentTask, setCurrentTask] = useState({
+        task_name: "",
+        task_time: "",
+    });
 
     // edit function
     const sumbitEditedTask = async (id, editedTask) => {
         const response = await editTask(id, editedTask);
-        const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate)
-        setData(updatedData.tasks)
+        const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate);
+        setData(updatedData.tasks);
     };
 
-    const handleEditButton = (task, task_date) => {
-        setCurrentTask({ ...task, task_date: convertDate(task_date), user_id: localStorage.getItem("user_id") });
-        setShow(true);
+    const handleEditButton = async (task, task_date) => {
+        const fetchedTask = await getTaskById(task.task_id);
+        if (fetchedTask) {
+            setCurrentTask({
+                ...fetchedTask,
+                task_date: convertDate(task_date),
+                user_id: localStorage.getItem("user_id"),
+            });
+            setShow(true);
+        } else {
+            alert("Failed to fetch task details");
+        }
     };
 
     const handleDeleteTask = async (id) => {
         const response = await deleteTask(id);
-        const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate)
-        setData(updatedData.tasks)
+        const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate);
+        setData(updatedData.tasks);
     };
 
     const handleSubmit = async () => {
@@ -66,10 +78,10 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             userId: localStorage.getItem("user_id"),
             fromDate: startDate,
             toDate: endDate,
-        }
-        const response = await submitWeeklyTimeSheet(data)
-        alert("Timesheet submitted successfully")
-    }
+        };
+        const response = await submitWeeklyTimeSheet(data);
+        alert("Timesheet submitted successfully");
+    };
 
     const validateTime = (time) => {
         const regex = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
@@ -156,10 +168,8 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             accessorKey: "total_hours_per_day",
             header: "Total Hours",
             cell: ({ row }) => {
-                const totalHours = parseFloat(row.original.total_hours_per_day);
-                const hours = Math.floor(totalHours);
-                const minutes = Math.round((totalHours - hours) * 60);
-                return <p>{`${hours}h ${minutes}m`}</p>;
+                const hours = (parseFloat(row.original.total_hours_per_day)).toFixed(2);
+                return <p>{hours} hours</p>;
             },
         },
     ];
@@ -266,7 +276,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                             sumbitEditedTask(currentTask.task_id, currentTask);
                                             setShow(false);
                                         } else {
-                                            alert("Invalid time format. Please enter time as hh:mm.");
+                                            alert("Invalid time format. Please enter time as hh:mm");
                                         }
                                     }}
                                 >

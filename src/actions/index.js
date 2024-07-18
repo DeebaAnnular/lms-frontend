@@ -143,6 +143,21 @@ export const postTask = async (taskData) => {
     }
 }
 
+//get a task by its id
+export const getTaskById = async (id) => {
+    try {
+        const response = await fetch(`${API}/task/get_task_by_id/${id}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        return null; // Return null or handle error as needed
+    }
+}
+
 //get all tasks
 export const getAllTask = async () => {
 

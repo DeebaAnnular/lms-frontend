@@ -98,7 +98,7 @@ const Calendar = () => {
         e.preventDefault();
         const timeFormat = /^([01]\d|2[0-3]):([0-5]\d)$/;
         if (!time.match(timeFormat)) {
-            alert('Time must be in the format "hh:mm:ss".');
+            alert('Time must be in the format "hh:mm:".');
             return;
         }
         const newTask = {
