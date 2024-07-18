@@ -96,7 +96,7 @@ const Calendar = () => {
 
     const submitTask = async (e) => {
         e.preventDefault();
-        const timeFormat = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+        const timeFormat = /^([01]\d|2[0-3]):([0-5]\d)$/;
         if (!time.match(timeFormat)) {
             alert('Time must be in the format "hh:mm:ss".');
             return;
@@ -215,7 +215,7 @@ const Calendar = () => {
                                     type="text"
                                     className="w-full p-2 border rounded"
                                     value={time}
-                                    placeholder="hh:mm:ss"
+                                    placeholder="hh:mm"
                                     onChange={(e) => setTime(e.target.value)}
                                 />
                             </div>

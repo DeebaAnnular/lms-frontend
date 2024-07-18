@@ -1,4 +1,3 @@
-// data-table.js
 "use client";
 import { IoIosClose, IoIosSearch } from "react-icons/io";
 import {
@@ -28,11 +27,9 @@ import { capitalizeWords, convertDate } from "../../../../utils/index";
 import { ArrowUpDown, EditIcon, DeleteIcon } from "lucide-react";
 import { cn } from "../../../../lib/utils";
 
-
 import { editTask, deleteTask, getAllTaskById, submitWeeklyTimeSheet } from "../../../../actions";
 
 export function DataTable({ allData, userId, startDate, endDate }) {
-    console.log(allData)
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
@@ -46,7 +43,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     const [show, setShow] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
 
-
     // edit function
     const sumbitEditedTask = async (id, editedTask) => {
         const response = await editTask(id, editedTask);
@@ -55,7 +51,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     };
 
     const handleEditButton = (task, task_date) => {
-
         setCurrentTask({ ...task, task_date: convertDate(task_date), user_id: localStorage.getItem("user_id") });
         setShow(true);
     };
@@ -76,6 +71,11 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         alert("Timesheet submitted successfully")
     }
 
+    const validateTime = (time) => {
+        const regex = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
+        return regex.test(time);
+    };
+
     const columns = [
         {
             accessorKey: "day",
@@ -92,8 +92,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                 ));
             },
         },
-
-
         {
             accessorKey: "task_name",
             header: "Tasks",
@@ -102,9 +100,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                     <div key={row.original.task_id[index]}>
                         <p className="flex justify-between py-2">
                             {capitalizeWords(taskName)}
-
                             {/* here is the option to delete and edit the task */}
-                            {console.log(row.original.approved_status)}
                             {
                                 row.original.approved_status !== 'approved' && <span className="flex gap-3">
                                     <EditIcon onClick={() => handleEditButton({
@@ -116,7 +112,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                     }} />
                                 </span>
                             }
-
                         </p>
                     </div>
                 ));
@@ -135,7 +130,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => { 
+            cell: ({ row }) => {
                 if (row.original.approved_status === "pending") {
                     return (
                         <p className={cn('w-[80px] p-2 flex items-center justify-center rounded-sm text-gray-500')}>
@@ -227,8 +222,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                         )}
                     </TableBody>
                 </Table>
-
-
             </div>
 
             {show && (
@@ -256,7 +249,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                 <input
                                     type="text"
                                     className="w-full p-2 border rounded"
-                                    placeholder="hh:mm:ss"
+                                    placeholder="hh:mm"
                                     value={currentTask ? currentTask.task_time : ""}
                                     onChange={(e) => setCurrentTask({ ...currentTask, task_time: e.target.value })}
                                 />
@@ -267,8 +260,12 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                     type="button"
                                     className="bg-blue-500 text-white px-4 py-2 rounded"
                                     onClick={() => {
-                                        sumbitEditedTask(currentTask.task_id, currentTask);
-                                        setShow(false);
+                                        if (validateTime(currentTask.task_time)) {
+                                            sumbitEditedTask(currentTask.task_id, currentTask);
+                                            setShow(false);
+                                        } else {
+                                            alert("Invalid time format. Please enter time as hh:mm.");
+                                        }
                                     }}
                                 >
                                     Save

@@ -254,7 +254,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                 <input
                                     type="text"
                                     className="w-full p-2 border rounded"
-                                    placeholder="hh:mm:ss"
+                                    placeholder="hh:mm"
                                     value={currentTask ? currentTask.task_time : ""}
                                     onChange={(e) => setCurrentTask({ ...currentTask, task_time: e.target.value })}
                                 />

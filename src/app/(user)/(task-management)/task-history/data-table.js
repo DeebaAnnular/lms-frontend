@@ -69,7 +69,7 @@ export function DataTable({ data, userId }) {
         {
             header: "View Report",
             cell: ({ row }) => (
-                <Button type="submit" onClick={() => handleClick(row.original.user_id)}>
+                <Button type="submit" onClick={() => handleClick(row)}>
                     View Report
                 </Button>
             ),

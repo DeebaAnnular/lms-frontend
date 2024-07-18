@@ -35,7 +35,7 @@ const leaveSchema = z.object({
         });
     }
 
-    if ((data.session === "morning_section" || data.session === "afternoon_section") && from_date.getTime() !== to_date.getTime()) {
+    if ((data.session === "FN" || data.session === "AN") && from_date.getTime() !== to_date.getTime()) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "For half-day leave, start date and end date must be the same",
@@ -45,7 +45,7 @@ const leaveSchema = z.object({
 });
 
 const LeaveForm = ({ fetchLeaveBalanceById }) => {
-    
+
     const user = useSelector(state => state.user.userDetails)
     const {
         register,
@@ -89,7 +89,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     const session = watch("session");
 
     useEffect(() => {
-        if (session === "morning_section" || session === "afternoon_section") {
+        if (session === "FN" || session === "AN") {
             setValue("to_date", from_date);
             setTotalDays(0.5);
             setValue("total_days", "0.5");
@@ -101,6 +101,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     }, [session, from_date, to_date, setValue]);
 
     const onSubmit = async (data) => {
+        console.log(data)
         const leaveType = data.leave_type;
         const totalDaysRequested = totalDays;
         const availableBalance = leaveBalance[leaveType] || 0;
@@ -113,7 +114,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
         data.total_days = totalDaysRequested;
         data.user_id = user.user_id || null;
         data.emp_name = user.user_id || null;
-        
+
         const result = await postLeave_req(data);
 
         if (result) {
@@ -157,8 +158,8 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                             className="mx-1 p-2 rounded-md border-2"
                         >
                             <option value="full_day">Full Day</option>
-                            <option value="morning_section">FN</option>
-                            <option value="afternoon_section">AN</option>
+                            <option value="FN">FN</option>
+                            <option value="AN">AN</option>
                         </select>
                     </div>
                 </div>
@@ -178,7 +179,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                         id="to_date"
                         {...register("to_date")}
                         className="block w-full mx-1 p-2 border-2"
-                        disabled={session === "morning_section" || session === "afternoon_section"}
+                        disabled={session === "FN" || session === "AN"}
                     />
                 </div>
             </div>
