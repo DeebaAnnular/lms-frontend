@@ -168,8 +168,10 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             accessorKey: "total_hours_per_day",
             header: "Total Hours",
             cell: ({ row }) => {
-                const hours = (parseFloat(row.original.total_hours_per_day)).toFixed(2);
-                return <p>{hours} hours</p>;
+                const totalHours = parseFloat(row.original.total_hours_per_day);
+                const hours = Math.floor(totalHours);
+                const minutes = Math.round((totalHours - hours) * 60);
+                return <p>{`${hours}h ${minutes}m`}</p>;
             },
         },
     ];

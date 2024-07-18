@@ -151,11 +151,12 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         {
             accessorKey: "total_hours_per_day",
             header: "Total Hours",
-            cell: ({ row }) => (
-                <div>
-                    <p>{parseFloat(row.original.total_hours_per_day).toFixed(2)} hours</p>
-                </div>
-            ),
+            cell: ({ row }) => {
+                const totalHours = parseFloat(row.original.total_hours_per_day);
+                const hours = Math.floor(totalHours);
+                const minutes = Math.round((totalHours - hours) * 60);
+                return <p>{`${hours}h ${minutes}m`}</p>;
+            },
         },
         {
             accessorKey: "actions",
