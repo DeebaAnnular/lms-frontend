@@ -12,14 +12,18 @@ export const sidebarLinks = [
         route: '/admin/dashboard',
     },
     {
-        label: "Leave Approval",
-        route: '/admin/leave-approval',
+        label:"Leave Approval",
+        route:'/admin/leave-approval', 
     },
     {
         label: "Timesheet",
         route: '/admin/timesheet',
     },
-
+	{
+		label:"Add Holidays",
+		route:'/admin/holidays'
+	}
+     
 ]
 
 const Sidebar = () => {
