@@ -1,9 +1,9 @@
-import { combineReducers } from '@reduxjs/toolkit';
-import exampleReducer from './slices/exampleReducer'
-import userSlice from './slices/userSlice' 
+import { combineReducers } from '@reduxjs/toolkit'; 
+import userSlice from './slices/userSlice'
+import dateSlice from './slices/dateSlice' 
 
 const rootReducer = combineReducers({
-    example : exampleReducer,
+    date : dateSlice,
     user:userSlice
 })   
 
