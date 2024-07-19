@@ -1,4 +1,6 @@
+ 
 "use client";
+import { useState } from "react";
 import {
     flexRender,
     getCoreRowModel,
@@ -7,7 +9,6 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-
 import {
     Table,
     TableBody,
@@ -15,38 +16,40 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../../../../components/ui/table";
+} from "../../../../components/ui/table"; 
+import { Input } from "../../../../components/ui/input";  
+import Link from "next/link";
+import { convertDateStringWithHifn } from "../../../../utils"; 
+import { useSelector } from "react-redux";
 
-import { useState } from "react";
-import { Button } from "../../../../components/ui/button";
-import { convertDateStringWithHifn } from "../../../../utils";
-import { useRouter } from 'next/navigation';
-
-export function DataTable({ data, userId }) {
-    const router = useRouter();
+export function DataTable({ allData }) {
+    const user = useSelector((state) => state.user.userDetails); 
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
+    const [globalFilter, setGlobalFilter] = useState("");
+    const [userNameFilter, setUserNameFilter] = useState("");
+    const [pagination, setPagination] = useState({
+        pageSize: 5,
+        pageIndex: 0,
+    });
+ 
 
-    // Filter data by user ID
-    const filteredData = data.filter(item => item.user_id === parseInt(userId));
+    const handleUserNameFilterChange = (e) => {
+        setUserNameFilter(e.target.value);
+        setGlobalFilter(e.target.value);
+    };
 
-    const handleClick = (row) => {
-        console.log("invoked");
-         if (typeof window !== 'undefined') {
-            console.log("Setting local storage values...");
-            localStorage.setItem("from_date", convertDateStringWithHifn(row.original.from_date));
-            localStorage.setItem("to_date", convertDateStringWithHifn(row.original.to_date));
-            localStorage.setItem("week_id", row.original.week_id);
-             
-        } 
-            router.replace('/viewreport');
-         
+    const handleClick = (week_id, emp_id, from_date, to_date) => {
+        localStorage.setItem("emp_id", emp_id);
+        localStorage.setItem("week_id", week_id);
+        localStorage.setItem("from_date", convertDateStringWithHifn(from_date));
+        localStorage.setItem("to_date", convertDateStringWithHifn(to_date));
     };
 
     const columns = [
         {
             accessorKey: "week_id",
-            header: "Week ID",
+            header: "ID",
         },
         {
             accessorKey: "user_name",
@@ -68,16 +71,20 @@ export function DataTable({ data, userId }) {
         },
         {
             header: "View Report",
-            cell: ({ row }) => (
-                <Button type="submit" onClick={() => handleClick(row)}>
+            cell: ({ row }) => ( 
+                <Link
+                    variant="outlined"
+                    onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)}
+                    href="viewreport"
+                >
                     View Report
-                </Button>
+                </Link>
             ),
         },
     ];
 
     const table = useReactTable({
-        data: filteredData,
+        data: allData,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -85,17 +92,22 @@ export function DataTable({ data, userId }) {
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
+        onPaginationChange: setPagination,
         state: {
             sorting,
             columnFilters,
+            pagination,
+            pagination,
         },
-        globalFilterFn: (row, columnId, value) => {
-            return row.getValue("user_name").toLowerCase().includes(value.toLowerCase());
-        },
+         
     });
+
 
     return (
         <div className="w-full">
+            <div className="mb-4 flex space-x-4 items-center justify-normal">
+             
+            </div>
             <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
                 <Table>
                     <TableHeader className="bg-blue-300 text-black">
@@ -133,6 +145,29 @@ export function DataTable({ data, userId }) {
                     </TableBody>
                 </Table>
             </div>
+
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between mt-4">
+                <button
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    className="px-4 py-2 border rounded disabled:opacity-50"
+                >
+                    Previous
+                </button>
+                <span>
+                    Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                </span>
+                <button
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    className="px-4 py-2 border rounded disabled:opacity-50"
+                >
+                    Next
+                </button>
+            </div>
+
+             
         </div>
     );
 }

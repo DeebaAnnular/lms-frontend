@@ -4,8 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-
-import { postLeave_req, getEmp_leave_balence } from "../actions";
+import { postLeave_req, getEmp_leave_balence, getAllOptionalHolidays, getAllCompulsoryHolidays } from "../actions";
 import { useSelector } from "react-redux";
 
 // Define the validation schema using zod
@@ -45,8 +44,7 @@ const leaveSchema = z.object({
 });
 
 const LeaveForm = ({ fetchLeaveBalanceById }) => {
-
-    const user = useSelector(state => state.user.userDetails)
+    const user = useSelector(state => state.user.userDetails);
     const {
         register,
         handleSubmit,
@@ -60,48 +58,88 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
 
     const [totalDays, setTotalDays] = useState(0);
     const [leaveBalance, setLeaveBalance] = useState({});
+    const [optionHolidays, setOptionHolidays] = useState([]);
+    const [compulsaryHolidays, setCompulsaryHolidays] = useState([])
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchLeaveBalence = async () => {
             const resData = await getEmp_leave_balence(user.user_id || null);
             setLeaveBalance(resData);
         };
-        fetchData();
-    }, []);
+        const fetchOptionHoliday = async () => {
+            const resData = await getAllOptionalHolidays();
+            const holidays = resData.map(item => new Date(item.date).toLocaleDateString('en-CA'));
+            setOptionHolidays(holidays);
+        };
+        const fetchCompulsaryHoliday = async () => {
+            const resData = await  getAllCompulsoryHolidays();
+            const holidays = resData.map(item => new Date(item.date).toLocaleDateString('en-CA'));
+            setCompulsaryHolidays(holidays);
+        };
 
-    // Function to calculate total days excluding weekends
+        fetchLeaveBalence();
+        fetchOptionHoliday();
+        fetchCompulsaryHoliday();
+    }, [user.user_id]); 
+
+    // const calculateTotalDays = (from_date, to_date) => {
+    //     const start = new Date(from_date);
+    //     const end = new Date(to_date);
+    //     let count = 0;
+    //     while (start <= end) {
+    //         const day = start.getDay();
+    //         if (day !== 0 && day !== 6) { // Exclude Sunday (0) and Saturday (6)
+    //             count++;
+    //         }
+    //         start.setDate(start.getDate() + 1);
+    //     }
+    //     return count;
+    // };
+
     const calculateTotalDays = (from_date, to_date) => {
-        const start = new Date(from_date);
-        const end = new Date(to_date);
-        let count = 0;
-        while (start <= end) {
-            const day = start.getDay();
-            if (day !== 0 && day !== 6) { // Exclude Sunday (0) and Saturday (6)
-                count++;
-            }
-            start.setDate(start.getDate() + 1);
+    const start = new Date(from_date);
+    const end = new Date(to_date);
+    let count = 0;
+
+    while (start <= end) {
+        const day = start.getDay();
+        const formattedDate = start.toLocaleDateString('en-CA');
+
+        if (day !== 0 && day !== 6 && !compulsaryHolidays.includes(formattedDate)) {
+            count++;
         }
-        return count;
-    };
+
+        start.setDate(start.getDate() + 1);
+    }
+
+    return count;
+};
+
 
     const from_date = watch("from_date");
     const to_date = watch("to_date");
     const session = watch("session");
+    const leave_type = watch("leave_type");
+    const optional_date = watch("optional_date");
 
     useEffect(() => {
         if (session === "FN" || session === "AN") {
             setValue("to_date", from_date);
             setTotalDays(0.5);
             setValue("total_days", "0.5");
+        } else if (leave_type === "optional_leave" && optional_date) {
+            setValue("from_date", optional_date);
+            setValue("to_date", optional_date);
+            setTotalDays(1);
+            setValue("total_days", "1");
         } else if (from_date && to_date) {
             const days = calculateTotalDays(from_date, to_date);
             setTotalDays(days);
             setValue("total_days", days.toString());
         }
-    }, [session, from_date, to_date, setValue]);
+    }, [session, from_date, to_date, leave_type, optional_date, setValue]);
 
     const onSubmit = async (data) => {
-        console.log(data)
         const leaveType = data.leave_type;
         const totalDaysRequested = totalDays;
         const availableBalance = leaveBalance[leaveType] || 0;
@@ -149,39 +187,59 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                         </select>
                     </div>
                 </div>
-                <div className="leave-duration flex items-center">
-                    <label htmlFor="session" className="font-bold">session : </label>
-                    <div>
+
+                {leave_type === "optional_leave" ? (
+                    <div className="optional-date flex items-center">
+                        <label htmlFor="optional_date" className="font-bold min-w-fit">Optional Holiday Date : </label>
                         <select
-                            id="session"
-                            {...register("session")}
-                            className="mx-1 p-2 rounded-md border-2"
+                            id="optional_date"
+                            {...register("optional_date")}
+                            className="block w-full mx-1 p-2 border-2"
                         >
-                            <option value="full_day">Full Day</option>
-                            <option value="FN">FN</option>
-                            <option value="AN">AN</option>
+                            <option value="">Select optional holiday</option>
+                            {optionHolidays.map((date, index) => (
+                                <option key={index} value={date}>{date}</option>
+                            ))}
                         </select>
                     </div>
-                </div>
-                <div className="start-date flex items-center">
-                    <label htmlFor="from_date" className="font-bold min-w-fit">Start Date : </label>
-                    <Input
-                        type="date"
-                        id="from_date"
-                        {...register("from_date")}
-                        className="block w-full mx-1 p-2 border-2"
-                    />
-                </div>
-                <div className="end-date flex items-center">
-                    <label htmlFor="to_date" className="font-bold min-w-fit">End Date : </label>
-                    <Input
-                        type="date"
-                        id="to_date"
-                        {...register("to_date")}
-                        className="block w-full mx-1 p-2 border-2"
-                        disabled={session === "FN" || session === "AN"}
-                    />
-                </div>
+                ) : (
+                    <>
+                        <div className="start-date flex items-center">
+                            <div className="leave-duration flex items-center">
+                                <label htmlFor="session" className="font-bold">Session : </label>
+                                <div>
+                                    <select
+                                        id="session"
+                                        {...register("session")}
+                                        className="mx-1 p-2 rounded-md border-2"
+                                    >
+                                        <option value="full_day">Full Day</option>
+                                        <option value="FN">FN</option>
+                                        <option value="AN">AN</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <label htmlFor="from_date" className="font-bold min-w-fit">Start Date : </label>
+
+                            <Input
+                                type="date"
+                                id="from_date"
+                                {...register("from_date")}
+                                className="block w-full mx-1 p-2 border-2"
+                            />
+                        </div>
+                        <div className="end-date flex items-center">
+                            <label htmlFor="to_date" className="font-bold min-w-fit">End Date : </label>
+                            <Input
+                                type="date"
+                                id="to_date"
+                                {...register("to_date")}
+                                className="block w-full mx-1 p-2 border-2"
+                                disabled={session === "FN" || session === "AN"}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
 
             <div className="reason">

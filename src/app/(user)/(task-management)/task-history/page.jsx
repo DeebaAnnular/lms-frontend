@@ -1,35 +1,28 @@
-"use client"
-import React, { useEffect, useState } from 'react'
+"use client" 
+ 
+ import React, { useEffect, useState } from 'react'
 import { getWeeklyStatus } from '../../../../actions'
 import { DataTable } from './data-table'
 import { useSelector } from 'react-redux'
 
 const Page = () => {
-    const user =useSelector(state => state.user.userDetails)
-    
-    const [allStatus, setAllStatus] = useState([])
+    const user = useSelector(state => state.user.userDetails)
+    const [currUserStatus, setCurrUserStatus] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await getWeeklyStatus()
-            const allStatuses = await response.weeklyStatuses
-            setAllStatus(allStatuses)
+            const allStatuses = response.weeklyStatuses
+            setCurrUserStatus(allStatuses.filter(status => status.user_id === user.user_id))
         }
         fetchData()
     }, [])
 
- 
-
     return (
-        <div className='p-5 pt-3 max-h-[calc(100vh-100px)] overflow-y-auto'>
+        <div className='p-5 pt-3'>
             <h1 className='text-2xl font-bold'>Weekly Status</h1>
-            {/* You can render currUserStatus here */}
             <div className="container mx-auto py-5">
-                {
-
-                     <DataTable data={allStatus} userId = {user.user_id} />
-                }
-
+                <DataTable allData={currUserStatus} userId={user.user_id} />
             </div>
         </div>
     )

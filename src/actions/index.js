@@ -46,6 +46,34 @@ export const getEmp_leave_balence = async (id) => {
     }
 }
 
+export const getAllOptionalHolidays = async () => {
+    try {
+        const response = await fetch(`${API}/holiday/optional_holiday`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        return []; // Return an empty array or handle error as needed
+    }
+}
+
+export const getAllCompulsoryHolidays = async () => {
+    try {
+        const response = await fetch(`${API}/holiday/compulsory_holiday`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        return []; // Return an empty array or handle error as needed
+    }
+}
+
 
 export const getAll_leave_req = async () => {
     try {
