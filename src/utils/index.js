@@ -1,6 +1,8 @@
-export const capitalizeWords = (str) => {
- 
-    return str.replace(/\b\w/g, (char) => char.toUpperCase());
+export const capitalizeWords = (str) => { 
+    if(str != null){
+        return str.replace(/\b\w/g, (char) => char.toUpperCase()); 
+    }
+
 };
 
 export function replaceUnderscore(inputString) { 

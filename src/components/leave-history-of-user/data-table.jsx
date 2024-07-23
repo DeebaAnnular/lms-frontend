@@ -39,21 +39,21 @@ export function DataTable({ columns, data }) {
             columnFilters,
             pagination: {
                 pageIndex,
-                pageSize: 2, // Customize the page size
+                pageSize: 5, // Customize the page size
             },
         },
     });
 
     return (
         <div className="w-full">
-            <div className="rounded-md border bg-white shadow-xl overflow-clip">
-                <Table>
+            <div className=" bg-white ">
+                <Table className=''>
                     {/* table header */}
-                    <TableHeader className="bg-blue-300 text-black">
+                    <TableHeader className="bg-[#f7f7f7]  h-[60px] text-[#333843]">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black">
+                                    <TableHead key={header.id} className="text-[16px] font-bold text-[#333843]">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -67,7 +67,7 @@ export function DataTable({ columns, data }) {
                     </TableHeader>
 
                     {/* table body */}
-                    <TableBody>
+                    <TableBody className = 'text-[#667085]'>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
@@ -104,8 +104,8 @@ export function DataTable({ columns, data }) {
                 >
                     Previous
                 </button>
-                <span>
-                    Page {pageIndex + 1} of {Math.ceil(data.length / 2)} {/* Assuming page size of 2 */}
+                <span className="text-[#667085]">
+                    Page {pageIndex + 1} of {Math.ceil(data.length / 5)} {/* Assuming page size of 2 */}
                 </span>
                 <button
                     onClick={() => setPageIndex(pageIndex + 1)}

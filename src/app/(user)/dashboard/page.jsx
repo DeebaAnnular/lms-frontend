@@ -1,89 +1,87 @@
-"use client";
+ "use client";
 
 import { useEffect, useState } from "react";
 import {
-  getEmp_detail,
-  getEmp_detail_by_id,
-  getLeave_history_by_id,
+    getEmp_detail,
+    getEmp_detail_by_id,
+    getLeave_history_by_id,
 } from "../../../actions/index";
 import LeaveHistoryOfUser from "../../../components/leave-history-of-user/LeaveHistoryOfUser";
 import { useSelector } from "react-redux";
+import { capitalizeWords } from "../../../utils";
 
 const Page = () => {
     const user = useSelector(state => state.user.userDetails)
-  const user_id = user.user_id || null;
-  const [resData, setResData] = useState([]); 
-  useEffect(() => {
-    const fetchData = async () => { 
-      const resData = await getEmp_detail_by_id(user_id); 
-      setResData(resData);
+    const user_id = user.user_id || null;
+    const [resData, setResData] = useState({}); 
+    const [user_name, setUser_name] = useState()
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const resData = await getEmp_detail_by_id(user_id);
+            setResData(resData);
+            setUser_name(resData.emp_name);
+        };
+        fetchData();
+    }, [user_id]);
+
+    const getInitials = (name) => {
+         if(name != undefined){
+            return capitalizeWords(name)
+            .split(' ')
+            .map(word => word.charAt(0))
+            .join('');
+         }
+         
     };
 
-    fetchData();
-  }, []);
+    return (
+        <div className="content-sextion w-full flex gap-5 flex-col ">
 
- 
-  const check = resData?.date_of_joining;
+            {/* personal details or employee details */}
+            <div className="w-full flex items-center justify-between bg-white p-[24px]">
 
-  if (check) {
-    const dateOnly = new Date(check).toLocaleDateString("en-CA"); // 'en-CA' for 'YYYY-MM-DD' format 
-  }
- 
+                <div className="flex items-center gap-4">
+                    <div className="initial_box h-[62px] w-[62px] flex items-center justify-center bg-[#D4FFDE] text-[#00B229] font-semibold text-[22px] rounded-md">
+                        {getInitials(resData.emp_name)}
+                    </div>
+                    <div>
+                        <p className="pb-[10px] text-[#4B5563] font-semibold">
+                            {capitalizeWords(resData.emp_name)} <span className="text-[14px] font-normal text-[#6B7280]">({resData.gender === "M" ? "Male" : "Female"})</span>
+                        </p>
+                        <p className="pb-[10px] text-[#4B5563]">
+                            <span className="text-[#6B7280] text-[14px] font-medium">Emp Id : </span> {resData.emp_id}
+                        </p>
+                    </div>
+                </div>
 
-  return (
-    <div className="content-sextion w-full flex gap-5 flex-col p-5 h-[calc(100vh-70px)] overflow-x-auto overscroll-y-none">
-      <div
-        className="personal-data w-full bg-white rounded-md px-5 py-3 shadow-md"
-        style={{ backgroundColor: "rgb(247, 249, 253)" }}
-      >
-        <div className="flex gap-5 ">
-          <div className="flex flex-row w-full justify-around">
-            <div className="h-full flex flex-col  ">
-              <p className="pb-[10px]">
-                {" "}
-                <span className="font-bold">Emp Id :</span> {resData?.emp_id}
-              </p>
-              <p className="pb-[10px]">
-                {" "}
-                <span className="font-bold">Name :</span> {resData?.emp_name}
-              </p>
-              <p className="pb-[10px]">
-                {" "}
-                <span className="font-bold">Gender :</span>{" "}
-                {resData?.gender === "M" ? "Male" : "Female"}
-              </p>
+                <div>
+                    <p className="pb-[10px] text-[#4B5563]">
+                        <span className="text-[#6B7280] text-[14px] font-medium">Designation : </span>
+                        {capitalizeWords(resData.designation)}
+                    </p>
+                    <p className="pb-[10px] text-[#4B5563]">
+                        <span className="text-[#6B7280] text-[14px] font-medium">Date of Joining : </span>
+                        {new Date(resData.date_of_joining).toLocaleDateString("en-CA")}
+                    </p>
+                </div>
+
+                <div>
+                    <p className="pb-[10px] text-[#4B5563]">
+                        <span className="text-[#6B7280] text-[14px] font-medium">Work Location : </span>
+                        {capitalizeWords(resData.work_location)}
+                    </p>
+                    <p className="pb-[10px] text-[#4B5563]">
+                        <span className="text-[#6B7280] text-[14px] font-medium">Contact : </span>
+                        {resData.contact_number}
+                    </p>
+                </div>    
             </div>
-            <div className="h-full flex flex-col ">
-              <p className="pb-[10px]">
-                {" "}
-                <span className="font-bold">Designation :</span>{" "}
-                {resData?.designation}
-              </p>
-              <p className="pb-[10px]">
-                {" "}
-                <span className="font-bold">Date of Joining :</span>{" "}
-                {new Date(resData?.date_of_joining).toLocaleDateString("en-CA")}
-              </p>
-              <p className="pb-[10px]">
-                {" "}
-                <span className="font-bold">Work Location :</span>{" "}
-                {resData?.work_location}
-              </p>
-            </div>
-            <div className="h-full flex flex-col ">
-              <p className="pb-[10px]">
-                {" "}
-                <span className="font-bold">Contact :</span>{" "}
-                {resData?.contact_number}
-              </p>
-            </div>
-          </div>
+
+            {/* applied leaves list or leave request status */}
+            <LeaveHistoryOfUser id={user_id} />
         </div>
-      </div>
-
-      <LeaveHistoryOfUser id={user_id} />
-    </div>
-  );
+    );
 };
 
 export default Page;

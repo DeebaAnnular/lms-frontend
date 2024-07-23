@@ -12,7 +12,10 @@ const Layout = ({ children }) => {
             <CSidebar />
             <main className='w-full flex flex-col'>
                 <Navbar />
-                {children}
+                <div className='p-5 bg-[#FBF9F9]'>
+                    {children}
+                </div>
+                 
             </main>
         </div>
 

@@ -61,12 +61,14 @@ const Signin = () => {
                     localStorage.setItem("user_name", data.emp_name);
                     localStorage.setItem("jwt", data.token);
                     localStorage.setItem("user_id", data.user_id);
+                    localStorage.setItem("emp_id",data.emp_id)
                     localStorage.setItem("user_type", data.user_role);
                     localStorage.setItem("work_email", data.email);
                     localStorage.setItem("work_email", data.work_email)
                     console.log(data)
                     const userData = {
                         user_name: data.emp_name,
+                        emp_id:data.emp_id,
                         token: data.token,
                         user_id: data.user_id,
                         user_role: data.user_role,

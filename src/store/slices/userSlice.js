@@ -7,6 +7,7 @@ const userSlice = createSlice({
 
         userDetails: {
             user_id: '',
+            emp_id:'',
             user_name: '',
             user_role: '',
             work_email: '',
@@ -16,6 +17,7 @@ const userSlice = createSlice({
     reducers: {
         setUserDetails: (state, action) => { 
             state.userDetails.user_id = action.payload.user_id
+            state.userDetails.emp_id = action.payload.emp_id
             state.userDetails.user_name = action.payload.emp_name
             state.userDetails.user_role = action.payload.user_role
             state.userDetails.work_email = action.payload.email

@@ -1,4 +1,3 @@
- 
 "use client";
 import { useState } from "react";
 import {
@@ -21,6 +20,8 @@ import { Input } from "../../../../components/ui/input";
 import Link from "next/link";
 import { convertDateStringWithHifn } from "../../../../utils"; 
 import { useSelector } from "react-redux";
+import { PiGreaterThanLight } from "react-icons/pi";
+import { PiLessThan } from "react-icons/pi";
 
 export function DataTable({ allData }) {
     const user = useSelector((state) => state.user.userDetails); 
@@ -29,10 +30,9 @@ export function DataTable({ allData }) {
     const [globalFilter, setGlobalFilter] = useState("");
     const [userNameFilter, setUserNameFilter] = useState("");
     const [pagination, setPagination] = useState({
-        pageSize: 5,
+        pageSize: 6, // Set default page size to 6
         pageIndex: 0,
     });
- 
 
     const handleUserNameFilterChange = (e) => {
         setUserNameFilter(e.target.value);
@@ -48,12 +48,11 @@ export function DataTable({ allData }) {
 
     const columns = [
         {
-            accessorKey: "week_id",
-            header: "ID",
-        },
-        {
-            accessorKey: "user_name",
-            header: "User Name",
+            accessorKey: "serial_number",
+            header: "S.No",
+            cell: ({ row }) => {
+                return <p>{row.index + 1}</p>;
+            },
         },
         {
             accessorKey: "from_date",
@@ -97,24 +96,30 @@ export function DataTable({ allData }) {
             sorting,
             columnFilters,
             pagination,
-            pagination,
         },
-         
     });
 
+    const totalPages = table.getPageCount();
+    const pageIndex = pagination.pageIndex;
+    const pageSize = pagination.pageSize;
+    const totalRows = allData.length;
+
+    // Calculate the range of rows being displayed
+    const startRow = pageIndex * pageSize + 1;
+    const endRow = Math.min((pageIndex + 1) * pageSize, totalRows);
 
     return (
-        <div className="w-full">
-            <div className="mb-4 flex space-x-4 items-center justify-normal">
-             
-            </div>
-            <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
+        <div className="w-full p-6">
+            <div className="overflow-clip">
                 <Table>
-                    <TableHeader className="bg-blue-300 text-black">
+                    <TableHeader className="bg-[#F7F7F7] hover:bg-none text-black">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id} isHeader>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black">
+                                    <TableHead 
+                                        key={header.id} 
+                                        className="text-black text-[16px] font-bold p-6 border-none"
+                                    >
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -129,7 +134,7 @@ export function DataTable({ allData }) {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell className="p-6 text-[#667085]" key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
@@ -146,28 +151,32 @@ export function DataTable({ allData }) {
                 </Table>
             </div>
 
-            {/* Pagination Controls */}
-            <div className="flex items-center justify-between mt-4">
-                <button
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="px-4 py-2 border rounded disabled:opacity-50"
-                >
-                    Previous
-                </button>
-                <span>
-                    Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                </span>
-                <button
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="px-4 py-2 border rounded disabled:opacity-50"
-                >
-                    Next
-                </button>
-            </div>
+            {/* Pagination Info */}
+            <div className="flex justify-between mt-5">
+                <div className="text-[#667085] ml-5">
+                    Showing {startRow}-{endRow} of {totalRows}
+                </div>
 
-             
+                {/* Pagination Controls */}
+                <div className="flex items-center">
+                    <button
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="p-1 bg-[#F0F0F2] text-black border rounded-none disabled:opacity-50"
+                    >
+                        <span className="text-black">Previous</span>
+                    </button>
+
+                    <button
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="p-1 px-3 ml-2 bg-[#F0F0F2] border rounded-none disabled:opacity-50"
+                    >
+                        <span className="text-gray-500">Next</span>
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }
+

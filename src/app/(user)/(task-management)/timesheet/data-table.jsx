@@ -1,5 +1,3 @@
-"use client";
-import { IoIosClose, IoIosSearch } from "react-icons/io";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -10,7 +8,6 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-
 import {
     Table,
     TableBody,
@@ -19,14 +16,12 @@ import {
     TableHeader,
     TableRow,
 } from "../../../../components/ui/table";
-
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { useState } from "react";
 import { capitalizeWords, convertDate } from "../../../../utils/index";
 import { ArrowUpDown, EditIcon, DeleteIcon } from "lucide-react";
 import { cn } from "../../../../lib/utils";
-
 import { editTask, deleteTask, getAllTaskById, submitWeeklyTimeSheet, getTaskById } from "../../../../actions";
 
 export function DataTable({ allData, userId, startDate, endDate }) {
@@ -39,14 +34,12 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     });
 
     const [data, setData] = useState(allData);
-
     const [show, setShow] = useState(false);
     const [currentTask, setCurrentTask] = useState({
         task_name: "",
         task_time: "",
     });
 
-    // edit function
     const sumbitEditedTask = async (id, editedTask) => {
         const response = await editTask(id, editedTask);
         const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate);
@@ -90,56 +83,39 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
     const columns = [
         {
+            accessorKey: "s_no",
+            header: "S.No",
+            cell: ({ row }) => row.index + 1,
+        },
+        {
             accessorKey: "day",
             header: "Date",
+            cell: ({ row }) => (
+                <span style={{ color: "#1A51D7" }} className="cursor-pointer">
+                    {row.original.day}
+                </span>
+            ),
         },
         {
-            accessorKey: "task_id",
-            header: "Task ID",
+            accessorKey: "total_hours_per_day",
+            header: "Total Hours",
             cell: ({ row }) => {
-                return row.original.task_id.map((id) => (
-                    <div key={id} className="flex justify-between py-2">
-                        <p>{id}</p>
-                    </div>
-                ));
-            },
-        },
-        {
-            accessorKey: "task_name",
-            header: "Tasks",
-            cell: ({ row }) => {
-                return row.original.task_name.map((taskName, index) => (
-                    <div key={row.original.task_id[index]}>
-                        <p className="flex justify-between py-2">
-                            {capitalizeWords(taskName)}
-                            {/* here is the option to delete and edit the task */}
-                            {
-                                row.original.approved_status !== 'approved' && <span className="flex gap-3">
-                                    <EditIcon onClick={() => handleEditButton({
-                                        task_id: row.original.task_id[index],
-                                        task_name: taskName
-                                    }, row.original.day)} />
-                                    <DeleteIcon onClick={() => {
-                                        handleDeleteTask(row.original.task_id[index])
-                                    }} />
-                                </span>
-                            }
-                        </p>
-                    </div>
-                ));
+                const totalHours = parseFloat(row.original.total_hours_per_day);
+                const hours = Math.floor(totalHours);
+                const minutes = Math.round((totalHours - hours) * 60);
+                return <p>{`${hours}h ${minutes}m`}</p>;
             },
         },
         {
             accessorKey: "approved_status",
             header: ({ column }) => {
                 return (
-                    <Button
+                    <p
                         variant="ghost"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
                         Status
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
+                    </p>
                 );
             },
             cell: ({ row }) => {
@@ -162,16 +138,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                         </p>
                     );
                 }
-            },
-        },
-        {
-            accessorKey: "total_hours_per_day",
-            header: "Total Hours",
-            cell: ({ row }) => {
-                const totalHours = parseFloat(row.original.total_hours_per_day);
-                const hours = Math.floor(totalHours);
-                const minutes = Math.round((totalHours - hours) * 60);
-                return <p>{`${hours}h ${minutes}m`}</p>;
             },
         },
     ];
@@ -199,14 +165,14 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     });
 
     return (
-        <div className="w-full">
-            <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
+        <div className="w-full h-screen overflow-hidden flex flex-col static">
+            <div className="rounded-none h-[40rem] overflow-y-auto">
                 <Table>
-                    <TableHeader className="bg-blue-300 text-black">
+                    <TableHeader className="bg-[#F7F7F7] hover:bg-none text-black">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id} isHeader >
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black">
+                                    <TableHead key={header.id} className="text-black border-none p-6 font-bold text-[16px]">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -219,9 +185,9 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                <TableRow className="text-[#667085]" key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className=''>
+                                        <TableCell key={cell.id} className="pl-4">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
@@ -238,59 +204,58 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                 </Table>
             </div>
 
-            {show && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded shadow-lg relative">
-                        <button
-                            onClick={() => setShow(false)}
-                            className="absolute top-2 right-2 text-red-500 text-xl"
-                        >
-                            <IoIosClose />
-                        </button>
-                        <h1 className="text-2xl font-bold text-center mb-4">Edit Task</h1>
-                        <form className="space-y-4">
-                            <div>
-                                <label className="block">Task Name:</label>
-                                <input
-                                    type="text"
-                                    className="w-full p-2 border rounded"
-                                    value={currentTask ? currentTask.task_name : ""}
-                                    onChange={(e) => setCurrentTask({ ...currentTask, task_name: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label className="block">Time:</label>
-                                <input
-                                    type="text"
-                                    className="w-full p-2 border rounded"
-                                    placeholder="hh:mm"
-                                    value={currentTask ? currentTask.task_time : ""}
-                                    onChange={(e) => setCurrentTask({ ...currentTask, task_time: e.target.value })}
-                                />
-                            </div>
-
-                            <div className="flex justify-end">
-                                <button
-                                    type="button"
-                                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                                    onClick={() => {
-                                        if (validateTime(currentTask.task_time)) {
-                                            sumbitEditedTask(currentTask.task_id, currentTask);
-                                            setShow(false);
-                                        } else {
-                                            alert("Invalid time format. Please enter time as hh:mm");
-                                        }
-                                    }}
-                                >
-                                    Save
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+            <div className={`modal ${show ? "block" : "hidden"}`}>
+                <div className="modal-box">
+                    <h2 className="font-bold text-lg">Edit Task</h2>
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            if (validateTime(currentTask.task_time)) {
+                                sumbitEditedTask(currentTask.task_id, currentTask);
+                                setShow(false);
+                            } else {
+                                alert("Invalid time format");
+                            }
+                        }}
+                    >
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Task Name</span>
+                            </label>
+                            <input
+                                type="text"
+                                className="input input-bordered"
+                                value={currentTask.task_name}
+                                onChange={(e) =>
+                                    setCurrentTask({ ...currentTask, task_name: e.target.value })
+                                }
+                                required
+                            />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Task Time</span>
+                            </label>
+                            <input
+                                type="text"
+                                className="input input-bordered"
+                                value={currentTask.task_time}
+                                onChange={(e) =>
+                                    setCurrentTask({ ...currentTask, task_time: e.target.value })
+                                }
+                                required
+                            />
+                        </div>
+                        <div className="modal-action">
+                            <Button type="submit">Save</Button>
+                            <Button onClick={() => setShow(false)}>Cancel</Button>
+                        </div>
+                    </form>
                 </div>
-            )}
-            <div className="w-full flex justify-end mt-2">
-                <Button className='px-3 py-2 bg-green-400 rounded-md' onClick={handleSubmit}>
+            </div>
+
+            <div className="flex justify-end mt-4 p-4">
+                <Button onClick={handleSubmit} className="bg-black text-white rounded-none px-10">
                     Submit
                 </Button>
             </div>

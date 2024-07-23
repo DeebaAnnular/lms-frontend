@@ -4,6 +4,7 @@ import { IoIosClose } from 'react-icons/io';
 import { FaRegCircle } from "react-icons/fa";
 import { postTask, getAllTask, getWeeklyStatus } from '../../../../actions';
 import { useSelector } from 'react-redux';
+import Image from 'next/image';
 
 const Calendar = () => {
     const user = useSelector(state => state.user.userDetails);
@@ -17,6 +18,7 @@ const Calendar = () => {
     const [time, setTime] = useState('');
     const [show, setShow] = useState(false);
     const [weeklyStatuses, setWeeklyStatuses] = useState([]);
+    const [currYear, setCurrYear] = useState()
 
     useEffect(() => {
         generateCalendar();
@@ -30,6 +32,7 @@ const Calendar = () => {
 
     const generateCalendar = () => {
         const year = currentDate.getFullYear();
+        setCurrYear(currentDate.getFullYear())
         const month = currentDate.getMonth();
         const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -50,6 +53,7 @@ const Calendar = () => {
 
     const changeYear = (event) => {
         const newYear = parseInt(event.target.value, 10);
+        setCurrYear(newYear)
         const newDate = new Date(currentDate.setFullYear(newYear));
         setCurrentDate(newDate);
     };
@@ -88,8 +92,8 @@ const Calendar = () => {
     const fetchalltask = async () => {
         const res = await getAllTask();
         const taskData = res.map(data => ({
-          task_date: data.task_date,
-          approved_status: data.approved_status
+            task_date: data.task_date,
+            approved_status: data.approved_status
         }));
         setAllTasks(taskData);
     };
@@ -121,72 +125,98 @@ const Calendar = () => {
     const getStatusElement = (status) => {
         if (status === "approved") {
             return (
-                <div className='w-24 flex items-center'>
-                    <FaRegCircle className='text-green-500 bg-green-500 rounded-full' />
+                <div className='w-full h-[70px] flex  rounded-md items-center bg-[#00b44b27]'>
+
+                     
                 </div>
             );
         } else if (status === "rejected") {
             return (
-                <div className='w-24 flex items-center'>
-                    <FaRegCircle className='text-red-500 bg-red-500 rounded-full' />
+                <div className='w-full h-[70px] flex  rounded-md items-center bg-[#c8030329]'>
+
+                     
                 </div>
             );
         } else if (status === "pending") {
             return (
-                <div className='w-24 flex items-center'>
-                    <FaRegCircle className='text-yellow-500 bg-yellow-500 rounded-full' />
+                <div className='w-full h-[70px] flex  rounded-md items-center bg-yellow-100'>
+
+                     
                 </div>
             );
         }
     };
 
     return (
-        <div className="px-12 pt-2">
-            <header className="flex justify-between items-center mb-4">
-                <button onClick={() => changeMonth(-1)} className="px-2 py-1 bg-gray-200 rounded">Previous</button>
-                <h1 className="flex items-center">
-                    {currentDate.toLocaleString('default', { month: 'long' })}
-                    <select onChange={changeYear} value={currentDate.getFullYear()} className="ml-2 px-2 py-1 border rounded">
-                        {yearOptions.map((year) => (
-                            <option key={year} value={year}>
-                                {year}
-                            </option>
-                        ))}
-                    </select>
-                </h1>
-                <button onClick={() => changeMonth(1)} className="px-2 py-1 bg-gray-200 rounded">Next</button>
+        <div className="p-5 bg-white">
+            <header className="flex justify-between items-center mb-4  bg-white">
+                <div className='flex gap-3 items-center font-medium text-[18px]'>
+
+                    <div className=' flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]'>
+                        <div className=" w-[12px] h-[12px]    relative   object-contain" onClick={() => changeMonth(-1)}>
+
+                            <Image src='/imgs/left-arrow.svg' alt='logo' layout="fill" objectFit="contain" className=" h-[24px] pw-[24px] object-contian" />
+
+                        </div>
+                    </div>
+
+                    <p className='min-w-[200px] text-center'>{currentDate.toLocaleString('default', { month: 'long' })}, {currYear}</p>
+                    <div className=' flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]'>
+                        <div className="logo h-[12px] relative w-[12px]  object-contain" onClick={() => changeMonth(1)} >
+
+                            <Image src='/imgs/right-arrow.svg' alt='logo' layout="fill" objectFit="contain" className=" h-[24px] w-[24px] object-contian" />
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+                <select onChange={changeYear} value={currentDate.getFullYear()} className="ml-2 font-medium text-[18px] px-4 py-2 border rounded">
+                    {yearOptions.map((year) => (
+                        <option key={year} value={year} className='focus:outline-none'>
+                            {year}
+                        </option>
+                    ))}
+                </select>
+
             </header>
 
-            <div className="grid grid-cols-7 gap-4">
-                <div className="flex justify-center font-bold">Sun</div>
-                <div className="flex justify-center font-bold">Mon</div>
-                <div className="flex justify-center font-bold">Tue</div>
-                <div className="flex justify-center font-bold">Wed</div>
-                <div className="flex justify-center font-bold">Thu</div>
-                <div className="flex justify-center font-bold">Fri</div>
-                <div className="flex justify-center font-bold">Sat</div>
-                {days.map((day, index) => {
-                    const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-                    const taskForDate = allTasks.find(task => task.task_date === dateStr);
-                    return (
-                        <div key={index}>
-                            <div
-                                className={`day-wrapper flex justify-between px-3 ${day ? 'bg-gray-300' : ''}`}
-                                onClick={() => day && handleAddTask(day)}
-                            >
-                                <p>{day && day}</p>
-                                <p className='cursor-pointer'>{day && "+"}</p>
+            <div className='bg-[#F9F9F9] p-3'>
+                <div className="grid grid-cols-7 gap-4 ">
+                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">Sunday</div>
+                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">Monday</div>
+                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">Tuesday</div>
+                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">Wednesday</div>
+                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">Thursday</div>
+                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">Friday</div>
+                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">Saturday</div>
+                    {days.map((day, index) => {
+                        const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                        const taskForDate = allTasks.find(task => task.task_date === dateStr);
+                        return (
+
+                            <div key={index} className={`${day ?'rounded-md shadow-md overflow-hidden':''  } `} onClick={() => day && handleAddTask(day)}>
+                                <div
+                                    className={`day-wrapper flex justify-between pt-1 px-2 ${day ? 'bg-white' : ''}`}
+                                    onClick={() => day && handleAddTask(day)}
+                                >
+                                    <p className='text-[14px] text-[#6E6EE1] font-medium'>{day && day}</p> 
+                                </div>
+
+                                <div className={` px-2 min-h-[80px] max-h-[80px] overflow-clip line-clamp-3 ${day ? 'text-center bg-white' : ''}`}>
+                                    {day && (
+                                        <ul>
+                                            {taskForDate && getStatusElement(taskForDate.approved_status)}
+                                        </ul>
+                                    )}
+                                </div>
                             </div>
-                            <div className={`day min-h-[40px] max-h-[40px] overflow-clip line-clamp-3 ${day ? 'text-center p-2 bg-gray-100' : ''}`}>
-                                {day && (
-                                    <ul>
-                                        {taskForDate && getStatusElement(taskForDate.approved_status)}
-                                    </ul>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
             </div>
 
             {show && (

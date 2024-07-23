@@ -14,10 +14,11 @@ export default function RootLayout({ children }) {
     return (
 
         <html lang="en">
-            <ReduxProvider >
-                <body className={inter.className}>{children}
+            <ReduxProvider > 
+
+                <body className={`${inter.className} bg-[#FBF9F9]`}>{children}
                     
-                </body>
+                </body> 
 
             </ReduxProvider>
         </html>

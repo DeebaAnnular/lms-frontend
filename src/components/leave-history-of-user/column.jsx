@@ -26,17 +26,7 @@ export const columns = [
                 <p>{row.index + 1}</p>
             )
         },
-    }, 
-    {
-        accessorKey: "emp_name",
-        header: "Name",
-        cell: ({ row }) => { 
-            const url = row.original.user_id
-            return (
-                <Link href={`/admin/emp/${url}`}>{row.original.emp_name}</Link>
-            )
-        },
-    },
+    },  
     {
         accessorKey: "from_date",
         header: "From Date",
@@ -74,6 +64,7 @@ export const columns = [
             return (
                 <Button
                     variant="ghost"
+                    className='text-[16px] font-bold'
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Status

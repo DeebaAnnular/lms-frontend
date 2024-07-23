@@ -1,60 +1,66 @@
-"use client"
-import React, { useState, useEffect } from 'react'
- 
-import { Button } from '../../../../components/ui/button'
-
+"use client";
+import React, { useState } from 'react';
+import { Button } from '../../../../components/ui/button';
 import { DataTable } from './data-table';
-import { getAllTaskById } from '../../../../actions'
+import { getAllTaskById } from '../../../../actions';
 import { useSelector } from 'react-redux';
 
-const Page = () => { 
+const Page = () => {
+    const user = useSelector(state => state.user.userDetails);
 
-    const user = useSelector(state => state.user.userDetails) 
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
 
-    //date input process
-    const [startDate, setStartDate] = useState()
-    const [endDate, setEndDate] = useState()
-    
-    //data fetching on submitting date
-    const [tasks, setTasks] = useState() 
-    const getData = async () => { 
-       const data = await getAllTaskById(user.user_id, startDate, endDate)   
-       setTasks(data.tasks) 
-        
-    } 
+    const [tasks, setTasks] = useState();
+    const getData = async () => {
+        const data = await getAllTaskById(user.user_id, startDate, endDate);
+        setTasks(data.tasks);
+    };
+
     return (
-        <div className='p-5 pt-2 max-h-[calc(100vh-100px)] overflow-y-auto'>
-            <div className="title  ">
-                <p className='text-[22px] font-bold'>Timesheet</p>
-            </div>
 
-            <div className="date-inputs flex justify-between items-center mt-2">
-                <div className="start-date flex items-center gap-2">
-                    <p>Start Date</p>
-                    <input type="date" className='w-[200px] border-2 border-gray-400 px-2 py-1 rounded-md' onChange={(e) => setStartDate(e.target.value)} />
+        <div style={{ background: "#F9F9F9" }}>
+
+            <div className='bg-white p-3 rounded-none'>
+                <div className='mt-4 '>
+                    {/* date inputs */}
+                    <div className="flex  justify-between items-center">
+                        <div className='flex gap-2 '>
+                            <div className=" active:border-none flex items-center gap-2">
+                                <p className='text-[15px] font-medium'>Start Date : </p>
+                                <input
+                                    type="date"
+                                    className='w-[180px] text-[#99A0B0] px-4 py-2 border'
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                />
+                            </div>
+                            <div className="  flex items-center gap-2">
+                                <p className='text-[15px] font-medium'>To Date : </p>
+                                <input
+                                    type="date"
+                                    className='w-[180px] border text-date_color px-4 py-2'
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="setDate-button">
+                            <Button
+                                onClick={getData}
+                                className="bg-[#A6C4F0]  font-bolder font-sans text-[15px] py-2 px-6 text-black"
+                            >
+                                Get Timesheet
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="container mx-auto py-5 px-0">
+                        {tasks && <DataTable allData={tasks} userId={user.user_id} startDate={startDate} endDate={endDate} />}
+                    </div>
                 </div>
-                <div className="to-date flex items-center gap-2">
-                    <p>to Date</p>
-                    <input type="date" className='w-[200px] border-2 border-gray-400 px-2 py-1 rounded-md' onChange={(e) => setEndDate(e.target.value)} />
-                </div>
-                <div className="setDate-button">
-                    <Button onClick = { () => getData()}>Get Timesheet</Button>
-                </div>
             </div>
-
-            {/* Timesheet table */}
-            <div className="container mx-auto py-5">
-                {
-                      tasks && <DataTable  allData={tasks} userId={user.user_id} startDate={startDate} endDate={endDate}/>
-                }
-             
-            </div>
-
-            
-
-
         </div>
-    )
-}
+    );
+};
 
-export default Page
+export default Page;

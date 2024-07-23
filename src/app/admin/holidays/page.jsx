@@ -22,7 +22,7 @@ import {
 import { capitalizeWords } from "../../../utils";
 
  
-const page=()=>{
+const Page=()=>{
     const [date, setDate] = useState(null);
     const [leaveType, setLeaveType] = useState("");
     const [description, setDescription] = useState("");
@@ -166,4 +166,4 @@ const page=()=>{
     )
  }
 
-export default page;
+export default Page;

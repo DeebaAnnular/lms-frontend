@@ -25,10 +25,8 @@ const LeaveHistoryOfUser = ({id}) => {
 
 
     return (
-        <div className="content-section bg-[rgb(247, 249, 253)] w-full p-5">
-            <p className='text-[20px] font-bold'>Leave Histroy</p>
-            <div className="container mx-auto py-5">
-
+        <div className="content-section bg-[rgb(247, 249, 253)] w-full "> 
+            <div className="container mx-auto p-[24px] bg-white"> 
                 <DataTable columns={columns} data={res.data ? res.data : []} />
             </div>
         </div>
