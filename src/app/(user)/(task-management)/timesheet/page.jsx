@@ -19,7 +19,7 @@ const Page = () => {
 
     return (
 
-        <div style={{ background: "#F9F9F9" }}>
+        <div  className=' overflow-hidden  bg-[#F9F9F9]' >
 
             <div className='bg-white p-3 rounded-none'>
                 <div className='mt-4 '>
@@ -38,7 +38,7 @@ const Page = () => {
                                 <p className='text-[15px] font-medium'>To Date : </p>
                                 <input
                                     type="date"
-                                    className='w-[180px] border text-date_color px-4 py-2'
+                                    className='w-[180px] border text-[#99A0B0] text-date_color px-4 py-2'
                                     onChange={(e) => setEndDate(e.target.value)}
                                 />
                             </div>
@@ -54,7 +54,7 @@ const Page = () => {
                         </div>
                     </div>
 
-                    <div className="container mx-auto py-5 px-0">
+                    <div className=" mx-auto py-5 px-0 ">
                         {tasks && <DataTable allData={tasks} userId={user.user_id} startDate={startDate} endDate={endDate} />}
                     </div>
                 </div>

@@ -1,12 +1,11 @@
-// Table.js
 import * as React from "react";
 import { cn } from "../../lib/utils";
 
 const Table = React.forwardRef(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
+  <div className="relative w-full overflow-auto max-h-[400px]">
     <table
       ref={ref}
-      className={cn("w-full  caption-bottom text-sm rounded-none", className)}
+      className={cn("w-full caption-bottom text-sm rounded-none", className)}
       {...props}
     />
   </div>
@@ -16,7 +15,7 @@ Table.displayName = "Table";
 const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
   <thead
     ref={ref}
-    className={cn("text-left py-6 border-none ", className)}
+    className={cn("text-left py-6 border-none sticky top-0 bg-white z-10", className)}
     {...props}
   />
 ));

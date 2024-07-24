@@ -21,7 +21,8 @@ import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";  
 import Link from "next/link";
 import { convertDateStringWithHifn } from "../../../utils"; 
-import { useSelector } from "react-redux";
+import { useSelector } from "react-redux"; 
+import { IoIosClose, IoIosSearch } from "react-icons/io";
 
 export function DataTable({ allData }) {
     const user = useSelector((state) => state.user.userDetails); 
@@ -115,23 +116,26 @@ export function DataTable({ allData }) {
     return (
         <div className="w-full">
             <div className="mb-4 flex space-x-4 items-center justify-normal">
-            <div className="mb-4 flex space-x-4 items-center justify-normal">
-                <label htmlFor="userNameFilter">Search by User Name</label>
-                <Input
-                    placeholder="Search by User Name"
-                    value={userNameFilter}
-                    onChange={handleUserNameFilterChange}
-                    className="max-w-[200px]" 
-                />
+            <div className="mb-4 flex space-x-4 items-center justify-normal">  
+
+                <div className="flex border mt-2 bg-white border-[#DCDCDC] items-center px-3 h-full  ">
+                    <IoIosSearch className='text-[#B1A8A8] text-[30px]' />
+                    <Input
+                        placeholder="Search by Name or Emp ID..."
+                        value={userNameFilter}
+                        onChange={ handleUserNameFilterChange }
+                        className="searchbar max-w-sm text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
+                    />
+                </div>
             </div>
-            </div>
-            <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
-                <Table>
-                    <TableHeader className="bg-blue-300 text-black">
+            </div> 
+            <div className=" bg-white p-2 min-h-[380px] relative overflow-clip shadow-xl">
+                <Table className='p-2'>
+                    <TableHeader className="bg-[#f7f7f7]  h-[60px] text-[#333843]">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black">
+                                    <TableHead key={header.id} className='text-[16px] font-bold text-[#333843]' >
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -141,10 +145,10 @@ export function DataTable({ allData }) {
                         ))}
                     </TableHeader>
 
-                    <TableBody>
+                    <TableBody className='text-[#667085]'>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className=''>
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}

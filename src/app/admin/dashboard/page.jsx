@@ -35,9 +35,9 @@ const Page = () => {
     }, []);
 
     return (
-        <div className="content-section bg-[rgb(247, 249, 253)] w-full p-5">
+        <div className="content-section bg-[rgb(247, 249, 253)] w-full  ">
             <p className='text-[20px] font-bold'>Employee List</p>
-            <div className="container mx-auto py-5">
+            <div className=" ">
                 <DataTable columns={columns} data={emp_list} />
             </div>
         </div>

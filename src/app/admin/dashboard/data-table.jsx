@@ -27,17 +27,14 @@ import { Input } from "../../../components/ui/input";
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function DataTable({ columns, data }) {
- 
+
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(""); // state for the search input
-    const [pagination, setPagination] = useState({
-        pageSize: 5,
-        pageIndex: 0
-    });
-
+     
     const table = useReactTable({
         data,
         columns,
@@ -47,12 +44,11 @@ export function DataTable({ columns, data }) {
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        onPaginationChange: setPagination,
+         
         state: {
             sorting,
             columnFilters,
-            globalFilter,
-            pagination,
+            globalFilter, 
         },
         globalFilterFn: (row, columnId, value) => {
             return (
@@ -66,49 +62,49 @@ export function DataTable({ columns, data }) {
 
     return (
         <div className="w-full">
-            <div className="option-seciton flex justify-between">
-                <div className="flex border-2 items-center px-3 rounded-md mb-3">
-                    <IoIosSearch className='text-gray-500 text-[30px]' />
+            <div className=" bg-white mb-2 p-2 py-4 flex items-center justify-between">
+
+                <div className="flex border border-[#DCDCDC] items-center px-3 h-full  ">
+                    <IoIosSearch className='text-[#B1A8A8] text-[30px]' />
                     <Input
-                        placeholder="search by name or Emp ID..."
+                        placeholder="Search by Name or Emp ID..."
                         value={globalFilter}
                         onChange={(event) =>
                             setGlobalFilter(event.target.value)
                         }
-                        className="searchbar max-w-sm border-none outline-none"
+                        className="searchbar max-w-sm text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
                     />
                 </div>
 
                 <div
-                    className="w-fit bg-blue-500 rounded-sm h-fit p-2 text-white cursor-pointer"
+                    className="w-fit bg-[#A6C4F0] rounded-sm h-fit p-2 text-black cursor-pointer"
                     onClick={() => setIsShow(true)} // show the registration form on click
                 >
-                    Create Employee
+                    Add Employee
                 </div>
+
             </div>
 
-            <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
+            <div className="p-2 py-4  min-h-[380px] relative overflow-clip ">
                 <Table>
-                    <TableHeader className="bg-blue-300 text-black">
+                    <TableHeader className="bg-[#f7f7f7]  h-[60px] text-[#333843]">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id} className="text-black">
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    );
-                                })}
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id} className="text-[16px] font-bold text-[#333843]">
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                    </TableHead>
+                                ))}
                             </TableRow>
                         ))}
                     </TableHeader>
 
-                    <TableBody>
+                    <TableBody className='text-[#667085]'>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
@@ -137,33 +133,48 @@ export function DataTable({ columns, data }) {
             </div>
 
             {/* Pagination Controls */}
-            <div className="flex justify-between items-center p-4">
-                <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-                    Previous
-                </Button>
-                <span>
-                    Page{' '}
-                    <strong>
-                        {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                    </strong>
+            {/* <div className="flex justify-between items-center p-4">
+
+                <span > 
+                    <p>
+                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                    </p>
                 </span>
-                <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-                    Next
-                </Button>
-            </div>
+             
+                <div className='flex gap-3 items-center font-medium text-[18px]'>
+
+                    <div className=' flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]' onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                        <div className=" w-[12px] h-[12px]    relative   object-contain"  >
+
+                            <Image src='/imgs/left-arrow.svg' alt='logo' layout="fill" objectFit="contain" className=" h-[24px] pw-[24px] object-contian" />
+
+                        </div>
+                    </div>
+ 
+                    <div className=' flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]' onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                        <div className="logo h-[12px] relative w-[12px]  object-contain"   >
+
+                            <Image src='/imgs/right-arrow.svg' alt='logo' layout="fill" objectFit="contain" className=" h-[24px] w-[24px] object-contian" />
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div> */}
 
             {isShow && (
-                <div className="fixed inset-0 flex items-center justify-center z-20 bg-gray-800 bg-opacity-75">
-                    <div className="relative bg-white w-fit mt-5 cursor-pointer p-5 rounded shadow-lg">
+                <div className="fixed inset-0 flex items-center  justify-center z-20 bg-gray-800 bg-opacity-75">
+                    <div className="relative bg-white w-fit   cursor-pointer p-10 rounded shadow-lg">
                         <div className="absolute top-0 right-[20px] z-10 flex justify-end" onClick={() => { setIsShow(false) }}>
                             <button
                                 onClick={() => setIsShow(false)}
-                                className="mt-[23px] border-2 rounded-[50%] border-red-500"
+                                className="mt-[23px] border-2 rounded-[50%] border-[#373857]"
                             >
-                                <IoIosClose className='text-red-500 text-xl' />
+                                <IoIosClose className='text-[#373857] text-xl' />
                             </button>
                         </div>
-                        <h1 className='text-2xl sticky font-semibold flex justify-center min-w-[400px]'>New Employee Registration </h1>
+                        <h1 className='text-2xl sticky font-semibold flex justify-center min-w-[400px]'>Employee Registration </h1>
                         <div className="max-h-[500px] mt-[20px] Z-20">
                             <RegistrationForm setIsShow={setIsShow} />
                         </div>

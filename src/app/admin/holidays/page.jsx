@@ -82,21 +82,21 @@ const Page=()=>{
 
     return(
         <>
-<div className="w-full border overflow-hidden ">
+<div className="w-full border bg-white overflow-hidden ">
         <h1 className="text-2xl font-bold ml-4 my-2 mb-4">Add Holidays</h1>
-        <div className="w-[230px]">
-          <form className="flex mb-4 outline-none" onSubmit={handleSubmit}>
-            <div className="mr-5 flex items-center">
+        <div className=" ">
+          <form className=" px-1 flex gap-2 flex-row items-center justify-between mb-4 outline-none" onSubmit={handleSubmit}>
+            <div className=" flex-1  flex items-center">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "w-[280px] justify-start text-left font-normal ml-5",
+                      "w-full justify-start text-left font-normal",
                       !date && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    <CalendarIcon className=" h-4 w-4 mr-2" />
                     {date ? format(date, "PPP") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
@@ -110,9 +110,10 @@ const Page=()=>{
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="flex items-center">
+
+            <div className="flex flex-1 items-center">
               <select
-                className="border rounded-md text-sm h-10 p-2"
+                className="border w-full rounded-md text-sm h-10 p-2"
                 value={leaveType}
                 onChange={(e) => setLeaveType(e.target.value)}
               >
@@ -121,34 +122,36 @@ const Page=()=>{
                 <option value="compulsory_holidays">Compulsory Leave</option>
               </select>
             </div>
-            <div className="flex items-center ml-5">
+
+            <div className="flex flex-1 items-center ">
               <input
-                className="border rounded-md text-sm w-[250px] h-10 p-2"
+                className="border rounded-md text-sm w-full h-10 p-2"
                 placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
-            <div className="w-full ml-4">
-              <Button className="px-5 py-2 bg-green-400 rounded-md mr-[250px]">
+            <div className="  ">
+              <Button className="px-5 py-2 bg-green-400 rounded-md  ">
                 Add
               </Button>
             </div>
+
           </form>
         </div>
       </div>
-      <div className="border m-5">
+      <div className="border p-2 bg-white mt-5">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-[#f7f7f7]  h-[60px] text-[#333843]">
             <TableRow>
-              <TableHead>S.No</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Type of Leave</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead  className="text-[16px] font-bold text-[#333843]">S.No</TableHead>
+              <TableHead  className="text-[16px] font-bold text-[#333843]">Date</TableHead>
+              <TableHead  className="text-[16px] font-bold text-[#333843]">Type of Leave</TableHead>
+              <TableHead  className="text-[16px] font-bold text-[#333843]">Name</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody  className='text-[#667085]'>
             {holidays.map((holiday, index) => (
               <TableRow key={index}>
                 <TableCell>{index + 1}</TableCell>

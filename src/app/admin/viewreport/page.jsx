@@ -29,15 +29,10 @@ const Page = () => {
         getData()
     },[]) 
     return (
-        <div className='p-5 pt-2'>
-            <div className="title  ">
-                <p className='text-[22px] font-bold'>Timesheet</p>
-            </div>
-
-           
-
+        <div className=' pt-2  '>
+          
             {/* Timesheet table */}
-            <div className="container mx-auto py-5">
+            <div className="container bg-white  mx-auto py-5">
                 {
                       tasks &&   <DataTable  allData={tasks} />
                 }

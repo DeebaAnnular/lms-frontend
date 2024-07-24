@@ -17,7 +17,7 @@ import { all } from "axios";
 const Calendar = () => {
     const user = useSelector((state) => state.user.userDetails);
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [days, setDays] = useState([]);
+    const [days, setDays] = useState([]); 
     const [taskId, setTaskId] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
     const [allTasks, setAllTasks] = useState([]);
@@ -73,29 +73,26 @@ const Calendar = () => {
         yearOptions.push(i);
     }
 
-
-    const [day, setDay] = useState()
-    const dateStr = (day) => {
-        return `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`
-    }
+     
+     const [day, setDay] = useState()
+     const dateStr = (day) => {
+        return `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1) .toString() .padStart(2, "0")}-${day.toString().padStart(2, "0")}`
+     }
     const [tasksForDate, setTasksForDate] = useState()
 
     const handleAddTask = (day) => {
         setShow(true);
-        setDay(day)
-        setTaskId(dateStr(day));
+        setDay(day)  
+        setTaskId(dateStr(day)); 
         setSelectedDate(dateStr(day));
-        console.log(dateStr(day))
 
         // Filter tasks for the selected date 
-        fetchData()
+        fetchData() 
         fetchalltask()
-        const tasksForDate = allTasks.filter((task) => task.task_date === dateStr(day));
-        setTasksForSelectedDate(tasksForDate);
-
-
+        const tasksForDate = allTasks.filter((task) => task.task_date === dateStr(day) ); 
+        setTasksForSelectedDate(tasksForDate); 
     };
-
+ 
 
     const fetch = async (data) => {
         const response = await postTask(data);
@@ -141,18 +138,16 @@ const Calendar = () => {
         };
         try {
             const res = await postTask(newTask);
-
-            //success code
-            const response = await getAllTask();
-            const tasksForDate = response.filter((task) => task.task_date === dateStr(day));
-            setTasksForSelectedDate(tasksForDate);
-
+            fetchData()
         } catch (error) {
             console.log("error", error);
         }
 
-        // setShow(false); 
-
+        // setShow(false);
+        console.log("before",allTasks)
+        fetchData()
+        console.log("after", allTasks) 
+        handleAddTask(day) 
 
         setTask("");
         setTime("");
@@ -195,7 +190,7 @@ const Calendar = () => {
     };
 
     const handleSave = async (taskId) => {
-
+        
         const req_body = {
             task_name: editedTask.task_name,
             task_time: editedTask.task_time,
@@ -203,13 +198,11 @@ const Calendar = () => {
             user_id: localStorage.getItem("user_id"),
         };
 
-        const res = await editTask(taskId, req_body);
-
+        const response = await editTask(taskId, req_body);
+         
         setEditingTaskId(null);
-        const response = await getAllTask();
-        const tasksForDate = response.filter((task) => task.task_date === dateStr(day));
-        setTasksForSelectedDate(tasksForDate);
-
+        fetchData();
+        fetchalltask();
 
     };
 
@@ -218,10 +211,12 @@ const Calendar = () => {
     };
 
     const handleDelete = async (taskId) => {
-        const res = await deleteTask(taskId);
-        const response = await getAllTask();
-        const tasksForDate = response.filter((task) => task.task_date === dateStr(day));
-        setTasksForSelectedDate(tasksForDate);
+        const response = await deleteTask(taskId); 
+        fetchData();
+        fetchalltask();
+        console.log(day) 
+        handleAddTask(day)
+         console.log(tasksForSelectedDate)
     };
 
     const formatTime = (time) => {
@@ -348,7 +343,7 @@ const Calendar = () => {
 
             {show && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white border-2 md:min-h-[550px] md:min-w-[850px] p-6 rounded shadow-lg relative">
+                    <div className="bg-white p-6 rounded shadow-lg relative">
                         <button
                             onClick={() => setShow(false)}
                             className="absolute top-2 right-2 text-red-500 text-xl"
@@ -358,28 +353,24 @@ const Calendar = () => {
 
                         <h2 className="text-xl font-bold text-center mt-4">Add Task</h2>
                         <form onSubmit={submitTask} className="space-y-4">
-
-                            <div className="flex flex-row gap-3">
-                                <div  className="w-full">
-                                    <label className="block">Task:</label>
-                                    <input
-                                        type="text"
-                                        className="w-full p-2 border rounded"
-                                        value={task}
-                                        onChange={(e) => setTask(e.target.value)}
-                                    />
-                                </div>
-
-                                <div  className="w-full">
-                                    <label className="block">Time:</label>
-                                    <input
-                                        type="text"
-                                        className="w-full p-2 border rounded"
-                                        value={time}
-                                        placeholder="hh:mm"
-                                        onChange={(e) => setTime(e.target.value)}
-                                    />
-                                </div>
+                            <div>
+                                <label className="block">Task:</label>
+                                <input
+                                    type="text"
+                                    className="w-full p-2 border rounded"
+                                    value={task}
+                                    onChange={(e) => setTask(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="block">Time:</label>
+                                <input
+                                    type="text"
+                                    className="w-full p-2 border rounded"
+                                    value={time}
+                                    placeholder="hh:mm"
+                                    onChange={(e) => setTime(e.target.value)}
+                                />
                             </div>
                             <div className="flex justify-end">
                                 <button
@@ -390,10 +381,9 @@ const Calendar = () => {
                                 </button>
                             </div>
                         </form>
-
                         <h1 className="text-2xl font-bold text-center my-4">Tasks </h1>
                         <ul>
-                            <div className="max-h-[200px] w-full overflow-y-auto">
+                            <div className="max-h-[200px] overflow-y-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50 sticky top-0 z-10">
                                         <tr>
@@ -427,21 +417,20 @@ const Calendar = () => {
                                                             name="task_name"
                                                             value={editedTask.task_name}
                                                             onChange={handleInputChange}
-                                                            className="border px-2 py-1 w-[80%] border-1"
+                                                            className="border px-2 py-1"
                                                         />
                                                     ) : (
                                                         task.task_name
                                                     )}
                                                 </td>
-                                                <td className="px-4 py-4  whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                     {editingTaskId === task.task_id ? (
                                                         <input
                                                             type="text"
                                                             name="task_time"
                                                             value={formatTime(editedTask.task_time)}
                                                             onChange={handleInputChange}
-                                                            className=" px-2 py-1 w-[80%] border-1"
-
+                                                            className="border px-2 py-1"
                                                         />
                                                     ) : (
                                                         formatTime(task.task_time)

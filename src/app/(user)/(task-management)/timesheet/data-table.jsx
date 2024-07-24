@@ -165,14 +165,14 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     });
 
     return (
-        <div className="w-full h-screen overflow-hidden flex flex-col static">
-            <div className="rounded-none h-[40rem] overflow-y-auto">
+        <div className="w-full h-full overflow-hidden flex flex-col static">
+            <div className="rounded-none overflow-y-auto">
                 <Table>
                     <TableHeader className="bg-[#F7F7F7] hover:bg-none text-black">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} isHeader >
+                            <TableRow key={headerGroup.id} isHeader>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black border-none p-6 font-bold text-[16px]">
+                                    <TableHead key={header.id} className="text-black border-none h-[60px] font-bold text-[16px]">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -254,7 +254,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                 </div>
             </div>
 
-            <div className="flex justify-end mt-4 p-4">
+            <div className="flex justify-end mt-2 p-1 mr-4 mb-0">
                 <Button onClick={handleSubmit} className="bg-black text-white rounded-none px-10">
                     Submit
                 </Button>

@@ -59,6 +59,7 @@ export const columns = [
             return (
                 <Button
                     variant="ghost"
+                    className='text-[16px] font-bold text-[#333843]'
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Status
@@ -69,7 +70,7 @@ export const columns = [
         cell: ({ row }) => {
             return (
 
-                <p className={cn(' w-[80px] p-2 flex items-center justify-center text-white rounded-sm bg-red-500', { "bg-green-500": row.original.active_status })}>{row.original.active_status ? "Active" : "Inactive"}</p>
+                <p className={cn(' w-[80px] p-2 flex items-center justify-center text-[#DC3545] rounded-sm ', { "text-[#058821]": row.original.active_status })}>{row.original.active_status ? "Active" : "Inactive"}</p>
             )
         },
     },

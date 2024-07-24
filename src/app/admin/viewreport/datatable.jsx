@@ -67,7 +67,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             });
             setData(updatedData);
 
-        
             // router.push("/admin/timesheet");
 
         } catch (error) {
@@ -219,13 +218,13 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
     return (
         <div className="w-full">
-            <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
+            <div className="rounded-none  min-h-[380px] relative overflow-clip">
                 <Table>
-                    <TableHeader className="bg-blue-300 text-black">
+                    <TableHeader className="bg-[#F7F7F7] hover:bg-none text-black">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black">
+                                    <TableHead key={header.id} className="text-black border-none h-[60px] font-bold text-[16px] px-4">
                                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                     </TableHead>
                                 ))}
@@ -236,7 +235,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                <TableRow className="text-[#667085]" key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}

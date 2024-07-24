@@ -21,10 +21,10 @@ const Page = () => {
  
 
     return (
-        <div className='p-5 pt-3'>
+        <div className=''>
             <h1 className='text-2xl font-bold'>Weekly Status</h1>
             {/* You can render currUserStatus here */}
-            <div className="container mx-auto py-5">
+            <div className=" mx-auto">
                 {
 
                     <DataTable allData={allStatus} userId = {user.user_id} />

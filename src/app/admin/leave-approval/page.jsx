@@ -16,6 +16,7 @@ import { getAll_leave_req, getEmp_leave_balence } from '../../../actions';
 import LeaveReqTable from '../../../components/LeaveReqTable';
 import { API } from '../../../config/index';
 import { capitalizeWords, replaceUnderscore } from '../../../utils';
+import Image from 'next/image';
 
 const Page = () => {
     const [leavedata, setLeaveData] = useState([]); // State to store leave requests
@@ -36,14 +37,14 @@ const Page = () => {
     };
 
     const handleApproveClick = async (leaveRequestId) => {
- 
+
         try {
             const response = await fetch(`${API}/leave/update-leave-status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ leave_request_id: leaveRequestId, status: 'approved' }),
             });
-            const data = await response.json(); 
+            const data = await response.json();
             alert("Leave Approved Successfully");
             fetchLeaveData();
         } catch (error) {
@@ -60,45 +61,45 @@ const Page = () => {
             });
             const data = await response.json();
             alert("Leave Rejected Successfully");
-            fetchLeaveData(); 
+            fetchLeaveData();
         } catch (error) {
             console.error('Error rejecting leave request:', error);
         }
     };
 
-    const handleNextPage = () => {
-        setCurrentPage((prevPage) => prevPage + 1);
-    };
+    // const handleNextPage = () => {
+    //     setCurrentPage((prevPage) => prevPage + 1);
+    // };
 
-    const handlePrevPage = () => {
-        setCurrentPage((prevPage) => prevPage - 1);
-    };
+    // const handlePrevPage = () => {
+    //     setCurrentPage((prevPage) => prevPage - 1);
+    // };
 
     // Calculate start and end indexes based on currentPage
-    const startIndex = (currentPage - 1) * 5;
-    const endIndex = startIndex + 5;
+    // const startIndex = (currentPage - 1) * 5;
+    // const endIndex = startIndex + 5;
 
     return (
-        <main className='overflow-hidden container mx-auto py-5 p-5'>
-            <div className='min-w-[400px] mt-4'>
+        <main className='overflow-hidden mx-auto '>
+            <div className='min-w-[400px]  '>
                 <h1 className='text-[22px] text-md font-bold'>Leave Requests</h1>
                 <div className='min-w-[350px] rounded-lg p-3'>
-                    <div className="rounded-md border mt-2 bg-white shadow-md overflow-clip">
-                        <Table className="shadow-lg">
-                            <TableHeader className='bg-blue-300 text-black'>
-                                <TableRow className='text-black'>
-                                    <TableHead className="w-[100px] text-black">S.No</TableHead>
-                                    <TableHead className='text-black'>Name</TableHead>
-                                    <TableHead className='text-black'>Leave Type</TableHead>
-                                    <TableHead className='text-black'>From Date <br /> <div className='text-gray-400 leading-0 text-[8px]'> YYYY/MM/DD</div> </TableHead>
-                                    <TableHead className='text-black'>To Date <br /> <div className='text-gray-400 leading-0 text-[8px]'> YYYY/MM/DD</div> </TableHead>
-                                    <TableHead className='text-black'>Total Days</TableHead>
-                                    <TableHead className='text-black'>Approve</TableHead>
-                                    <TableHead className='text-black'>Reject</TableHead>
+                    <div className="bg-white mt-2  p-5 overflow-clip">
+                        <Table className=" ">
+                            <TableHeader className='bg-[#F7F7F7] h-[60px]'>
+                                <TableRow className=' text-[16px] font-bold text-[#333843]'>
+                                    <TableHead className="w-[100px] text-[16px] font-bold text-[#333843]">S.No</TableHead>
+                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Name</TableHead>
+                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Leave Type</TableHead>
+                                    <TableHead className='text-[16px] font-bold text-[#333843]'>From Date   </TableHead>
+                                    <TableHead className='text-[16px] font-bold text-[#333843]'>To Date   </TableHead>
+                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Total Days</TableHead>
+                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Reject</TableHead>
+                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Approve</TableHead>
+                                     
                                 </TableRow>
                             </TableHeader>
-                            <TableBody>
-                                    {/* {table.getRowModel().rows?.length ? ():()} */}
+                            <TableBody className='text-[#667085]'> 
                                 {leavedata.slice(startIndex, endIndex).map((data, index) => (
                                     <TableRow key={index}>
                                         <TableCell className="font-medium">{startIndex + index + 1}</TableCell>
@@ -107,12 +108,7 @@ const Page = () => {
                                         <TableCell>{formatDate(data.from_date)}</TableCell>
                                         <TableCell>{formatDate(data.to_date)}</TableCell>
                                         <TableCell>{data.total_days}</TableCell>
-                                        <TableCell>
-                                            <button onClick={() => handleApproveClick(data.leave_request_id)}>
-                                                <TiTick className='text-green-500 text-xl' />
-                                            </button>
-                                        </TableCell>
-                                        <TableCell>
+                                            <TableCell>
                                             <IoIosClose className='text-red-500 text-2xl' onClick={() => {
                                                 const reason = prompt('Enter reason for rejection:');
                                                 if (reason) {
@@ -120,29 +116,44 @@ const Page = () => {
                                                 }
                                             }} />
                                         </TableCell>
+                                        <TableCell>
+                                            <button onClick={() => handleApproveClick(data.leave_request_id)}>
+                                                <TiTick className='text-green-500 text-xl' />
+                                            </button>
+                                        </TableCell>
+                                     
                                     </TableRow>
                                 ))}
                             </TableBody>
+
                         </Table>
+                        {/* <div className="flex w-full justify-end gap-2 mt-4">
+                            <button
+                                onClick={handlePrevPage}
+                                disabled={currentPage === 1}
+                                className={`flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]'  ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                <div className="logo h-[12px] relative w-[12px]  object-contain"   >
+
+                                    <Image src='/imgs/left-arrow.svg' alt='logo' layout="fill" objectFit="contain" className=" h-[24px] w-[24px] object-contian" />
+
+                                </div>
+                            </button>
+                            <button
+                                onClick={handleNextPage}
+                                disabled={endIndex >= leavedata.length}
+                                className={`flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]'  ${endIndex >= leavedata.length ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                <div className="logo h-[12px] relative w-[12px]  object-contain"   >
+
+                                    <Image src='/imgs/right-arrow.svg' alt='logo' layout="fill" objectFit="contain" className=" h-[24px] w-[24px] object-contian" />
+
+                                </div>
+                            </button>
+
+                        </div> */}
                     </div>
-                    <div className="flex justify-between mt-4">
-                        <button
-                            onClick={handlePrevPage}
-                            disabled={currentPage === 1}
-                            className={`bg-blue-500 text-white px-3 py-1 rounded ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            <IoIosArrowBack className='text-xl' />
-                            Prev
-                        </button>
-                        <button
-                            onClick={handleNextPage}
-                            disabled={endIndex >= leavedata.length}
-                            className={`bg-blue-500 text-white px-3 py-1 rounded ${endIndex >= leavedata.length ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            Next
-                            <IoIosArrowForward className='text-xl' />
-                        </button>
-                    </div>
+
                 </div>
             </div>
         </main>

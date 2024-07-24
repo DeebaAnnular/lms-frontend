@@ -37,7 +37,7 @@ const RegistrationForm = ({ setIsShow }) => {
     };
 
     const handleSubmit = async (e) => {
- 
+
         e.preventDefault();
 
         const dataToSend = {
@@ -45,7 +45,7 @@ const RegistrationForm = ({ setIsShow }) => {
             date_of_joining: formatDate(formData.date_of_joining),
             active_status: formData.active_status === "true", // Convert to boolean
         };
- 
+
         try {
             const response = await fetch("http://localhost:3000/api/auth/register", {
                 method: "POST",
@@ -55,7 +55,7 @@ const RegistrationForm = ({ setIsShow }) => {
                 body: JSON.stringify(dataToSend),
             });
 
-            if (response.ok) { 
+            if (response.ok) {
                 alert("User registered successfully");
                 // Optionally reset the form after successful submission
                 setFormData({
@@ -78,159 +78,199 @@ const RegistrationForm = ({ setIsShow }) => {
         } catch (error) {
             console.error("Error:", error);
         }
- 
+
     };
 
     return (
         <div>
             <div className="box md:max-h-[700px]   relative top-1 flex flex-col items-center">
-                <div className="mt-6 min-w-[400px]">
-                    <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-3">
-                        <label htmlFor="emp_name" className="font-serif ml-2">
-                            Employee Name
-                        </label>
-                        <input
-                            id="emp_name"
-                            value={capitalizeWords(formData.emp_name)}
-                            className="border border-gray-500 mr-2 rounded-md p-1"
-                            type="text"
-                            required
-                            onChange={handleInputChange}
-                        />
-                         
+                <div className="mt-6   min-w-[500px]">
+                    <form onSubmit={handleSubmit} >
 
-                        <label
-                            htmlFor="emp_id"
-                            className="font-serif ml-2"
-                            type="number"
-                            required
-                        >
-                            Employee Id
-                        </label>
-                        <input
-                            id="emp_id"
-                            value={formData.emp_id}
-                            className="border border-gray-500 mr-2 rounded-md p-1 focus:border-formblue hover:border-formblue"
-                            onChange={handleInputChange}
-                        />
+                        <div className="flex gap-20 flex-row">
+                            <div className="min-w-[275px]">
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="emp_name" className=" text-[14px] font-regular text-[#373857]  ">
+                                        Employee Name
+                                    </label>
+                                    <input
+                                        id="emp_name"
+                                        value={capitalizeWords(formData.emp_name)}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px]  rounded-md p-1 min-h-[40px]"
+                                        type="text"
+                                        required
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                 
+                                <div className='flex flex-col mb-3 '>
 
-                        <label htmlFor="gender" className="font-serif ml-2">
-                            Gender
-                        </label>
-                        <select
-                            id="gender"
-                            value={formData.gender}
-                            className="border border-gray-500 mr-2 rounded-md p-1"
-                            onChange={handleInputChange}
-                        >
-                            <option value="">Select Gender</option>
-                            <option value="M">Male</option>
-                            <option value="F">Female</option>
-                        </select>
+                                    <label htmlFor="gender" className=" text-[14px] font-regular text-[#373857]  ">
+                                        Gender
+                                    </label>
+                                    <select
+                                        id="gender"
+                                        value={formData.gender}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        onChange={handleInputChange}
+                                    >
+                                        <option value="">Select Gender</option>
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                    </select>
+
+                                </div>
+                                <div className='flex flex-col mb-3 '>
+                                    <label
+                                        htmlFor="emp_id"
+                                        className=" text-[14px] font-regular text-[#373857]  "
+                                        type="number"
+                                        required
+                                    >
+                                        Date of Joining
+                                    </label>
+                                    <input
+                                        id="date_of_joining"
+                                        value={formData.date_of_joining}
+                                        className="border border-[#B6B6B6] text-[16px]   rounded-md p-1 focus:border-formblue hover:border-form blue min-h-[40px]"
+                                        onChange={handleInputChange}
+                                        type="date"
+                                    />
+                                </div>
+                                <div className='flex flex-col mb-3 '>
+                                    <label htmlFor="work_email" className=" text-[14px] font-regular text-[#373857]  ">
+                                        Work Email
+                                    </label>
+                                    <input
+                                        id="work_email"
+                                        value={formData.work_email}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        required
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                 
+                                <div className='flex flex-col mb-3 '>
+                                    <label htmlFor="work_location" className=" text-[14px] font-regular text-[#373857]  ">
+                                        Location
+                                    </label>
+                                    <input
+                                        id="work_location"
+                                        value={formData.work_location}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        required
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className="min-w-[275px]">
+                                    <div className='flex flex-col mb-3 '>
+                                    <label
+                                        htmlFor="emp_id"
+                                        className=" text-[14px] font-regular text-[#373857]  "
+                                        type="number"
+                                        required
+                                    >
+                                        Employee Id
+                                    </label>
+                                    <input
+                                        id="emp_id"
+                                        value={formData.emp_id}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 focus:border-formblue hover:border-formblue min-h-[40px]"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                <div className='flex flex-col mb-3 '><label htmlFor="contact_number" className=" text-[14px] font-regular text-[#373857]  ">
+                                    Contact No
+                                </label>
+                                    <input
+                                        id="contact_number"
+                                        type="text"
+                                        value={formData.contact_number}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                 
+                             
+                                <div className='flex flex-col mb-3 '>
+                                    <label htmlFor="designation" className=" text-[14px] font-regular text-[#373857]  ">
+                                         Role
+                                    </label>
+                                    <input
+                                        id="designation"
+                                        value={formData.designation}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        required
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                 
+                                <div className='flex flex-col mb-3 '>
+
+                                    <label htmlFor="password" className=" text-[14px] font-regular text-[#373857]  ">
+                                        Password
+                                    </label>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        value={formData.password}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        required
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                <div className='flex flex-col mb-3 '>
+                                    <label htmlFor="active_status" className=" text-[14px] font-regular text-[#373857]  ">
+                                        Employee Status
+                                    </label>
+                                    <select
+                                        id="active_status"
+                                        value={formData.active_status}
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        required
+                                        onChange={handleInputChange}
+                                    >
+                                        <option value="">Select Status</option>
+                                        <option value="true">Active</option>
+                                        <option value="false">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
 
 
-                        <label htmlFor="contact_number" className="font-serif ml-2">
-                            Contact No
-                        </label>
-                        <input
-                            id="contact_number"
-                            type="text"
-                            value={formData.contact_number}
-                            className="border border-gray-500 mr-2 rounded-md p-1"
-                            onChange={handleInputChange}
-                        />
-
-                        <label htmlFor="work_location" className="font-serif ml-2">
-                            Location
-                        </label>
-                        <input
-                            id="work_location"
-                            value={formData.work_location}
-                            className="border border-gray-500 mr-2 rounded-md p-1"
-                            required
-                            onChange={handleInputChange}
-                        />
-                        <label
-                            htmlFor="emp_id"
-                            className="font-serif ml-2"
-                            type="number"
-                            required
-                        >
-                            Date of Joining
-                        </label>
-                        <input
-                            id="date_of_joining"
-                            value={formData.date_of_joining}
-                            className="border border-gray-500 mr-2 rounded-md p-1 focus:border-formblue hover:border-formblue"
-                            onChange={handleInputChange}
-                            type="date"
-                        />
 
 
-                        <label htmlFor="designation" className="font-serif ml-2">
-                            Designation
-                        </label>
-                        <input
-                            id="designation"
-                            value={formData.designation}
-                            className="border border-gray-500 mr-2 rounded-md p-1"
-                            required
-                            onChange={handleInputChange}
-                        />
 
-                        <label htmlFor="work_email" className="font-serif ml-2">
-                            Work Email
-                        </label>
-                        <input
-                            id="work_email"
-                            value={formData.work_email}
-                            className="border border-gray-500 mr-2 rounded-md p-1"
-                            required
-                            onChange={handleInputChange}
-                        />
-                        <label htmlFor="password" className="font-serif ml-2">
-                            Password
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={formData.password}
-                            className="border border-gray-500 mr-2 rounded-md p-1"
-                            required
-                            onChange={handleInputChange}
-                        />
-                        {/* <label htmlFor="password" className="font-serif ml-2">
+
+
+
+
+
+
+
+
+
+                        {/* <label htmlFor="password" className=" text-[14px] font-regular text-[#373857]  ">
                             Role
                         </label>
                         <input
                             id="password"
                             type="text"
                             value="Employee"
-                            className="border border-gray-500 mr-2 rounded-md p-1"
+                            className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1"
                             required 
                             readOnly
                         /> */}
 
-                        <label htmlFor="active_status" className="font-serif ml-2">
-                            Employee Status
-                        </label>
-                        <select
-                            id="active_status"
-                            value={formData.active_status}
-                            className="border border-gray-500 mr-2 rounded-md p-1"
-                            required
-                            onChange={handleInputChange}
-                        >
-                            <option value="">Select Status</option>
-                            <option value="true">Active</option>
-                            <option value="false">Inactive</option>
-                        </select>
+
                     </form>
 
                     <div className="flex mt-3 w-full items-center justify-end">
                         <button
-                            className="mr-2 px-2 rounded-sm h-fit text-white bg-blue-400 text-lg"
+                            className="mr-2 py-1 px-2 w-[150px] rounded-sm h-fit text-white bg-[#134572] font-normal"
                             onClick={handleSubmit}
                         >
                             Register
