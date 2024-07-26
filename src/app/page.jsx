@@ -61,18 +61,18 @@ const Signin = () => {
                     localStorage.setItem("user_name", data.emp_name);
                     localStorage.setItem("jwt", data.token);
                     localStorage.setItem("user_id", data.user_id);
-                    localStorage.setItem("emp_id",data.emp_id)
+                    localStorage.setItem("emp_id", data.emp_id)
                     localStorage.setItem("user_type", data.user_role);
                     localStorage.setItem("work_email", data.email);
                     localStorage.setItem("work_email", data.work_email)
                     console.log(data)
                     const userData = {
                         user_name: data.emp_name,
-                        emp_id:data.emp_id,
+                        emp_id: data.emp_id,
                         token: data.token,
                         user_id: data.user_id,
                         user_role: data.user_role,
-                        work_email: data.email,    
+                        work_email: data.email,
                     }
                     dispatch(setUserDetails(data));
                     console.log(userData)
@@ -93,25 +93,40 @@ const Signin = () => {
     }
 
     return (
-        <main className='overflow-hidden'>
+        <main className='overflow-hidden  bg-[#D4DBE2]' >
             <div className='h-screen flex items-center justify-center'>
-                <div className='border border-gray-300 rounded-xl w-[350px] h-[350px] shadow-[10px_10px_15px_rgba(0,0,0,0.1)] overflow-hidden'>
-                    <div className="mx-7 my-3 flex justify-center bg-white">
-                        <img className='w-30 h-20 ' src='/imgs/logo2.png' alt="Annular_logo" />
-                    </div>
-                    <div className='flex justify-center transform -translate-y-3 mt-8'>
+                <div className=' bg-white py-5 flex items-center flex-col  rounded-[41px] w-[400px] h-[500px] shadow-[10px_10px_15px_rgba(0,0,0,0.1)] overflow-hidden'>
+
+
+                    <div>
+                        <div className="mx-7  flex justify-center bg-white">
+                            <img className='w-40 h-30 ' src='/imgs/logo2.png' alt="Annular_logo" />
+                        </div>
+                        {/* <div className='flex justify-center transform -translate-y-3 mt-8'>
                         <h1 className='text-gray-600 text-2xl font-bold'>Login</h1>
+                    </div> */}
+                        <p className='text-center mt-2 text-[12px]'>Enter your mail and password to access  your account</p>
                     </div>
-                    <div className='mx-7 flex flex-col relative top-2'>
-                        <input className='outline-none border-b-2 border-gray-500 p-1.5' type="text" id="email" required value={loginData.email} placeholder='Enter your Email' onChange={handleChange} />
-                        {errors.email && <p className='text-red-500 text-sm'>{errors.email}</p>}
-                        <div className='relative'>
-                            <input className='outline-none border-b-2 border-gray-500 p-1.5 my-5 w-full' required type={passwordVisible ? "text" : "password"} id="password" value={loginData.password} placeholder='Enter Password' onChange={handleChange} />
-                            <span className='absolute top-1/2 right-3 text-xl -translate-y-1 text-gray-500 cursor-pointer' onClick={handlePasswordToggle}>{passwordVisible ? <IoIosEye /> : <IoIosEyeOff />}</span>
+
+                    <div className='w-[80%] mt-[3rem] flex flex-col gap-5 relative top-2'>
+                        <div>
+                            <label htmlFor="" className='ml-3 mb- text-[16px] '>Email</label>
+                            <input className='outline-none w-full  bg-[#F0F5F9] rounded-md border-gray-500 p-1.5 px-3' type="text" id="email" required value={loginData.email} placeholder='Enter your Email' onChange={handleChange} />
+                            {errors.email && <p className='text-red-500 text-sm'>{errors.email}</p>}
+                        </div>
+
+                        <div>
+                            <label htmlFor="" className='ml-3 mb-2 text-[16px] '>Password</label>
+                             <div className='flex items-center overflow-clip bg-[#F0F5F9] rounded-md pr-2'>
+                                <input className='outline-none  w-full bg-[#f0f5f9] p-1.5 px-3' required  type={passwordVisible ? "text" : "password"} id="password" value={loginData.password} placeholder='Enter Password' onChange={handleChange} />
+                                <span className='flex  my-auto h-full items-center text-xl  text-gray-500 bg-[#F0F5F9] cursor-pointer' onClick={handlePasswordToggle}>{passwordVisible ? <IoIosEye /> : <IoIosEyeOff />}</span>
+                            </div>
+
                         </div>
                         {errors.password && <p className='text-red-500 text-sm'>{errors.password}</p>}
-                        <button className="bg-blue-400 h-[35px] text-md t" onClick={handleSubmit}>Login</button>
+
                     </div>
+                    <button className="bg-[#134572] mt-[5.5rem] text-white rounded-md h-[35px] w-[80%] text-md " onClick={handleSubmit}>Login</button>
                 </div>
             </div>
         </main>

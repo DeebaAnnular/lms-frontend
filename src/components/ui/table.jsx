@@ -68,7 +68,7 @@ TableHead.displayName = "TableHead";
 const TableCell = React.forwardRef(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn("p-4 align-middle border-none", className)}
+    className={cn("p-4 px-6 align-middle border-none", className)}
     {...props}
   />
 ));

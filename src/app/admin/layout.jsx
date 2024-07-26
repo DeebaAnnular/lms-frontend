@@ -8,11 +8,11 @@ import AuthRoute from '../../HOC/AuthRoute'
 const Layout = ({ children }) => {
 
     return (
-        <div className=' flex'>
+        <div className='w-full flex'>
             <Sidebar />
             <main className='w-full flex flex-col'>
                 <Navbar  />
-                <div className='p-5 bg-[#FBF9F9]'>
+                <div className='p-5 bg-[#FBF9F9] w-full'>
                     {children}
                 </div>
                  

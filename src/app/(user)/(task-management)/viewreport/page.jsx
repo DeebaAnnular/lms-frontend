@@ -12,25 +12,14 @@ const Page = () => {
 
     const user = useSelector(state => state.user.userDetails)
 
-    //date input process
-    // const [startDate, setStartDate] = useState()
-    // const [endDate, setEndDate] = useState()
-
     const [week_id, setWeek_id] = useState()
     const [from_date, setFrom_date] = useState()
     const [to_date, setTo_date] = useState()
 
-
-
-
-
     //data fetching on submitting date
     const [tasks, setTasks] = useState()
 
-    const getData = async () => {
-        console.log("giving request")
-        console.log(localStorage.getItem('from_date'))
-        console.log(localStorage.getItem('to_date'))
+    const getData = async () => { 
      
         const data = await getAllTaskById(user.user_id, localStorage.getItem('from_date'), localStorage.getItem('to_date'))
         setTasks(data.tasks)
@@ -46,8 +35,8 @@ const Page = () => {
     }, [])
 
     return (
-        <div className='p-5 pt-2 max-h-[calc(100vh-100px)] overflow-y-auto'>
-            <div className="title  ">
+        <div className=' pt-2 '>
+            <div className="title  mb-2 ">
                 <p className='text-[22px] font-bold'>Timesheet</p>
             </div>
             {/* 
@@ -66,7 +55,7 @@ const Page = () => {
             </div> */}
 
             {/* Timesheet table */}
-            <div className="container mx-auto py-5">
+            <div className=" mx-auto ">
                 {
                     tasks && <DataTable allData={tasks} week_Id={week_id} startDate={from_date} endDate={to_date} />
                 }

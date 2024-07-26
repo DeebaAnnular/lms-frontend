@@ -13,8 +13,7 @@ const Page = () => {
   const [leaveBalance, setLeaveBalance] = useState([]);
 
   const fetchLeaveBalanceById = async () => {
-    const resData = await getLeaveBalance(user.user_id || null);
-    console.log(resData);
+    const resData = await getLeaveBalance(user.user_id || null); 
     setLeaveBalance(resData);
   };
 
@@ -36,7 +35,7 @@ const Page = () => {
 
 export default Page;
 
-{
+// {
   /* <div className="apply-leave-container w-full p-10">
 <div className="leave-balance-cards flex items-center justify-between gap-3">
 <div  className='flex w-full gap-4 justify-between w-fll'>
@@ -67,4 +66,4 @@ export default Page;
   <LeaveForm fetchLeaveBalanceById={getLeaveBalance(user.user_id)} />
 </div>
 </div> */
-}
+// }

@@ -94,34 +94,32 @@ const Page = () => {
                                     <TableHead className='text-[16px] font-bold text-[#333843]'>From Date   </TableHead>
                                     <TableHead className='text-[16px] font-bold text-[#333843]'>To Date   </TableHead>
                                     <TableHead className='text-[16px] font-bold text-[#333843]'>Total Days</TableHead>
-                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Reject</TableHead>
-                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Approve</TableHead>
-                                     
+                                    <TableHead className='text-[16px] font-bold text-[#333843] text-center'>Action</TableHead> 
+
                                 </TableRow>
                             </TableHeader>
-                            <TableBody className='text-[#667085]'> 
-                                {leavedata.slice(startIndex, endIndex).map((data, index) => (
+                            <TableBody className='text-[#667085]'>
+                                {leavedata?.map((data, index) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{startIndex + index + 1}</TableCell>
+                                        <TableCell className="font-medium">{index + 1}</TableCell>
                                         <TableCell>{capitalizeWords(data.emp_name)}</TableCell>
                                         <TableCell>{capitalizeWords(replaceUnderscore(data.leave_type))}</TableCell>
                                         <TableCell>{formatDate(data.from_date)}</TableCell>
                                         <TableCell>{formatDate(data.to_date)}</TableCell>
                                         <TableCell>{data.total_days}</TableCell>
-                                            <TableCell>
-                                            <IoIosClose className='text-red-500 text-2xl' onClick={() => {
-                                                const reason = prompt('Enter reason for rejection:');
-                                                if (reason) {
-                                                    handleRejectClick(data.leave_request_id, reason);
-                                                }
-                                            }} />
+                                        <TableCell className='flex gap-5'>
+                                            <p className='text-red-500 cursor-pointer' onClick={() => {
+                                            const reason = prompt('Enter reason for rejection:');
+                                            if (reason) {
+                                                handleRejectClick(data.leave_request_id, reason);
+                                            }
+                                        }}>Reject</p>
+                                        <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
+                                            Approve
+                                        </p>
                                         </TableCell>
-                                        <TableCell>
-                                            <button onClick={() => handleApproveClick(data.leave_request_id)}>
-                                                <TiTick className='text-green-500 text-xl' />
-                                            </button>
-                                        </TableCell>
-                                     
+                                         
+
                                     </TableRow>
                                 ))}
                             </TableBody>

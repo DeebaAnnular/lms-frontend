@@ -30,10 +30,10 @@ export function DataTable({ allData }) {
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [userNameFilter, setUserNameFilter] = useState("");
-    const [pagination, setPagination] = useState({
-        pageSize: 5,
-        pageIndex: 0,
-    });
+    // const [pagination, setPagination] = useState({
+    //     pageSize: 5,
+    //     pageIndex: 0,
+    // });
  
 
     const handleUserNameFilterChange = (e) => {
@@ -89,18 +89,18 @@ export function DataTable({ allData }) {
         data: allData,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
+        // getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        onPaginationChange: setPagination,
+        // onPaginationChange: setPagination,
         state: {
             sorting,
             columnFilters,
             globalFilter,
-            pagination,
-            pagination,
+            // pagination,
+            // pagination,
         },
         globalFilterFn: (row, columnId, value) => {
             const searchValue = value.toLowerCase();
@@ -115,21 +115,21 @@ export function DataTable({ allData }) {
 
     return (
         <div className="w-full">
-            <div className="mb-4 flex space-x-4 items-center justify-normal">
-            <div className="mb-4 flex space-x-4 items-center justify-normal">  
+             
+            <div className="mb-4 flex space-x-4 items-center justify-end">    
 
                 <div className="flex border mt-2 bg-white border-[#DCDCDC] items-center px-3 h-full  ">
                     <IoIosSearch className='text-[#B1A8A8] text-[30px]' />
                     <Input
-                        placeholder="Search by Name or Emp ID..."
+                        placeholder="Search by Name"
                         value={userNameFilter}
                         onChange={ handleUserNameFilterChange }
                         className="searchbar max-w-sm text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
                     />
                 </div>
             </div>
-            </div> 
-            <div className=" bg-white p-2 min-h-[380px] relative overflow-clip shadow-xl">
+            
+            <div className=" bg-white p-2 min-h-[380px] relative overflow-clip ">
                 <Table className='p-2'>
                     <TableHeader className="bg-[#f7f7f7]  h-[60px] text-[#333843]">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -168,7 +168,7 @@ export function DataTable({ allData }) {
             </div>
 
             {/* Pagination Controls */}
-            <div className="flex items-center justify-between mt-4">
+            {/* <div className="flex items-center justify-between mt-4">
                 <button
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
@@ -186,7 +186,7 @@ export function DataTable({ allData }) {
                 >
                     Next
                 </button>
-            </div>
+            </div> */}
 
             
         </div>

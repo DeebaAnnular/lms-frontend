@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,7 @@ const leaveSchema = z.object({
         message: "Start date must be today or later"
     }),
     to_date: z.string(),
-    reason: z.string().min(20, { message: "Reason must be at least 20 characters" }),
+    reason: z.string().optional(),
 }).superRefine((data, ctx) => {
     const from_date = new Date(data.from_date);
     const to_date = new Date(data.to_date);
@@ -39,6 +39,14 @@ const leaveSchema = z.object({
             code: z.ZodIssueCode.custom,
             message: "For half-day leave, start date and end date must be the same",
             path: ["to_date"],
+        });
+    }
+
+    if (data.leave_type !== "optional_leave" && !data.reason) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Reason is required",
+            path: ["reason"],
         });
     }
 });
@@ -65,18 +73,18 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     const [totalDays, setTotalDays] = useState(0);
     const [leaveBalance, setLeaveBalance] = useState({});
     const [optionHolidays, setOptionHolidays] = useState([]);
-    const [compulsaryHolidays, setCompulsaryHolidays] = useState([])
-    const [appliedOptionalLeaves, setAppliedOptionalHolidays] = useState([])
+    const [compulsaryHolidays, setCompulsaryHolidays] = useState([]);
+    const [appliedOptionalLeaves, setAppliedOptionalHolidays] = useState([]);
 
     useEffect(() => {
         const fetchLeaveBalence = async () => {
             const resData = await getEmp_leave_balence(user.user_id || null);
             setLeaveBalance(resData);
         };
+
         const fetchOptionHoliday = async () => {
             const resData = await getAllOptionalHolidays();
-            const holidays = resData.map(item => new Date(item.date).toLocaleDateString('en-CA'));
-            setOptionHolidays(holidays);
+            setOptionHolidays(resData);
         };
         const fetchCompulsaryHoliday = async () => {
             const resData = await getAllCompulsoryHolidays();
@@ -90,15 +98,14 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                 .filter(item => item.user_id === user.user_id) // Filter for current user
                 .filter(item => item.leave_type == 'optional_leave')
                 .map(item => new Date(item.from_date).toLocaleDateString('en-CA'));
-             setAppliedOptionalHolidays(appliedOptionalLeaves)
-        }
+            setAppliedOptionalHolidays(appliedOptionalLeaves);
+        };
 
         fetchLeaveBalence();
         fetchOptionHoliday();
         fetchCompulsaryHoliday();
         fetchAllLeaveRequest();
-    }, [user.user_id]); 
-     
+    }, [user.user_id]);
 
     const calculateTotalDays = (from_date, to_date) => {
         const start = new Date(from_date);
@@ -118,9 +125,6 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
 
         return count;
     };
-
-
-
 
     useEffect(() => {
         if (session === "FN" || session === "AN") {
@@ -158,154 +162,162 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
         if (result) {
             reset(); // Reset the form on successful response
             setTotalDays(0); // Reset the total days
-            alert("Form submitted successfully.");
+            alert("Leave Applied successfully.");
             fetchLeaveBalanceById();
         } else {
             alert("There was an error submitting the form. Please check your leave balance.");
             console.error('There was an error submitting the form');
         }
     };
-  return (
-    <div className="flex p-5 w-[65%] h-full ">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className=" flex flex-col p-5 w-full h-full  gap-5 border-r border-r-[#DCDCDC]"
-      >
-        <p className=" text-2xl font-medium text-[#06072D] ">Leave Form</p>
-        <div className="h-[90%] w-full flex flex-col  items-start">
-          <div className=" flex flex-col w-full gap-4 ">
-            <label htmlFor="leave_type" className=" text-[#373857] text-lg">
-              Type of Leave{" "}
-            </label>
-            <div className=" w-full ">
-              <select
-                id="leave_type"
-                {...register("leave_type")}
-                className=" px-2 py-2 border w-[90%] "
-              >
-                <option value="" className="text-[#99A0B0]">
-                  Select type of leave
-                </option>
-                <option value="sick_leave">Sick Leave</option>
-                <option value="earned_leave">Earned Leave</option>
-                <option value="optional_leave">Optional Leave</option>
-                <option value="maternity_leave">Maternity Leave</option>
-                <option value="loss_of_pay">Loss Of Pay</option>
-                <option value="work_from_home">Work From Home</option>
-              </select>
-            </div>
 
-            {leave_type === "optional_leave" ? (
-              <div className="w-full flex flex-col gap-4">
-                <label htmlFor="optional_date" className="text-[#373857] text-lg">
-                  Optional Holiday Date {" "}
-                </label>
-                <select
-                  id="optional_date"
-                  {...register("optional_date")}
-                  className="block  w-[90%]  p-2 border"
-                >
-                  <option value="">Select optional holiday</option>
-                  {optionHolidays.map((date, index) => (
-                    <option key={index} value={date}>
-                      {date}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              <>
-                {" "}
-                <div className="w-full flex flex-col gap-4">
-                  <label htmlFor="session" className="text-[#373857] text-lg">
-                    Session :{" "}
-                  </label>
-                  <div className="w-full">
-                    <select
-                      id="session"
-                      {...register("session")}
-                      className="p-2  border w-[90%]"
-                    >
-                      <option value="full_day">Full Day</option>
-                      <option value="FN">FN</option>
-                      <option value="AN">AN</option>
-                    </select>
-                  </div>
+    const currentDate = new Date().toLocaleDateString('en-CA');
+
+    return (
+        <div className="flex p-5 w-[65%] h-full ">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className=" flex flex-col p-5 w-full h-full  gap-5 border-r border-r-[#DCDCDC]"
+            >
+                <p className=" text-2xl font-medium text-[#06072D] ">Leave Form</p>
+                <div className="h-[90%] w-full pl-3 flex flex-col  items-start">
+                    <div className=" flex flex-col w-full gap-4 ">
+                        <label htmlFor="leave_type" className=" text-[#373857] text-[16px]">
+                            Type of Leave
+                        </label>
+                        <div className=" w-full ">
+                            <select
+                                id="leave_type"
+                                {...register("leave_type")}
+                                className=" px-2 rounded-md py-2 border w-[90%] "
+                            >
+                                <option value="" className="text-[#99A0B0]">
+                                    Select
+                                </option>
+                                <option value="sick_leave">Sick Leave</option>
+                                <option value="earned_leave">Earned Leave</option>
+                                <option value="optional_leave">Optional Holidays</option>
+                                <option value="maternity_leave">Maternity Leave</option>
+                                <option value="loss_of_pay">Loss Of Pay</option>
+                                <option value="work_from_home">Work From Home</option>
+                            </select>
+                        </div>
+
+                        {leave_type === "optional_leave" ? (
+                            <div className="w-full flex flex-col gap-4">
+                                <label htmlFor="optional_date" className="text-[#373857] text-[16px]">
+                                    Optional Holiday Dates
+                                </label>
+                                <select
+                                    id="optional_date"
+                                    {...register("optional_date")}
+                                    className="block  rounded-md w-[90%]  p-2 border"
+                                >
+                                    <option value="">Select</option>
+                                    {optionHolidays.map((data, index) => (
+                                        <option
+                                            key={index}
+                                            value={data.date}
+                                            disabled={data.date < currentDate}
+                                            className={data.date < currentDate ? 'text-gray-500 text-[14px]' : ''}>
+
+                                            {data.date}  {`(${data.description})`}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        ) : (
+                            <>
+                                {" "}
+                                <div className="w-full flex flex-col gap-4">
+                                    <label htmlFor="session" className="text-[#373857] text-[16px]">
+                                        Session
+                                    </label>
+                                    <div className="w-full">
+                                        <select
+                                            id="session"
+                                            {...register("session")}
+                                            className="p-2  rounded-md border w-[90%] text-[14px]"
+                                        >
+                                            <option value="full_day">Full Day</option>
+                                            <option value="FN">FN</option>
+                                            <option value="AN">AN</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="w-full flex flex-col gap-4">
+                                    <label
+                                        htmlFor="from_date"
+                                        className="text-[#373857]  min-w-fit text-[16px]"
+                                    >
+                                        Start Date
+                                    </label>
+                                    <Input
+                                        type="date"
+                                        id="from_date"
+                                        {...register("from_date")}
+                                        className="block w-[90%] rounded-md p-2 border text-[14px]"
+                                    />
+                                </div>
+                                <div className="w-full flex flex-col gap-4">
+                                    <label
+                                        htmlFor="to_date"
+                                        className="text-[#373857]  min-w-fit text-[16px]"
+                                    >
+                                        End Date
+                                    </label>
+                                    <Input
+                                        type="date"
+                                        id="to_date"
+                                        {...register("to_date")}
+                                        className="block w-[90%]  rounded-md p-2 border text-[14px]"
+                                        disabled={session === "FN" || session === "AN"}
+                                    />
+                                </div>
+                                <div className="w-full flex flex-col gap-4">
+                                    <label
+                                        htmlFor="reason"
+                                        className="text-[#373857] text-lg min-w-fit text-[16px]"
+                                    >
+                                        Reason
+                                    </label>
+                                    <Input
+                                        type="text"
+                                        id="reason"
+                                        {...register("reason")}
+                                        className="block w-[90%]  rounded-md h-[5rem] p-2 border text-[14px]"
+                                    />
+                                </div>
+                            </>
+                        )}
+
+                    </div>
+                    {totalDays > 0 && <p className="my-3">{`Total Day(s)`}: {totalDays}</p>}
+
+                    {errors.leave_type && (
+                        <p className="text-red-500">{errors.leave_type.message}</p>
+                    )}
+                    {errors.session && (
+                        <p className="text-red-500">{errors.session.message}</p>
+                    )}
+                    {errors.from_date && (
+                        <p className="text-red-500">{errors.from_date.message}</p>
+                    )}
+                    {errors.to_date && (
+                        <p className="text-red-500">{errors.to_date.message}</p>
+                    )}
+                    {errors.reason && (
+                        <p className="text-red-500">{errors.reason.message}</p>
+                    )}
+
+                    <div className="flex w-[90%] justify-end">
+                        <Button type="submit" className="mt-4">
+                            Submit
+                        </Button>
+                    </div>
                 </div>
-                <div className="w-full flex flex-col gap-4">
-                  <label
-                    htmlFor="from_date"
-                    className="text-[#373857] text-lg min-w-fit"
-                  >
-                    Start Date :{" "}
-                  </label>
-                  <Input
-                    type="date"
-                    id="from_date"
-                    {...register("from_date")}
-                    className="block w-[90%] p-2 border"
-                  />
-                </div>
-                <div className="w-full flex flex-col gap-4">
-                  <label
-                    htmlFor="to_date"
-                    className="text-[#373857] text-lg min-w-fit"
-                  >
-                    End Date :{" "}
-                  </label>
-                  <Input
-                    type="date"
-                    id="to_date"
-                    {...register("to_date")}
-                    className="block w-[90%]  p-2 border"
-                    disabled={session === "FN" || session === "AN"}
-                  />
-                </div>
-              </>
-            )}
-
-            <div className="w-full flex flex-col gap-4">
-              <label
-                htmlFor="reason"
-                className="text-[#373857] text-lg min-w-fit"
-              >
-                Reason
-              </label>
-              <Input
-                type="text"
-                id="reason"
-                {...register("reason")}
-                className="block w-[90%] h-[5rem] p-2 border"
-              />
-            </div>
-          </div>
-          {totalDays > 0 && <p className="my-3">Total days: {totalDays}</p>}
-
-          {errors.leave_type && (
-            <p className="text-red-500">{errors.leave_type.message}</p>
-          )}
-          {errors.session && (
-            <p className="text-red-500">{errors.session.message}</p>
-          )}
-          {errors.from_date && (
-            <p className="text-red-500">{errors.from_date.message}</p>
-          )}
-          {errors.to_date && (
-            <p className="text-red-500">{errors.to_date.message}</p>
-          )}
-          {errors.reason && (
-            <p className="text-red-500">{errors.reason.message}</p>
-          )}
-
-          <div className="flex w-[90%] justify-end">
-            <Button type="submit" className="mt-4">
-              Submit
-            </Button>
-          </div>
+            </form>
         </div>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default LeaveForm;

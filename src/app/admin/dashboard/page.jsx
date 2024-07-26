@@ -35,7 +35,7 @@ const Page = () => {
     }, []);
 
     return (
-        <div className="content-section bg-[rgb(247, 249, 253)] w-full  ">
+        <div className=''>
             <p className='text-[20px] font-bold'>Employee List</p>
             <div className=" ">
                 <DataTable columns={columns} data={emp_list} />

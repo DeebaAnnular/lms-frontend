@@ -28,34 +28,24 @@ import { capitalizeWords, convertDate } from "../../../../utils/index";
 import { ArrowUpDown, EditIcon, DeleteIcon } from "lucide-react";
 import { cn } from "../../../../lib/utils";
 
-
 import { editTask, deleteTask, getAllTaskById, submitWeeklyTimeSheet } from "../../../../actions";
 
 export function DataTable({ allData, userId, startDate, endDate }) {
-    console.log(allData)
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
-    const [pagination, setPagination] = useState({
-        pageSize: 5,
-        pageIndex: 0,
-    });
-
-
     const [data, setData] = useState(allData)
     const [show, setShow] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
     const router = useRouter()
 
-
     useEffect(() => {
         localStorage.removeItem('from_date')
         localStorage.removeItem('to_date')
         localStorage.removeItem('week_id')
-    },[])
+    }, [])
 
-
-    // edit function
+    // Edit function
     const sumbitEditedTask = async (id, editedTask) => {
         const response = await editTask(id, editedTask);
         const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate)
@@ -63,7 +53,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     };
 
     const handleEditButton = (task, task_date) => {
-
         setCurrentTask({ ...task, task_date: convertDate(task_date), user_id: localStorage.getItem("user_id") });
         setShow(true);
     };
@@ -80,44 +69,11 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             header: "Date",
         },
         {
-            accessorKey: "task_id",
-            header: "Task ID",
+            accessorKey: "total_hours_per_day",
+            header: "Total Hours",
             cell: ({ row }) => {
-                return row.original.task_id.map((id) => (
-                    <div key={id} className="flex justify-between py-2">
-                        <p>{id}</p>
-                    </div>
-                ));
-            },
-        },
-
-
-        {
-            accessorKey: "task_name",
-            header: "Tasks",
-            cell: ({ row }) => {
-                return row.original.task_name.map((taskName, index) => (
-                    <div key={row.original.task_id[index]}>
-                        <p className="flex justify-between py-2">
-                            {capitalizeWords(taskName)}
-
-                            {/* here is the option to delete and edit the task */}
-                            {console.log(row.original.approved_status)}
-                            {
-                                row.original.approved_status !== 'approved' && <span className="flex gap-3">
-                                    <EditIcon onClick={() => handleEditButton({
-                                        task_id: row.original.task_id[index],
-                                        task_name: taskName
-                                    }, row.original.day)} />
-                                    <DeleteIcon onClick={() => {
-                                        handleDeleteTask(row.original.task_id[index])
-                                    }} />
-                                </span>
-                            }
-
-                        </p>
-                    </div>
-                ));
+                const hours = (parseFloat(row.original.total_hours_per_day)).toFixed(2);
+                return <p>{hours} hours</p>;
             },
         },
         {
@@ -133,7 +89,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => { 
+            cell: ({ row }) => {
                 if (row.original.approved_status === "pending") {
                     return (
                         <p className={cn('w-[80px] p-2 flex items-center justify-center rounded-sm text-gray-500')}>
@@ -155,14 +111,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                 }
             },
         },
-        {
-            accessorKey: "total_hours_per_day",
-            header: "Total Hours",
-            cell: ({ row }) => {
-                const hours = (parseFloat(row.original.total_hours_per_day)).toFixed(2);
-                return <p>{hours} hours</p>;
-            },
-        },
     ];
 
     const table = useReactTable({
@@ -174,7 +122,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        onPaginationChange: setPagination,
         state: {
             sorting,
             columnFilters,
@@ -189,9 +136,9 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
     return (
         <div className="w-full">
-            <div className="rounded-md border min-h-[380px] relative overflow-clip shadow-xl">
+            <div className="bg-white min-h-[380px] p-3">
                 <Table>
-                    <TableHeader className="bg-blue-300 text-black">
+                    <TableHeader className="bg-[#F7F7F7] hover:bg-none text-black">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
@@ -210,7 +157,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className=''>
+                                        <TableCell key={cell.id} className="p-6 text-[#667085]">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
@@ -225,8 +172,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                         )}
                     </TableBody>
                 </Table>
-
-
             </div>
 
             {show && (
@@ -259,7 +204,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                     onChange={(e) => setCurrentTask({ ...currentTask, task_time: e.target.value })}
                                 />
                             </div>
-
                             <div className="flex justify-end">
                                 <button
                                     type="button"
@@ -276,11 +220,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                     </div>
                 </div>
             )}
-            <div className="w-full flex justify-end mt-2">
-                <Button className='px-3 py-2 bg-green-400 rounded-md' onClick={() => router.back()}>
-                    Close
-                </Button>
-            </div>
         </div>
     );
 }

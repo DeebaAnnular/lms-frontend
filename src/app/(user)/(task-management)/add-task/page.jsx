@@ -27,6 +27,8 @@ const Calendar = () => {
     const [tasksForSelectedDate, setTasksForSelectedDate] = useState([]);
     const [currYear, setCurrYear] = useState();
     const [weeklyStatuses, setWeeklyStatuses] = useState();
+    const [currDayStatus, setCurrDayStatus] = useState()
+
 
     useEffect(() => {
         generateCalendar();
@@ -44,6 +46,7 @@ const Calendar = () => {
         const month = currentDate.getMonth();
         const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
+
 
         const tempDays = [];
         for (let i = 0; i < firstDayOfMonth; i++) {
@@ -78,24 +81,28 @@ const Calendar = () => {
     const dateStr = (day) => {
         return `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`
     }
-    const [tasksForDate, setTasksForDate] = useState()
+
 
     const handleAddTask = (day) => {
         setShow(true);
         setDay(day)
         setTaskId(dateStr(day));
         setSelectedDate(dateStr(day));
-        console.log(dateStr(day))
 
         // Filter tasks for the selected date 
         fetchData()
         fetchalltask()
         const tasksForDate = allTasks.filter((task) => task.task_date === dateStr(day));
+
+        if (tasksForDate.length > 0) {
+            console.log(allTasks)
+            const singleTask = tasksForDate.filter((task) => task.task_date === dateStr(day))[0]
+            setCurrDayStatus(singleTask.approved_status)
+            setCurrDayStatus(singleTask.approved_status)
+        }
+
         setTasksForSelectedDate(tasksForDate);
-
-
     };
-
 
     const fetch = async (data) => {
         const response = await postTask(data);
@@ -103,7 +110,7 @@ const Calendar = () => {
     };
 
     const fetchData = async () => {
-        const response = await getAllTask();
+        const response = await getAllTask(user.user_id);
         setAllTasks(response);
     };
 
@@ -113,8 +120,9 @@ const Calendar = () => {
     };
 
     const fetchalltask = async () => {
-        const res = await getAllTask();
+        const res = await getAllTask(user.user_id);
         const taskData = res.map((data) => ({
+            user_id: data.user_id,
             task_date: data.task_date,
             task_id: data.task_id,
             task_name: data.task_name,
@@ -143,22 +151,23 @@ const Calendar = () => {
             const res = await postTask(newTask);
 
             //success code
-            const response = await getAllTask();
+            const response = await getAllTask(user.user_id);
             const tasksForDate = response.filter((task) => task.task_date === dateStr(day));
+            console.log(tasksForDate.filter(item => item.user_id == 2))
             setTasksForSelectedDate(tasksForDate);
+            fetchData()
 
         } catch (error) {
             console.log("error", error);
         }
-
-        // setShow(false); 
-
 
         setTask("");
         setTime("");
 
 
     };
+
+
 
     const getStatusElement = (status) => {
         if (status === "approved") {
@@ -177,7 +186,6 @@ const Calendar = () => {
     };
 
     //   edit task modal
-
     const [editingTaskId, setEditingTaskId] = useState(null);
     const [editedTask, setEditedTask] = useState({
         task_name: "",
@@ -206,7 +214,7 @@ const Calendar = () => {
         const res = await editTask(taskId, req_body);
 
         setEditingTaskId(null);
-        const response = await getAllTask();
+        const response = await getAllTask(user.user_id);
         const tasksForDate = response.filter((task) => task.task_date === dateStr(day));
         setTasksForSelectedDate(tasksForDate);
 
@@ -219,7 +227,7 @@ const Calendar = () => {
 
     const handleDelete = async (taskId) => {
         const res = await deleteTask(taskId);
-        const response = await getAllTask();
+        const response = await getAllTask(user.user_id);
         const tasksForDate = response.filter((task) => task.task_date === dateStr(day));
         setTasksForSelectedDate(tasksForDate);
     };
@@ -349,18 +357,22 @@ const Calendar = () => {
             {show && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white border-2 md:min-h-[550px] md:min-w-[850px] p-6 rounded shadow-lg relative">
-                        <button
-                            onClick={() => setShow(false)}
+                        <button onClick={async () => {
+                            const response = await getAllTask(user.user_id);
+                            setAllTasks(response)
+                            setShow(false)
+                            setCurrDayStatus('pending')
+                        }}
                             className="absolute top-2 right-2 text-red-500 text-xl"
                         >
                             <IoIosClose />
                         </button>
 
-                        <h2 className="text-xl font-bold text-center mt-4">Add Task</h2>
-                        <form onSubmit={submitTask} className="space-y-4">
 
+                        {currDayStatus != 'approved' && (<form onSubmit={submitTask} className="space-y-4">
+                            <h2 className="text-xl font-bold text-center mt-4">Add Task</h2>
                             <div className="flex flex-row gap-3">
-                                <div  className="w-full">
+                                <div className="w-full">
                                     <label className="block">Task:</label>
                                     <input
                                         type="text"
@@ -370,7 +382,7 @@ const Calendar = () => {
                                     />
                                 </div>
 
-                                <div  className="w-full">
+                                <div className="w-full">
                                     <label className="block">Time:</label>
                                     <input
                                         type="text"
@@ -389,11 +401,9 @@ const Calendar = () => {
                                     Add
                                 </button>
                             </div>
-                        </form>
-
-                        <h1 className="text-2xl font-bold text-center my-4">Tasks </h1>
+                        </form>)} 
                         <ul>
-                            <div className="max-h-[200px] w-full overflow-y-auto">
+                            <div className="max-h-[200px] mt-2 w-full overflow-y-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50 sticky top-0 z-10">
                                         <tr>
@@ -406,12 +416,14 @@ const Calendar = () => {
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Task Time
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Edit
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Delete
-                                            </th>
+
+                                            {currDayStatus != 'approved' && (<th className="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                                Action
+                                            </th>)}
+
+
+
+
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white">
@@ -447,7 +459,7 @@ const Calendar = () => {
                                                         formatTime(task.task_time)
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {currDayStatus != 'approved' && (<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
                                                     {editingTaskId === task.task_id ? (
                                                         <>
                                                             <button
@@ -464,22 +476,32 @@ const Calendar = () => {
                                                             </button>
                                                         </>
                                                     ) : (
-                                                        <button
-                                                            className="text-blue-600 hover:text-blue-900"
-                                                            onClick={() => handleEdit(task)}
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                        currDayStatus !== 'approved' && (
+                                                            <div className="flex gap-4 w-full justify-center">
+                                                                <button
+                                                                    className="text-blue-600 hover:text-blue-900"
+                                                                    onClick={() => handleEdit(task)}
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                                <button
+                                                                    className="text-red-600 hover:text-red-900"
+                                                                    onClick={() => handleDelete(task.task_id)}
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                </td>)}
+
+                                                {/* {currDayStatus != 'approved' && (<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                     <button
                                                         className="text-red-600 hover:text-red-900"
                                                         onClick={() => handleDelete(task.task_id)}
                                                     >
                                                         Delete
                                                     </button>
-                                                </td>
+                                                </td>)} */}
                                             </tr>
                                         ))}
                                     </tbody>

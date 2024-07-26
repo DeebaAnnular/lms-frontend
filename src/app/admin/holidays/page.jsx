@@ -20,6 +20,7 @@ import {
     TableRow,
   } from "../../../components/ui/table"
 import { capitalizeWords } from "../../../utils";
+import { API } from "../../../config";
 
  
 const Page=()=>{
@@ -30,7 +31,7 @@ const Page=()=>{
 
     const fetchHolidays = async () => {
         try {
-          const response = await fetch("http://localhost:3000/api/holiday/get_all_holidays");
+          const response = await fetch(`${API}/holiday/get_all_holidays`);
           
           if (!response.ok) {
             throw new Error("Failed to fetch holidays");
@@ -56,7 +57,7 @@ const Page=()=>{
         };
       
         try {
-          const response = await fetch('http://localhost:3000/api/holiday/create_holiday', {
+          const response = await fetch(`${API}/holiday/create_holiday`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

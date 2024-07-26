@@ -29,10 +29,10 @@ export function DataTable({ allData }) {
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [userNameFilter, setUserNameFilter] = useState("");
-    const [pagination, setPagination] = useState({
-        pageSize: 6, // Set default page size to 6
-        pageIndex: 0,
-    });
+    // const [pagination, setPagination] = useState({
+    //     pageSize: 6, // Set default page size to 6
+    //     pageIndex: 0,
+    // });
 
     const handleUserNameFilterChange = (e) => {
         setUserNameFilter(e.target.value);
@@ -91,22 +91,22 @@ export function DataTable({ allData }) {
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        onPaginationChange: setPagination,
+        // onPaginationChange: setPagination,
         state: {
             sorting,
             columnFilters,
-            pagination,
+            // pagination,
         },
     });
 
-    const totalPages = table.getPageCount();
-    const pageIndex = pagination.pageIndex;
-    const pageSize = pagination.pageSize;
+    // const totalPages = table.getPageCount();
+    // const pageIndex = pagination.pageIndex;
+    // const pageSize = pagination.pageSize;
     const totalRows = allData.length;
 
     // Calculate the range of rows being displayed
-    const startRow = pageIndex * pageSize + 1;
-    const endRow = Math.min((pageIndex + 1) * pageSize, totalRows);
+    // const startRow = pageIndex * pageSize + 1;
+    // const endRow = Math.min((pageIndex + 1) * pageSize, totalRows);
 
     return (
         <div className="w-full p-6">
@@ -152,12 +152,12 @@ export function DataTable({ allData }) {
             </div>
 
             {/* Pagination Info */}
-            <div className="flex justify-between mt-5">
+            {/* <div className="flex justify-between mt-5">
                 <div className="text-[#667085] ml-5">
                     Showing {startRow}-{endRow} of {totalRows}
                 </div>
 
-                {/* Pagination Controls */}
+                 
                 <div className="flex items-center">
                     <button
                         onClick={() => table.previousPage()}
@@ -175,7 +175,7 @@ export function DataTable({ allData }) {
                         <span className="text-gray-500">Next</span>
                     </button>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }

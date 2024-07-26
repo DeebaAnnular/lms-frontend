@@ -41,12 +41,12 @@ const Sidebar = () => {
     return (
         <section className="sticky left-0 top-0 flex h-screen w-fit flex-col justify-between bg-[#134572]  pt-0  min-w-[220px]"
         >
-            <div className="logo h-[53px] py-[10px] relative w-full  object-contain">
+            <div className="logo h-[85px] py-[20px] relative w-full  object-contain">
 
-                <Image src='/imgs/logo1.png' alt='logo' layout="fill" objectFit="contain" className=" h-[53px] w-full mt-[5px] object-contian" />
+                <Image src='/imgs/logo1.png' alt='logo' layout="fill" objectFit="contain" className=" h-[85px] w-full mt-[20px] object-contian" />
 
             </div>
-            <div className="flex mt-4 flex-1 flex-col gap-3   ">
+            <div className="flex mt-8 flex-1 flex-col gap-3   ">
                 {sidebarLinks.map((link) => {
 					const isActive =
 						pathname === link.route || pathname.includes(link.route);

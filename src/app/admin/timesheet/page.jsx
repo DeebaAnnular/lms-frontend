@@ -21,8 +21,8 @@ const Page = () => {
  
 
     return (
-        <div className=''>
-            <h1 className='text-2xl font-bold'>Weekly Status</h1>
+        <div className='w-full'>
+             
             {/* You can render currUserStatus here */}
             <div className=" mx-auto">
                 {

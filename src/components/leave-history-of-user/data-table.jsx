@@ -23,13 +23,13 @@ import { useState } from "react";
 export function DataTable({ columns, data }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
-    const [pageIndex, setPageIndex] = useState(0);
+    // const [pageIndex, setPageIndex] = useState(0);
 
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
+        // getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
@@ -37,10 +37,10 @@ export function DataTable({ columns, data }) {
         state: {
             sorting,
             columnFilters,
-            pagination: {
-                pageIndex,
-                pageSize: 5, // Customize the page size
-            },
+            // pagination: {
+            //     pageIndex,
+            //     pageSize: 5, // Customize the page size
+            // },
         },
     });
 
@@ -96,7 +96,7 @@ export function DataTable({ columns, data }) {
             </div>
 
             {/* Pagination Controls */}
-            <div className="flex items-center justify-between mt-4">
+            {/* <div className="flex items-center justify-between mt-4">
                 <button
                     onClick={() => setPageIndex(pageIndex - 1)}
                     disabled={pageIndex === 0}
@@ -105,7 +105,7 @@ export function DataTable({ columns, data }) {
                     Previous
                 </button>
                 <span className="text-[#667085]">
-                    Page {pageIndex + 1} of {Math.ceil(data.length / 5)} {/* Assuming page size of 2 */}
+                    Page {pageIndex + 1} of {Math.ceil(data.length / 5)}   
                 </span>
                 <button
                     onClick={() => setPageIndex(pageIndex + 1)}
@@ -114,7 +114,7 @@ export function DataTable({ columns, data }) {
                 >
                     Next
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 }

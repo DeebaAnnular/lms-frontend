@@ -85,7 +85,7 @@ export function DataTable({ columns, data }) {
 
             </div>
 
-            <div className="p-2 py-4  min-h-[380px] relative overflow-clip ">
+            <div className="p-2 py-4   relative overflow-clip ">
                 <Table>
                     <TableHeader className="bg-[#f7f7f7]  h-[60px] text-[#333843]">
                         {table.getHeaderGroups().map((headerGroup) => (

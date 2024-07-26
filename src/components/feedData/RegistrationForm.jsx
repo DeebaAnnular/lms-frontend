@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { capitalizeWords } from "../../utils";
+import { API } from "../../config";
 
 const RegistrationForm = ({ setIsShow }) => {
     const [formData, setFormData] = useState({
@@ -36,9 +37,33 @@ const RegistrationForm = ({ setIsShow }) => {
         return [year, month, day].join("-");
     };
 
-    const handleSubmit = async (e) => {
+    const validateForm = () => {
+        const missingFields = [];
 
+        if (!formData.emp_id) missingFields.push("Employee ID");
+        if (!formData.emp_name) missingFields.push("Employee Name");
+        if (!formData.gender) missingFields.push("Gender");
+        if (!formData.date_of_joining) missingFields.push("Date of Joining");
+        if (!formData.contact_number) missingFields.push("Contact Number");
+        if (!formData.work_email) missingFields.push("Work Email");
+        if (!formData.active_status) missingFields.push("Employee Status");
+        if (!formData.designation) missingFields.push("Designation");
+        if (!formData.work_location) missingFields.push("Work Location");
+        if (!formData.password) missingFields.push("Password");
+
+        if (missingFields.length > 0) {
+            alert(`Please fill in the following fields: ${missingFields.join(", ")}`);
+            return false;
+        }
+        return true;
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
 
         const dataToSend = {
             ...formData,
@@ -47,7 +72,7 @@ const RegistrationForm = ({ setIsShow }) => {
         };
 
         try {
-            const response = await fetch("http://localhost:3000/api/auth/register", {
+            const response = await fetch(`${API}/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -69,7 +94,6 @@ const RegistrationForm = ({ setIsShow }) => {
                     designation: "",
                     work_location: "",
                     password: "",
-                    role: "Employee"
                 });
                 setIsShow(false);
             } else {
@@ -78,34 +102,30 @@ const RegistrationForm = ({ setIsShow }) => {
         } catch (error) {
             console.error("Error:", error);
         }
-
     };
 
     return (
         <div>
-            <div className="box md:max-h-[700px]   relative top-1 flex flex-col items-center">
-                <div className="mt-6   min-w-[500px]">
-                    <form onSubmit={handleSubmit} >
-
+            <div className="box md:max-h-[700px] relative top-1 flex flex-col items-center">
+                <div className="mt-6 min-w-[500px]">
+                    <form onSubmit={handleSubmit}>
                         <div className="flex gap-20 flex-row">
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="emp_name" className=" text-[14px] font-regular text-[#373857]  ">
+                                    <label htmlFor="emp_name" className="text-[14px] font-regular text-[#373857]">
                                         Employee Name
                                     </label>
                                     <input
                                         id="emp_name"
                                         value={capitalizeWords(formData.emp_name)}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px]  rounded-md p-1 min-h-[40px]"
+                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
                                         type="text"
                                         required
                                         onChange={handleInputChange}
                                     />
                                 </div>
-                                 
-                                <div className='flex flex-col mb-3 '>
-
-                                    <label htmlFor="gender" className=" text-[14px] font-regular text-[#373857]  ">
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="gender" className="text-[14px] font-regular text-[#373857]">
                                         Gender
                                     </label>
                                     <select
@@ -118,27 +138,21 @@ const RegistrationForm = ({ setIsShow }) => {
                                         <option value="M">Male</option>
                                         <option value="F">Female</option>
                                     </select>
-
                                 </div>
-                                <div className='flex flex-col mb-3 '>
-                                    <label
-                                        htmlFor="emp_id"
-                                        className=" text-[14px] font-regular text-[#373857]  "
-                                        type="number"
-                                        required
-                                    >
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="date_of_joining" className="text-[14px] font-regular text-[#373857]">
                                         Date of Joining
                                     </label>
                                     <input
                                         id="date_of_joining"
                                         value={formData.date_of_joining}
-                                        className="border border-[#B6B6B6] text-[16px]   rounded-md p-1 focus:border-formblue hover:border-form blue min-h-[40px]"
+                                        className="border border-[#B6B6B6] text-[16px] rounded-md p-1 focus:border-formblue hover:border-formblue min-h-[40px]"
                                         onChange={handleInputChange}
                                         type="date"
                                     />
                                 </div>
-                                <div className='flex flex-col mb-3 '>
-                                    <label htmlFor="work_email" className=" text-[14px] font-regular text-[#373857]  ">
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="work_email" className="text-[14px] font-regular text-[#373857]">
                                         Work Email
                                     </label>
                                     <input
@@ -149,9 +163,8 @@ const RegistrationForm = ({ setIsShow }) => {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-                                 
-                                <div className='flex flex-col mb-3 '>
-                                    <label htmlFor="work_location" className=" text-[14px] font-regular text-[#373857]  ">
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="work_location" className="text-[14px] font-regular text-[#373857]">
                                         Location
                                     </label>
                                     <input
@@ -164,13 +177,8 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                             </div>
                             <div className="min-w-[275px]">
-                                    <div className='flex flex-col mb-3 '>
-                                    <label
-                                        htmlFor="emp_id"
-                                        className=" text-[14px] font-regular text-[#373857]  "
-                                        type="number"
-                                        required
-                                    >
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="emp_id" className="text-[14px] font-regular text-[#373857]">
                                         Employee Id
                                     </label>
                                     <input
@@ -180,9 +188,10 @@ const RegistrationForm = ({ setIsShow }) => {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-                                <div className='flex flex-col mb-3 '><label htmlFor="contact_number" className=" text-[14px] font-regular text-[#373857]  ">
-                                    Contact No
-                                </label>
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="contact_number" className="text-[14px] font-regular text-[#373857]">
+                                        Contact No
+                                    </label>
                                     <input
                                         id="contact_number"
                                         type="text"
@@ -191,11 +200,9 @@ const RegistrationForm = ({ setIsShow }) => {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-                                 
-                             
-                                <div className='flex flex-col mb-3 '>
-                                    <label htmlFor="designation" className=" text-[14px] font-regular text-[#373857]  ">
-                                         Role
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="designation" className="text-[14px] font-regular text-[#373857]">
+                                        Role
                                     </label>
                                     <input
                                         id="designation"
@@ -205,10 +212,8 @@ const RegistrationForm = ({ setIsShow }) => {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-                                 
-                                <div className='flex flex-col mb-3 '>
-
-                                    <label htmlFor="password" className=" text-[14px] font-regular text-[#373857]  ">
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="password" className="text-[14px] font-regular text-[#373857]">
                                         Password
                                     </label>
                                     <input
@@ -220,8 +225,8 @@ const RegistrationForm = ({ setIsShow }) => {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-                                <div className='flex flex-col mb-3 '>
-                                    <label htmlFor="active_status" className=" text-[14px] font-regular text-[#373857]  ">
+                                <div className='flex flex-col mb-3'>
+                                    <label htmlFor="active_status" className="text-[14px] font-regular text-[#373857]">
                                         Employee Status
                                     </label>
                                     <select
@@ -238,36 +243,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        {/* <label htmlFor="password" className=" text-[14px] font-regular text-[#373857]  ">
-                            Role
-                        </label>
-                        <input
-                            id="password"
-                            type="text"
-                            value="Employee"
-                            className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1"
-                            required 
-                            readOnly
-                        /> */}
-
-
                     </form>
-
                     <div className="flex mt-3 w-full items-center justify-end">
                         <button
                             className="mr-2 py-1 px-2 w-[150px] rounded-sm h-fit text-white bg-[#134572] font-normal"

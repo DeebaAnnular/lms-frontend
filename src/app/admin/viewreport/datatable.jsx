@@ -16,9 +16,10 @@ import {
     TableRow,
 } from "../../../components/ui/table";
 import { Button } from "../../../components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { capitalizeWords } from "../../../utils/index";
 import { useRouter } from "next/navigation";
+import { getTasksTimeById} from "../../../actions";
 
 export function DataTable({ allData, userId, startDate, endDate }) {
     const [data, setData] = useState(allData);
@@ -33,7 +34,32 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
     const [show, setShow] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
+    const [taskDetails, setTaskDetails] = useState([]);
+    const [taskIds, setTaskIds] = useState([]);
+    const [time, setTime] = useState({});
+    const [selectedDate, setSelectedDate] = useState()
 
+    const handleTaskClick = (tasks, taskId, Day) => {
+        setSelectedDate(Day)
+        setTaskDetails(tasks);
+        setTaskIds(taskId);
+        setShow(true);
+    };
+
+    useEffect(() => {
+        const fetchTaskTime = async (id) => {
+            const data = await getTasksTimeById(id);
+            setTime((prevTime) => ({ ...prevTime, [id]: data }));
+        };
+
+        if (taskIds.length > 0) {
+            taskIds.forEach((id) => {
+                if (!time[id]) {
+                    fetchTaskTime(id);
+                }
+            });
+        }
+    }, [taskIds]);
     const handleApprove = async (task_id) => {
         try {
             const response = await fetch(
@@ -124,26 +150,11 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             header: "Date",
         },
         {
-            accessorKey: "task_id",
-            header: "Task ID",
-            cell: ({ row }) => (
-                <div>
-                    {row.original.task_id.map((id) => (
-                        <p key={id}>{id}</p>
-                    ))}
-                </div>
-            ),
-        },
-        {
             accessorKey: "task_name",
             header: "Tasks",
             cell: ({ row }) => (
-                <div>
-                    {row.original.task_name.map((taskName, index) => (
-                        <p key={row.original.task_id[index]}>
-                            {capitalizeWords(taskName)}
-                        </p>
-                    ))}
+                <div onClick={() => handleTaskClick(row.original.task_name, row.original.task_id, row.original.day)} className="cursor-pointer text-blue-500 underline">
+                    <p>Task List</p>
                 </div>
             ),
         },
@@ -218,7 +229,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
     return (
         <div className="w-full">
-            <div className="rounded-none  min-h-[380px] relative overflow-clip">
+            <div className="rounded-none min-h-[380px] relative overflow-clip">
                 <Table>
                     <TableHeader className="bg-[#F7F7F7] hover:bg-none text-black">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -256,57 +267,40 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
             {show && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded shadow-lg relative">
+                    <div className="bg-white p-6 rounded min-w-[300px] w-[600px] min-h-[500px] shadow-lg relative">
                         <button onClick={() => setShow(false)} className="absolute top-2 right-2 text-red-500 text-xl">
                             <IoIosClose />
                         </button>
-                        <h1 className="text-2xl font-bold text-center mb-4">Edit Task</h1>
-                        <form className="space-y-4">
-                            <div>
-                                <label className="block">Task Name:</label>
-                                <input
-                                    type="text"
-                                    className="w-full p-2 border rounded"
-                                    value={currentTask ? currentTask.task_name : ""}
-                                    onChange={(e) =>
-                                        setCurrentTask({
-                                            ...currentTask,
-                                            task_name: e.target.value,
-                                        })
-                                    }
-                                />
-                            </div>
-                            <div>
-                                <label className="block">Time:</label>
-                                <input
-                                    type="text"
-                                    className="w-full p-2 border rounded"
-                                    value={currentTask ? currentTask.task_time : ""}
-                                    onChange={(e) =>
-                                        setCurrentTask({
-                                            ...currentTask,
-                                            task_time: e.target.value,
-                                        })
-                                    }
-                                />
-                            </div>
-
-                            <div className="flex justify-end">
-                                <button
-                                    type="button"
-                                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                                    onClick={() => {
-                                        // sumbitEditedTask(
-                                        //     currentTask.task_id,
-                                        //     currentTask
-                                        // );
-                                        setShow(false);
-                                    }}
-                                >
-                                    Save
-                                </button>
-                            </div>
-                        </form>
+                        <h1 className="text-2xl font-bold text-center mb-4">{selectedDate} Tasks</h1>
+                        <Table>
+                            <TableHeader>
+                                <TableRow className='bg-[#F7F7F7]'>
+                                    <TableHead className='p-0 px-3 text-[#333843]'>S.No</TableHead>
+                                    <TableHead className='p-0 px-3 pl-5 text-[#333843]'>Task</TableHead>
+                                    {/* <TableHead>Time</TableHead> */}
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell className='p-0 w-[50%]'>
+                                        {taskIds && taskIds.map((id, index) => (
+                                            <p key={index + 1} className="py-2 px-3 pl-5 border-b text-[#667085]">
+                                                {index + 1}
+                                                {/* {fetchTaskTime(id)}
+                                                {time[id] && <span>{` - ${time[id]}`}</span>} */}
+                                            </p>
+                                        ))}
+                                    </TableCell>
+                                    <TableCell className='p-0 w-[50%]'>
+                                        {taskDetails && taskDetails.map((task, index) => (
+                                            <p key={index + 1} className="py-2 px-3  border-b text-[#667085]">
+                                                {capitalizeWords(task)}
+                                            </p>
+                                        ))}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
                     </div>
                 </div>
             )}

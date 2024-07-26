@@ -1,4 +1,7 @@
+import { useSelector } from 'react-redux';
 import { API } from '../config';
+
+ 
 
 export const getEmp_details = async () => {
     try {
@@ -186,15 +189,31 @@ export const getTaskById = async (id) => {
     }
 }
 
-//get all tasks
-export const getAllTask = async () => {
+export const getTasksTimeById = async (id) => {
+    try {
+        const response = await fetch(`${API}/task/get_task_by_id/${id}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        return null; // Return null or handle error as needed
+    }
+}
 
+
+
+//get all tasks
+export const getAllTask = async (user_id) => { 
     const response = await fetch(`${API}/task/get_all_tasks`)
     if (!response.ok) {
         throw new Error('Network response was not ok', response.statusText)
     }
-    const data = response.json()
-    return data
+    const data =await response.json() 
+    const taskOfCurrentUser = data.filter(item => item.user_id == user_id)
+    return taskOfCurrentUser
 }
 
 
@@ -292,3 +311,87 @@ export const getAllTaskByIdAdmin = async (weekId, startDate, endDate) => {
         return []; // Return an empty array or handle error as needed
     }
 }
+
+    export const handleApprove = async (task_id) => {
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/task/approve_daily_task`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        approvedStatus: "approved",
+                        approvedById: localStorage.getItem("user_id"),
+                        taskIds: task_id,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to approve daily task");
+            }
+
+            // Update data in state
+            const updatedData = data.map((item) => {
+                if (item.task_id === task_id) {
+                    return {
+                        ...item,
+                        approved_status: "approved",
+                    };
+                }
+                return item;
+            });
+            setData(updatedData);
+
+            // router.push("/admin/timesheet");
+
+        } catch (error) {
+            console.error("Error approving daily task:", error);
+        }
+    };
+
+    export const handleReject = async (task_id, user_id) => {
+        const rejectComment = window.prompt("Enter your rejection comment");
+
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/task/reject_daily_task`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        rejectedStatus: "rejected",
+                        rejectedById: user_id,
+                        rejectReason: rejectComment,
+                        taskIds: task_id,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to reject daily task");
+            }
+
+            // Update data in state
+            const updatedData = data.map((item) => {
+                if (item.task_id === task_id) {
+                    return {
+                        ...item,
+                        approved_status: "rejected",
+                    };
+                }
+                return item;
+            });
+            setData(updatedData);
+
+            // Optional: Navigate after action
+            // router.push("/admin/timesheet");
+
+        } catch (error) {
+            console.error("Error rejecting daily task:", error);
+        }
+    };
