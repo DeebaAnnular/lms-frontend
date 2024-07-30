@@ -310,11 +310,13 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                 </div>
             </div> */}
 
-            <div className="flex justify-end mt-2 p-1 mr-4 mb-0">
-                <Button onClick={handleSubmit} className="bg-black text-white rounded-none px-10">
-                    Submit
-                </Button>
-            </div>
+{table.getRowModel().rows?.length > 0 && (
+                <div className="flex justify-end mt-2 p-1 mr-4 mb-0">
+                    <Button onClick={handleSubmit} className="bg-black text-white rounded-none px-10">
+                        Submit
+                    </Button>
+                </div>
+            )}
 
             {show && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -347,7 +349,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Task Time
                                             </th>
-                                            {currDayStatus != 'approved' && (<th className="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">
+                                            {currDayStatus != 'approved' && (<th className="px-6 py-3 text-left text-xs  font-medium text-gray-500 uppercase tracking-wider">
                                                 Action
                                             </th>)}
                                              

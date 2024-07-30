@@ -95,12 +95,12 @@ const Signin = () => {
     return (
         <main className='overflow-hidden  bg-[#D4DBE2]' >
             <div className='h-screen flex items-center justify-center'>
-                <div className=' bg-white py-5 flex items-center flex-col  rounded-[41px] w-[400px] h-[500px] shadow-[10px_10px_15px_rgba(0,0,0,0.1)] overflow-hidden'>
+                <div className=' bg-white py-5 flex items-center flex-col  rounded-[31px] w-[400px] min-h-[500px] shadow-[10px_10px_15px_rgba(0,0,0,0.1)] overflow-hidden'>
 
 
                     <div>
                         <div className="mx-7  flex justify-center bg-white">
-                            <img className='w-40 h-30 ' src='/imgs/logo2.png' alt="Annular_logo" />
+                            <img className='w-40 min-h-30 ' src='/imgs/logo2.png' alt="Annular_logo" />
                         </div>
                         {/* <div className='flex justify-center transform -translate-y-3 mt-8'>
                         <h1 className='text-gray-600 text-2xl font-bold'>Login</h1>
@@ -112,7 +112,7 @@ const Signin = () => {
                         <div>
                             <label htmlFor="" className='ml-3 mb- text-[16px] '>Email</label>
                             <input className='outline-none w-full  bg-[#F0F5F9] rounded-md border-gray-500 p-1.5 px-3' type="text" id="email" required value={loginData.email} placeholder='Enter your Email' onChange={handleChange} />
-                            {errors.email && <p className='text-red-500 text-sm'>{errors.email}</p>}
+                            {errors.email && <p className='text-red-500 text-xs'>{errors.email}</p>}
                         </div>
 
                         <div>
@@ -123,10 +123,10 @@ const Signin = () => {
                             </div>
 
                         </div>
-                        {errors.password && <p className='text-red-500 text-sm'>{errors.password}</p>}
+                        {errors.password && <p className='text-red-500 text-xs'>{errors.password}</p>}
 
                     </div>
-                    <button className="bg-[#134572] mt-[5.5rem] text-white rounded-md h-[35px] w-[80%] text-md " onClick={handleSubmit}>Login</button>
+                    <button className="bg-[#134572] mt-[4rem] text-white rounded-md h-[35px] w-[80%] text-md " onClick={handleSubmit}>Login</button>
                 </div>
             </div>
         </main>

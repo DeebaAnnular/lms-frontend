@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { capitalizeWords } from "../../utils";
-import { API } from "../../config";
+import { ToastContainer,toast } from "react-toastify"; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegistrationForm = ({ setIsShow }) => {
     const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ const RegistrationForm = ({ setIsShow }) => {
         work_location: "",
         password: "",
     });
+
+    const [errors, setErrors] = useState({});
 
     const handleInputChange = (e) => {
         setFormData({
@@ -38,24 +41,22 @@ const RegistrationForm = ({ setIsShow }) => {
     };
 
     const validateForm = () => {
-        const missingFields = [];
+        const newErrors = {};
 
-        if (!formData.emp_id) missingFields.push("Employee ID");
-        if (!formData.emp_name) missingFields.push("Employee Name");
-        if (!formData.gender) missingFields.push("Gender");
-        if (!formData.date_of_joining) missingFields.push("Date of Joining");
-        if (!formData.contact_number) missingFields.push("Contact Number");
-        if (!formData.work_email) missingFields.push("Work Email");
-        if (!formData.active_status) missingFields.push("Employee Status");
-        if (!formData.designation) missingFields.push("Designation");
-        if (!formData.work_location) missingFields.push("Work Location");
-        if (!formData.password) missingFields.push("Password");
+        if (!formData.emp_id) newErrors.emp_id = "Please fill this field";
+        if (!formData.emp_name) newErrors.emp_name = "Please fill this field";
+        if (!formData.gender) newErrors.gender = "Please fill this field";
+        if (!formData.date_of_joining) newErrors.date_of_joining = "Please fill this field";
+        if (!formData.contact_number) newErrors.contact_number = "Please fill this field";
+        if (!formData.work_email) newErrors.work_email = "Please fill this field";
+        if (!formData.active_status) newErrors.active_status = "Please fill this field";
+        if (!formData.designation) newErrors.designation = "Please fill this field";
+        if (!formData.work_location) newErrors.work_location = "Please fill this field";
+        if (!formData.password) newErrors.password = "Please fill this field";
 
-        if (missingFields.length > 0) {
-            alert(`Please fill in the following fields: ${missingFields.join(", ")}`);
-            return false;
-        }
-        return true;
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
@@ -72,7 +73,7 @@ const RegistrationForm = ({ setIsShow }) => {
         };
 
         try {
-            const response = await fetch(`${API}/auth/register`, {
+            const response = await fetch("http://13.201.79.49:9091/api/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -81,7 +82,7 @@ const RegistrationForm = ({ setIsShow }) => {
             });
 
             if (response.ok) {
-                alert("User registered successfully");
+               
                 // Optionally reset the form after successful submission
                 setFormData({
                     emp_id: "",
@@ -96,16 +97,36 @@ const RegistrationForm = ({ setIsShow }) => {
                     password: "",
                 });
                 setIsShow(false);
+                toast.success("Registered Successfully", {
+                    style: {
+                        
+                        color: '#90EE90', 
+                    },
+                });
             } else {
-                console.error("Failed to register user");
+                console.error("Failed to register");
+                toast.error("Error Registering User", {
+                    style: {
+                        
+                        color: '#FF0000',
+                    },
+                });
             }
         } catch (error) {
             console.error("Error:", error);
         }
     };
 
+    const getInputClassName = (field) => {
+        return `border ${errors[field] ? 'border-red-500' : 'border-[#B6B6B6]'} text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]`;
+    };
+
+    const getTooltip = (field) => {
+        return errors[field] ? errors[field] : "";
+    };
+
     return (
-        <div>
+        <div >
             <div className="box md:max-h-[700px] relative top-1 flex flex-col items-center">
                 <div className="mt-6 min-w-[500px]">
                     <form onSubmit={handleSubmit}>
@@ -113,26 +134,29 @@ const RegistrationForm = ({ setIsShow }) => {
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="emp_name" className="text-[14px] font-regular text-[#373857]">
-                                        Employee Name
+                                        Employee Name<span>*</span>
                                     </label>
                                     <input
                                         id="emp_name"
                                         value={capitalizeWords(formData.emp_name)}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        className={getInputClassName('emp_name')}
                                         type="text"
                                         required
                                         onChange={handleInputChange}
+                                        title={getTooltip('emp_name')}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="gender" className="text-[14px] font-regular text-[#373857]">
-                                        Gender
+                                        Gender<span>*</span>
                                     </label>
                                     <select
                                         id="gender"
+                                        required
                                         value={formData.gender}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        className={getInputClassName('gender')}
                                         onChange={handleInputChange}
+                                        title={getTooltip('gender')}
                                     >
                                         <option value="">Select Gender</option>
                                         <option value="M">Male</option>
@@ -141,100 +165,113 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="date_of_joining" className="text-[14px] font-regular text-[#373857]">
-                                        Date of Joining
+                                        Date of Joining<span>*</span>
                                     </label>
                                     <input
                                         id="date_of_joining"
+                                        required
                                         value={formData.date_of_joining}
-                                        className="border border-[#B6B6B6] text-[16px] rounded-md p-1 focus:border-formblue hover:border-formblue min-h-[40px]"
+                                        className={getInputClassName('date_of_joining')}
                                         onChange={handleInputChange}
                                         type="date"
+                                        title={getTooltip('date_of_joining')}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="work_email" className="text-[14px] font-regular text-[#373857]">
-                                        Work Email
+                                        Work Email<span>*</span>
                                     </label>
                                     <input
                                         id="work_email"
                                         value={formData.work_email}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        className={getInputClassName('work_email')}
                                         required
                                         onChange={handleInputChange}
+                                        title={getTooltip('work_email')}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="work_location" className="text-[14px] font-regular text-[#373857]">
-                                        Location
+                                        Location<span>*</span>
                                     </label>
                                     <input
                                         id="work_location"
                                         value={formData.work_location}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        className={getInputClassName('work_location')}
                                         required
                                         onChange={handleInputChange}
+                                        title={getTooltip('work_location')}
                                     />
                                 </div>
                             </div>
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="emp_id" className="text-[14px] font-regular text-[#373857]">
-                                        Employee Id
+                                        Employee Id<span>*</span>
                                     </label>
                                     <input
                                         id="emp_id"
+                                        required
                                         value={formData.emp_id}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 focus:border-formblue hover:border-formblue min-h-[40px]"
+                                        className={getInputClassName('emp_id')}
                                         onChange={handleInputChange}
+                                        title={getTooltip('emp_id')}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="contact_number" className="text-[14px] font-regular text-[#373857]">
-                                        Contact No
+                                        Contact No<span>*</span>
                                     </label>
                                     <input
                                         id="contact_number"
                                         type="text"
+                                        required
                                         value={formData.contact_number}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        className={getInputClassName('contact_number')}
                                         onChange={handleInputChange}
+                                        title={getTooltip('contact_number')}
                                     />
                                 </div>
+
+
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="designation" className="text-[14px] font-regular text-[#373857]">
-                                        Role
+                                        Designation<span>*</span>
                                     </label>
                                     <input
                                         id="designation"
                                         value={formData.designation}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        className={getInputClassName('designation')}
                                         required
                                         onChange={handleInputChange}
+                                        title={getTooltip('designation')}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="password" className="text-[14px] font-regular text-[#373857]">
-                                        Password
+                                        Password<span>*</span>
                                     </label>
                                     <input
                                         id="password"
                                         type="password"
                                         value={formData.password}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        className={getInputClassName('password')}
                                         required
                                         onChange={handleInputChange}
+                                        title={getTooltip('password')}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="active_status" className="text-[14px] font-regular text-[#373857]">
-                                        Employee Status
+                                        Employee Status<span>*</span>
                                     </label>
                                     <select
                                         id="active_status"
                                         value={formData.active_status}
-                                        className="border border-[#B6B6B6] text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]"
+                                        className={getInputClassName('active_status')}
                                         required
                                         onChange={handleInputChange}
+                                        title={getTooltip('active_status')}
                                     >
                                         <option value="">Select Status</option>
                                         <option value="true">Active</option>
@@ -243,15 +280,15 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                             </div>
                         </div>
+                        <div className="flex mt-3 w-full items-center justify-end">
+                            <button
+                                className="mr-2 py-1 px-2 w-[150px] rounded-sm h-fit text-white bg-[#134572] font-normal"
+                                type="submit"
+                            >
+                                Register
+                            </button>
+                        </div>
                     </form>
-                    <div className="flex mt-3 w-full items-center justify-end">
-                        <button
-                            className="mr-2 py-1 px-2 w-[150px] rounded-sm h-fit text-white bg-[#134572] font-normal"
-                            onClick={handleSubmit}
-                        >
-                            Register
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>

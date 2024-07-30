@@ -4,6 +4,7 @@ import { DataTable } from './data-table';
 import { columns } from './column';
 //import Sidebar from '../../../components/sidebar.jsx'
 import { API } from '../../../config';
+import { ToastContainer, toast } from 'react-toastify';
 
 import AuthRoute from '../../../HOC/AuthRoute';
 import { getEmp_details } from '../../../actions'
@@ -36,6 +37,7 @@ const Page = () => {
 
     return (
         <div className=''>
+            <ToastContainer/>
             <p className='text-[20px] font-bold'>Employee List</p>
             <div className=" ">
                 <DataTable columns={columns} data={emp_list} />
