@@ -108,7 +108,8 @@ const RegistrationForm = ({ setIsShow }) => {
                 toast.error("Error Registering User", {
                     style: {
                         
-                        color: '#FF0000',
+                        color: '#FFB6C1',
+
                     },
                 });
             }
