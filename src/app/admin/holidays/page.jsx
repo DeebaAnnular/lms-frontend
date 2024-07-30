@@ -94,7 +94,7 @@ const Page = () => {
       }
 
       // alert("Holiday deleted successfully");
-     toast.success("Registered Successfully", {
+     toast.success("Holiday Deleted", {
                     style: {
                         
                         color: '#90EE90', 
@@ -103,7 +103,7 @@ const Page = () => {
       fetchHolidays();
     } catch (error) {
       console.error("Error deleting holiday:", error.message);
-      alert("Failed to delete holiday. Please try again later.");
+      // alert("Failed to delete holiday. Please try again later.");
     }
   };
 

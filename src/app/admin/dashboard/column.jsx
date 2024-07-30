@@ -32,7 +32,7 @@ export const columns = [
             const url = row.original.user_id
 
             return (
-                <Link href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_name)}</Link>
+                <Link className="text-blue-500 underline" href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_name)}</Link>
             )
         },
     },

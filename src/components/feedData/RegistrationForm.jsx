@@ -103,17 +103,24 @@ const RegistrationForm = ({ setIsShow }) => {
                         color: '#90EE90', 
                     },
                 });
-            } else {
-                console.error("Failed to register");
-                toast.error("Error Registering User", {
+            }
+            else {
+                const errorData = await response.json();
+                toast.error(errorData.message || "Error Registering User", {
                     style: {
-                        
                         color: '#FFB6C1',
-
                     },
                 });
             }
         } catch (error) {
+            console.error("Failed to register");
+            toast.error(error.message, {
+                style: {
+                    
+                    color: '#FFB6C1',
+
+                },
+            });
             console.error("Error:", error);
         }
     };
