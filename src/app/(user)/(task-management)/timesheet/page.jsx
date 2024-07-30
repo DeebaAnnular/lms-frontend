@@ -23,7 +23,7 @@ const Page = () => {
 
             <div className='bg-white p-3 rounded-none'>
                 <div className='mt-4 '>
-                    {/* date inputs */}
+                 
                     <div className="flex  justify-between items-center">
                         <div className='flex gap-2 '>
                             <div className=" active:border-none flex items-center gap-2">

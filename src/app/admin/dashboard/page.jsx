@@ -36,7 +36,7 @@ const Page = () => {
     }, []);
 
     return (
-        <div className=''>
+        <div className='w-full'>
             <ToastContainer/>
             <p className='text-[20px] font-bold'>Employee List</p>
             <div className=" ">
