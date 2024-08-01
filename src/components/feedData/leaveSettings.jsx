@@ -10,7 +10,7 @@ import { API } from "../../config";
 import React, { useEffect, useState } from 'react';
 import { RiArrowDropDownLine } from "react-icons/ri";
 
-const LeaveSettings = ({ id }) => {
+const LeaveSettings = ({ id, gender }) => {
     const [earnedLeave, setEarnedLeave] = useState(null);
     const [sickLeave, setSickLeave] = useState(null);
     const [optionalLeave, setOptionalLeave] = useState(null);
@@ -95,7 +95,7 @@ const LeaveSettings = ({ id }) => {
                     <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
                         <p className='font-bold mb-2'>Sick Leave</p>
                         <DropdownMenu>
-                            <DropdownMenuTrigger className='w-[40] h-full  flex items-center justify-between'>
+                            <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
                                 <span>{tempSickLeave !== null ? tempSickLeave : (sickLeave !== null ? sickLeave : "Select total leave")}</span>
                                 <RiArrowDropDownLine />
                             </DropdownMenuTrigger>
@@ -135,27 +135,29 @@ const LeaveSettings = ({ id }) => {
                     </div>
                 </div>
 
-                <div className='flex flex-col items-center w-full'>
-                    <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                        <p className='font-bold mb-2'>Maternity Leaves</p>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span>{tempMaternityLeave !== null ? tempMaternityLeave : (maternityLeave !== null ? maternityLeave : "Select total leave")}</span>
-                                <RiArrowDropDownLine />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className='w-full'>
-                                <DropdownMenuSeparator />
-                                {[0,180].map((value) => (
-                                    <DropdownMenuItem key={value} onClick={() => setTempMaternityLeave(value)}>
-                                        <div className='flex justify-between items-center w-full'>
-                                            <span>{value}</span>
-                                        </div>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                {gender === 'F' && (
+                    <div className='flex flex-col items-center w-full'>
+                        <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
+                            <p className='font-bold mb-2'>Maternity Leaves</p>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
+                                    <span>{tempMaternityLeave !== null ? tempMaternityLeave : (maternityLeave !== null ? maternityLeave : "Select total leave")}</span>
+                                    <RiArrowDropDownLine />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className='w-full'>
+                                    <DropdownMenuSeparator />
+                                    {[0,180].map((value) => (
+                                        <DropdownMenuItem key={value} onClick={() => setTempMaternityLeave(value)}>
+                                            <div className='flex justify-between items-center w-full'>
+                                                <span>{value}</span>
+                                            </div>
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
 
             <div className="bg-white relative flex flex-col items-end">

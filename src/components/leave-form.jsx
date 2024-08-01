@@ -1,4 +1,4 @@
- import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,19 +12,24 @@ const leaveSchema = z.object({
     leave_type: z.string().nonempty({ message: "Type of leave is required" }),
     session: z.string().nonempty({ message: "Leave duration is required" }),
     total_days: z.string().nonempty({ message: "Total days is required" }),
-    from_date: z.string().refine((date) => {
-        const selectedDate = new Date(date);
-        const currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0); // Remove the time part
-        return selectedDate >= currentDate;
-    }, {
-        message: "Start date must be today or later"
-    }),
-    to_date: z.string(),
-    reason: z.string().optional(),
+    from_date: z.string().regex(/\d{2}-\d{2}-\d{4}/, { message: "Start date must be in dd-mm-yyyy format" })
+        .refine((date) => {
+            const [day, month, year] = date.split('-').map(Number);
+            const selectedDate = new Date(year, month - 1, day);
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0); // Remove the time part
+            return selectedDate >= currentDate;
+        }, {
+            message: "Start date must be today or later"
+        }),
+    to_date: z.string().regex(/\d{2}-\d{2}-\d{4}/, { message: "End date must be in dd-mm-yyyy format" }),
+    reason: z.string().max(200, { message: "Reason cannot exceed 200 characters" }).optional(),
 }).superRefine((data, ctx) => {
-    const from_date = new Date(data.from_date);
-    const to_date = new Date(data.to_date);
+    const [from_day, from_month, from_year] = data.from_date.split('-').map(Number);
+    const [to_day, to_month, to_year] = data.to_date.split('-').map(Number);
+    
+    const from_date = new Date(from_year, from_month - 1, from_day);
+    const to_date = new Date(to_year, to_month - 1, to_day);
 
     if (to_date < from_date) {
         ctx.addIssue({
@@ -108,8 +113,11 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     }, [user.user_id]);
 
     const calculateTotalDays = (from_date, to_date) => {
-        const start = new Date(from_date);
-        const end = new Date(to_date);
+        const [from_day, from_month, from_year] = from_date.split('-').map(Number);
+        const [to_day, to_month, to_year] = to_date.split('-').map(Number);
+
+        const start = new Date(from_year, from_month - 1, from_day);
+        const end = new Date(to_year, to_month - 1, to_day);
         let count = 0;
 
         while (start <= end) {
@@ -144,21 +152,28 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     }, [session, from_date, to_date, leave_type, optional_date, setValue]);
 
     const onSubmit = async (data) => {
+        const formatDate = (dateStr) => {
+            const [day, month, year] = dateStr.split('-').map(Number);
+            return `${year}-${month}-${day}`;
+        };
+    
         const leaveType = data.leave_type;
         const totalDaysRequested = totalDays;
         const availableBalance = leaveBalance[leaveType] || 0;
-
+    
         if (totalDaysRequested > availableBalance) {
             alert(`Requested leave exceeds available balance. You have ${availableBalance} days left for ${leaveType.replace('_', ' ')}.`);
             return;
         }
-
+    
+        data.from_date = formatDate(data.from_date);
+        data.to_date = formatDate(data.to_date);
         data.total_days = totalDaysRequested;
         data.user_id = user.user_id || null;
         data.emp_name = user.user_id || null;
-
+    
         const result = await postLeave_req(data);
-
+    
         if (result) {
             reset(); // Reset the form on successful response
             setTotalDays(0); // Reset the total days
@@ -169,26 +184,42 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
             console.error('There was an error submitting the form');
         }
     };
+    
+
+    const handleDateChange = (e) => {
+        let value = e.target.value;
+        value = value.replace(/\D/g, ''); // Remove non-digit characters
+    
+        // Add hyphen between day and month, and month and year
+        if (value.length > 4) {
+            value = `${value.slice(0, 2)}-${value.slice(2, 4)}-${value.slice(4)}`;
+        } else if (value.length > 2) {
+            value = `${value.slice(0, 2)}-${value.slice(2)}`;
+        }
+    
+        setValue(e.target.id, value, { shouldValidate: true });
+    };
+    
 
     const currentDate = new Date().toLocaleDateString('en-CA');
 
     return (
-        <div className="flex p-5 w-[65%] h-full ">
+        <div className="flex p-5 w-[65%] h-full">
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className=" flex flex-col p-5 w-full h-full  gap-5 border-r border-r-[#DCDCDC]"
+                className="flex flex-col p-5 w-full h-full gap-5 border-r border-r-[#DCDCDC]"
             >
-                <p className=" text-2xl font-medium text-[#06072D] ">Leave Form</p>
-                <div className="h-[90%] w-full pl-3 flex flex-col  items-start">
-                    <div className=" flex flex-col w-full gap-4 ">
-                        <label htmlFor="leave_type" className=" text-[#373857] text-[16px]">
+                <p className="text-2xl font-medium text-[#06072D]">Leave Form</p>
+                <div className="h-[90%] w-full pl-3 flex flex-col items-start">
+                    <div className="flex flex-col w-full gap-4">
+                        <label htmlFor="leave_type" className="text-[#373857] text-[16px]">
                             Type of Leave
                         </label>
-                        <div className=" w-full ">
+                        <div className="w-full">
                             <select
                                 id="leave_type"
                                 {...register("leave_type")}
-                                className=" px-2 rounded-md py-2 border w-[90%] "
+                                className="px-2 rounded-md py-2 border w-[90%]"
                             >
                                 <option value="" className="text-[#99A0B0]">
                                     Select
@@ -210,7 +241,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                                 <select
                                     id="optional_date"
                                     {...register("optional_date")}
-                                    className="block  rounded-md w-[90%]  p-2 border"
+                                    className="block rounded-md w-[90%] p-2 border"
                                 >
                                     <option value="">Select</option>
                                     {optionHolidays.map((data, index) => (
@@ -220,14 +251,13 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                                             disabled={data.date < currentDate}
                                             className={data.date < currentDate ? 'text-gray-500 text-[14px]' : ''}>
 
-                                            {data.date}  {`(${data.description})`}
+                                            {data.date} {`(${data.description})`}
                                         </option>
                                     ))}
                                 </select>
                             </div>
                         ) : (
                             <>
-                                {" "}
                                 <div className="w-full flex flex-col gap-4">
                                     <label htmlFor="session" className="text-[#373857] text-[16px]">
                                         Session
@@ -236,7 +266,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                                         <select
                                             id="session"
                                             {...register("session")}
-                                            className="p-2  rounded-md border w-[90%] text-[14px]"
+                                            className="p-2 rounded-md border w-[90%] text-[14px]"
                                         >
                                             <option value="full_day">Full Day</option>
                                             <option value="FN">FN</option>
@@ -245,51 +275,47 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                                     </div>
                                 </div>
                                 <div className="w-full flex flex-col gap-4">
-                                    <label
-                                        htmlFor="from_date"
-                                        className="text-[#373857]  min-w-fit text-[16px]"
-                                    >
+                                    <label htmlFor="from_date" className="text-[#373857] min-w-fit text-[16px]">
                                         Start Date
                                     </label>
-                                    <Input
-                                        type="date"
+                                    <input
+                                        type="text"
                                         id="from_date"
                                         {...register("from_date")}
                                         className="block w-[90%] rounded-md p-2 border text-[14px]"
+                                        maxLength="10"
+                                        onChange={handleDateChange}
                                     />
                                 </div>
                                 <div className="w-full flex flex-col gap-4">
-                                    <label
-                                        htmlFor="to_date"
-                                        className="text-[#373857]  min-w-fit text-[16px]"
-                                    >
+                                    <label htmlFor="to_date" className="text-[#373857] min-w-fit text-[16px]">
                                         End Date
                                     </label>
-                                    <Input
-                                        type="date"
+                                    <input
+                                        type="text"
                                         id="to_date"
                                         {...register("to_date")}
-                                        className="block w-[90%]  rounded-md p-2 border text-[14px]"
+                                        className="block w-[90%] rounded-md p-2 border text-[14px]"
+                                        maxLength="10"
+                                        onChange={handleDateChange}
                                         disabled={session === "FN" || session === "AN"}
                                     />
                                 </div>
                                 <div className="w-full flex flex-col gap-4">
-                                    <label
-                                        htmlFor="reason"
-                                        className="text-[#373857] text-lg min-w-fit text-[16px]"
-                                    >
+                                    <label htmlFor="reason" className="text-[#373857] text-lg min-w-fit text-[16px]">
                                         Reason
                                     </label>
                                     <Input
                                         type="text"
                                         id="reason"
                                         {...register("reason")}
-                                        className="block w-[90%]  rounded-md h-[5rem] p-2 border text-[14px]"
+                                        className="block w-[90%] rounded-md h-[5rem] p-2 border text-[14px]"
+                                        minLength={10}
+                                        maxLength={200}
                                     />
                                 </div>
                             </>
                         )}
-
                     </div>
                     {totalDays > 0 && <p className="my-3">{`Total Day(s)`}: {totalDays}</p>}
 

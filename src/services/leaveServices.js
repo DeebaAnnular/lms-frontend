@@ -8,8 +8,8 @@ export const getLeaveBalance = async (id) => {
     const data = await response.data;
     return data;
   } catch (error) {
-    console.log("Error at get leave balance", error);
-    throw Error(error.response.data);
+    console.log("Error at get leave balance", error.message);
+    // throw Error(error.response.data);
   }
 };
 

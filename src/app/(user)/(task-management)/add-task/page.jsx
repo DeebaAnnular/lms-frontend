@@ -84,25 +84,36 @@ const Calendar = () => {
 
 
     const handleAddTask = (day) => {
-        setShow(true);
-        setDay(day)
-        setTaskId(dateStr(day));
-        setSelectedDate(dateStr(day));
-
-        // Filter tasks for the selected date 
-        fetchData()
-        fetchalltask()
-        const tasksForDate = allTasks.filter((task) => task.task_date === dateStr(day));
-
-        if (tasksForDate.length > 0) {
-            console.log(allTasks)
-            const singleTask = tasksForDate.filter((task) => task.task_date === dateStr(day))[0]
-            setCurrDayStatus(singleTask.approved_status)
-            setCurrDayStatus(singleTask.approved_status)
+        const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        const today = new Date();
+        const thirtyDaysBefore = new Date(today);
+        thirtyDaysBefore.setDate(today.getDate() - 30);
+        const thirtyDaysAfter = new Date(today);
+        thirtyDaysAfter.setDate(today.getDate() + 30);
+    
+        if (selectedDate >= thirtyDaysBefore && selectedDate <= thirtyDaysAfter) {
+            setShow(true);
+            setDay(day);
+            setTaskId(dateStr(day));
+            setSelectedDate(dateStr(day));
+    
+            // Filter tasks for the selected date
+            fetchData();
+            fetchalltask();
+            const tasksForDate = allTasks.filter((task) => task.task_date === dateStr(day));
+    
+            if (tasksForDate.length > 0) {
+                console.log(allTasks);
+                const singleTask = tasksForDate.filter((task) => task.task_date === dateStr(day))[0];
+                setCurrDayStatus(singleTask.approved_status);
+            }
+    
+            setTasksForSelectedDate(tasksForDate);
+        } else {
+            alert('You can only add tasks for dates within 30 days from today.');
         }
-
-        setTasksForSelectedDate(tasksForDate);
     };
+    
 
     const fetch = async (data) => {
         const response = await postTask(data);
@@ -136,11 +147,16 @@ const Calendar = () => {
         console.log("inside", day)
         e.preventDefault();
         const timeFormat = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        if (task.trim() === "" || task.length < 5 || task.length > 50) {
+            alert('Task name must be between 5 and 50 characters.');
+            return;
+        }
 
         if (!time.match(timeFormat)) {
             alert('Time must be in the format "hh:mm:".');
             return;
-        }
+        } 
+        
         const newTask = {
             task_date: selectedDate,
             task_name: task,
@@ -378,6 +394,8 @@ const Calendar = () => {
                                         type="text"
                                         className="w-full p-2 border rounded"
                                         value={task}
+                                        minLength={5}
+                                        maxLength={50}
                                         onChange={(e) => setTask(e.target.value)}
                                     />
                                 </div>

@@ -8,6 +8,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
+
 import {
     Table,
     TableBody,
@@ -18,7 +19,7 @@ import {
 } from "../../../../components/ui/table";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { capitalizeWords, convertDate } from "../../../../utils/index";
 import { ArrowUpDown, EditIcon, DeleteIcon } from "lucide-react";
 import { cn } from "../../../../lib/utils";
@@ -39,7 +40,11 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     const [currentTask, setCurrentTask] = useState({
         task_name: "",
         task_time: "",
-    });
+    }); 
+
+    useEffect(()=>{
+        setData(allData)
+    },allData);
 
 
 
@@ -166,12 +171,19 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             accessorKey: "approved_status",
             header: ({ column }) => {
                 return (
-                    <p
+                    <Button
                         variant="ghost"
+                        className="text-[16px] font-bold"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
-                        Status
-                    </p>
+                        Status 
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                       
+                        
+                    </Button>
+                    
+                      
+                
                 );
             },
             cell: ({ row }) => {
@@ -224,11 +236,11 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         <div className="w-full h-full overflow-hidden flex flex-col static">
             <div className="rounded-none overflow-y-auto">
                 <Table>
-                    <TableHeader className="bg-[#F7F7F7] hover:bg-none text-black">
+                    <TableHeader className="bg-[#F7F7F7] hover:bg-none  text-black">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id} isHeader>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black border-none h-[60px] font-bold text-[16px]">
+                                    <TableHead key={header.id} className="text-black p-3 border-none h-[60px] font-bold text-[16px]">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(header.column.columnDef.header, header.getContext())}

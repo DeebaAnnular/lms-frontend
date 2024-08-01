@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { capitalizeWords } from "../../utils";
-import { ToastContainer,toast } from "react-toastify"; 
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify"; 
+import 'react-toastify/dist/ReactToastify.css'; 
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
 
 const RegistrationForm = ({ setIsShow }) => {
     const [formData, setFormData] = useState({
@@ -20,11 +22,15 @@ const RegistrationForm = ({ setIsShow }) => {
 
     const [errors, setErrors] = useState({});
 
-    const handleInputChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.id]: e.target.value,
-        });
+    const handleInputChange = (id, value) => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [id]: value,
+        }));
+    };
+
+    const handleInputChangeEvent = (e) => {
+        handleInputChange(e.target.id, e.target.value);
     };
 
     const formatDate = (date) => {
@@ -82,8 +88,6 @@ const RegistrationForm = ({ setIsShow }) => {
             });
 
             if (response.ok) {
-               
-                // Optionally reset the form after successful submission
                 setFormData({
                     emp_id: "",
                     emp_name: "",
@@ -98,28 +102,18 @@ const RegistrationForm = ({ setIsShow }) => {
                 });
                 setIsShow(false);
                 toast.success("Registered Successfully", {
-                    style: {
-                        
-                        color: '#90EE90', 
-                    },
+                    style: { color: '#90EE90' },
                 });
-            }
-            else {
+            } else {
                 const errorData = await response.json();
                 toast.error(errorData.message || "Error Registering User", {
-                    style: {
-                        color: '#FFB6C1',
-                    },
+                    style: { color: '#FFB6C1' },
                 });
             }
         } catch (error) {
             console.error("Failed to register");
             toast.error(error.message, {
-                style: {
-                    
-                    color: '#FFB6C1',
-
-                },
+                style: { color: '#FFB6C1' },
             });
             console.error("Error:", error);
         }
@@ -134,7 +128,7 @@ const RegistrationForm = ({ setIsShow }) => {
     };
 
     return (
-        <div >
+        <div>
             <div className="box md:max-h-[700px] relative top-1 flex flex-col items-center">
                 <div className="mt-6 min-w-[500px]">
                     <form onSubmit={handleSubmit}>
@@ -150,7 +144,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         className={getInputClassName('emp_name')}
                                         type="text"
                                         required
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         title={getTooltip('emp_name')}
                                     />
                                 </div>
@@ -163,7 +157,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         value={formData.gender}
                                         className={getInputClassName('gender')}
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         title={getTooltip('gender')}
                                     >
                                         <option value="">Select Gender</option>
@@ -180,7 +174,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         value={formData.date_of_joining}
                                         className={getInputClassName('date_of_joining')}
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         type="date"
                                         title={getTooltip('date_of_joining')}
                                     />
@@ -191,10 +185,11 @@ const RegistrationForm = ({ setIsShow }) => {
                                     </label>
                                     <input
                                         id="work_email"
+                                        type="email"
                                         value={formData.work_email}
                                         className={getInputClassName('work_email')}
                                         required
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         title={getTooltip('work_email')}
                                     />
                                 </div>
@@ -207,7 +202,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         value={formData.work_location}
                                         className={getInputClassName('work_location')}
                                         required
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         title={getTooltip('work_location')}
                                     />
                                 </div>
@@ -222,7 +217,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         value={formData.emp_id}
                                         className={getInputClassName('emp_id')}
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         title={getTooltip('emp_id')}
                                     />
                                 </div>
@@ -230,18 +225,17 @@ const RegistrationForm = ({ setIsShow }) => {
                                     <label htmlFor="contact_number" className="text-[14px] font-regular text-[#373857]">
                                         Contact No<span>*</span>
                                     </label>
-                                    <input
+                                    <PhoneInput
                                         id="contact_number"
-                                        type="text"
+                                        defaultCountry="IN"
                                         required
+                                        limitMaxLength={17}
                                         value={formData.contact_number}
                                         className={getInputClassName('contact_number')}
-                                        onChange={handleInputChange}
+                                        onChange={(value) => handleInputChange("contact_number", value)}
                                         title={getTooltip('contact_number')}
                                     />
                                 </div>
-
-
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="designation" className="text-[14px] font-regular text-[#373857]">
                                         Designation<span>*</span>
@@ -251,7 +245,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         value={formData.designation}
                                         className={getInputClassName('designation')}
                                         required
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         title={getTooltip('designation')}
                                     />
                                 </div>
@@ -265,7 +259,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         value={formData.password}
                                         className={getInputClassName('password')}
                                         required
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         title={getTooltip('password')}
                                     />
                                 </div>
@@ -278,7 +272,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         value={formData.active_status}
                                         className={getInputClassName('active_status')}
                                         required
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChangeEvent}
                                         title={getTooltip('active_status')}
                                     >
                                         <option value="">Select Status</option>
@@ -299,8 +293,10 @@ const RegistrationForm = ({ setIsShow }) => {
                     </form>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };
 
 export default RegistrationForm;
+

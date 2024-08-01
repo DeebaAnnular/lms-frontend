@@ -89,7 +89,7 @@ const Page = async ({ params }) => {
 
             <div className="personal-data w-full bg-white rounded-md px-5 py-3 mt-[-10px]">
                 <p className='text-[20px] font-bold mb-2'>Leave Settings</p>
-                <LeaveSettings id={params.id} />
+                <LeaveSettings id={params.id} gender={resData.gender} />
             </div>
         </div>
     );
