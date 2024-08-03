@@ -15,6 +15,21 @@ export const getEmp_details = async () => {
         console.error('There has been a problem with your fetch operation:', error);
         return []; // Return an empty array or handle error as needed
     }
+} 
+
+
+export async function getAllEmpIds() {
+    try {
+        const res = await fetch(`${API}/auth/users`); // Adjust the API endpoint as needed
+        if (!res.ok) {
+            throw new Error('Network response was not ok ' + res.statusText);
+        }
+        const employees = await res.json();
+        return employees.map(emp => emp.user_id); // Assuming the API returns an array of employee objects with an `id` field
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        return []; // Return an empty array or handle error as needed
+    }
 }
 
 
@@ -268,6 +283,7 @@ export const getAllTaskById = async (userId, startDate, endDate) => {
 
 
 export const submitWeeklyTimeSheet = async (data) => { 
+    console.log("submitweekyl",data);
         const response = await fetch(`${API}/task/weekly_status`,{
             method:'POST',
             headers:{
@@ -278,6 +294,7 @@ export const submitWeeklyTimeSheet = async (data) => {
         )
 
         const resData = await response.json()
+        console.log("weeklyresponse",resData)
         return resData
 }
 
