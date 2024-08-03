@@ -1,10 +1,14 @@
 import LeaveSettings from '../../../../components/feedData/leaveSettings';
-import { getEmp_detail_by_id } from '../../../../actions';
+import { getEmp_detail_by_id,getAllEmpIds} from '../../../../actions';
 import RoleSetting from '../../../../components/feedData/RoleSetting';
 import { capitalizeWords } from '../../../../utils';
 
 const Page = async ({ params }) => {
     const resData = await getEmp_detail_by_id(params.id);
+    // const empids=await getAllEmpIds();
+    // console.log("empids",empids);
+   
+    
 
     return (
         <div className="content-section w-full flex flex-col">
@@ -94,6 +98,13 @@ const Page = async ({ params }) => {
         </div>
     );
 };
+
+export async function generateStaticParams() {
+    const empIds = await getAllEmpIds();  
+    return empIds.map((id) => ({
+        params: { id: id.toString() },
+    }));
+}
 
 export default Page;
 
