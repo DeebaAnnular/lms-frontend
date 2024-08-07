@@ -3,6 +3,7 @@
 import React, { useActionState, useEffect, useState } from "react";
 import LeaveForm from "../../../components/leave-form";
 import LeaveDetails from "../../../components/LeaveDetails";
+import { CgDanger } from "react-icons/cg";
 
 import { getEmp_leave_balence } from "../../../actions";
 import { useSelector } from "react-redux";
@@ -24,7 +25,16 @@ const Page = () => {
   return <div className="w-full bg-[#FBF9F9] h-full md:p-3 xl:p-6">
     <div className="w-full h-full flex bg-white">
         <LeaveForm  fetchLeaveBalanceById = {fetchLeaveBalanceById}/>
-       {leaveBalance && <LeaveDetails leaveBalance={leaveBalance}/>}
+        {leaveBalance? (
+          <LeaveDetails leaveBalance={leaveBalance} />
+        ) : (
+          <div className="flex items-center py-4">
+             {/* <CgDanger className="mr-2" /> */}
+            <h3>Leave Balance not Available</h3>
+            <br/>
+            <h3>Please contact Admin</h3>
+          </div>
+        )}
 
     </div>
 

@@ -79,7 +79,7 @@ const RegistrationForm = ({ setIsShow }) => {
         };
 
         try {
-            const response = await fetch("http://13.201.79.49:9091/api/auth/register", {
+            const response = await fetch("https://lms-api.annularprojects.com/api/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -101,14 +101,10 @@ const RegistrationForm = ({ setIsShow }) => {
                     password: "",
                 });
                 setIsShow(false);
-                toast.success("Registered Successfully", {
-                    style: { color: '#90EE90' },
-                });
+                toast.success("Registered Successfully")
             } else {
                 const errorData = await response.json();
-                toast.error(errorData.message || "Error Registering User", {
-                    style: { color: '#FFB6C1' },
-                });
+                toast.error(errorData.message || "Error Registering User");
             }
         } catch (error) {
             console.error("Failed to register");
@@ -293,7 +289,6 @@ const RegistrationForm = ({ setIsShow }) => {
                     </form>
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

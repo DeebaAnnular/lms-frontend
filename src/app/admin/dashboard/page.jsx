@@ -33,7 +33,7 @@ const Page = () => {
         };
 
         fetchData();
-    }, []);
+    }, [emp_list]);
 
     return (
         <div className='w-full'>
