@@ -31,7 +31,7 @@ const Page = () => {
 
   const fetchHolidays = async () => {
     try {
-      const response = await fetch("http://13.201.79.49:9091/api/holiday/get_all_holidays");
+      const response = await fetch("http://lms-api.annularprojects.com/api/holiday/get_all_holidays");
 
       if (!response.ok) {
         throw new Error("Failed to fetch holidays");
@@ -58,7 +58,7 @@ const Page = () => {
 
     try {
       console.log("data", data);
-      const response = await fetch("http://13.201.79.49:9091/api/holiday/create_holiday", {
+      const response = await fetch("http://lms-api.annularprojects.com/api/holiday/create_holiday", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,6 +72,7 @@ const Page = () => {
 
       // alert("Holiday added successfully");
       toast.success("Holiday added successfully")
+
       setDate(null);
       setLeaveType("");
       setDescription("");
@@ -85,7 +86,7 @@ const Page = () => {
   const handleDelete = async (id) => {
     console.log("id",id);
     try {
-      const response = await fetch(`http://13.201.79.49:9091/api/holiday/delete_holiday/${id}`, {
+      const response = await fetch(`http://lms-api.annularprojects.com/api/holiday/delete_holiday/${id}`, {
         method: "DELETE",
       });
 
@@ -94,12 +95,7 @@ const Page = () => {
       }
 
       // alert("Holiday deleted successfully");
-     toast.success("Holiday Deleted", {
-                    style: {
-                        
-                        color: '#90EE90', 
-                    },
-                });
+     toast.success("Holiday Deleted Succesfully")
       fetchHolidays();
     } catch (error) {
       console.error("Error deleting holiday:", error.message);

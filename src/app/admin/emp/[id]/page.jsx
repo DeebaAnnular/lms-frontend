@@ -102,7 +102,7 @@ const Page = async ({ params }) => {
 export async function generateStaticParams() {
     const empIds = await getAllEmpIds();  
     return empIds.map((id) => ({
-        params: { id: id.toString() },
+        id: id.toString(),
     }));
 }
 

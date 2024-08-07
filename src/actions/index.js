@@ -284,7 +284,7 @@ export const getAllTaskById = async (userId, startDate, endDate) => {
 
 export const submitWeeklyTimeSheet = async (data) => { 
     console.log("submitweekyl",data);
-        const response = await fetch(`${API}/task/weekly_status`,{
+        const response = await fetch(`${API}/task/create_weekly_status`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -301,7 +301,7 @@ export const submitWeeklyTimeSheet = async (data) => {
 
 export const getWeeklyStatus = async () => {
     try {
-        const response = await fetch(`${API}/task/weeklyStatuses`);
+        const response = await fetch(`${API}/task/get_weekly_status`);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
