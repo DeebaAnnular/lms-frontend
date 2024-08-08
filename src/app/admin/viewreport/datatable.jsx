@@ -63,7 +63,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     const handleApprove = async (task_id) => {
         try {
             const response = await fetch(
-                `https://lms-api.annularprojects.com/api/task/approve_daily_task`,
+                `https://lms-api.annularprojects.com:3001/api/task/approve_daily_task`,
                 {
                     method: "PUT",
                     headers: {
@@ -105,7 +105,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
         try {
             const response = await fetch(
-                `https://lms-api.annularprojects.com/api/task/reject_daily_task`,
+                `https://lms-api.annularprojects.com:3001/api/task/reject_daily_task`,
                 {
                     method: "PUT",
                     headers: {
