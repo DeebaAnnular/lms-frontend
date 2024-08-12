@@ -176,7 +176,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
                 return (
                     <div className="flex justify-end">
-                        {status === "pending" ? (
+                        {status === "pending"? (
                             <>
                                 <Button
                                     className="px-1 py-0 bg-green-400 rounded-md mr-3 text-xs"

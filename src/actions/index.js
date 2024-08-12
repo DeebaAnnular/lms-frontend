@@ -332,7 +332,7 @@ export const getAllTaskByIdAdmin = async (weekId, startDate, endDate) => {
     export const handleApprove = async (task_id) => {
         try {
             const response = await fetch(
-                `http://localhost:3000/api/task/approve_daily_task`,
+                `https://lms-api.annularprojects.com:3001/api/task/approve_daily_task`,
                 {
                     method: "PUT",
                     headers: {
@@ -374,7 +374,7 @@ export const getAllTaskByIdAdmin = async (weekId, startDate, endDate) => {
 
         try {
             const response = await fetch(
-                `http://localhost:3000/api/task/reject_daily_task`,
+                `https://lms-api.annularprojects.com:3001/api/task/reject_daily_task`,
                 {
                     method: "PUT",
                     headers: {

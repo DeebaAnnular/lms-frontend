@@ -67,7 +67,7 @@ export function DataTable({ columns, data }) {
                 <div className="flex border border-[#DCDCDC] items-center px-3 h-full  ">
                     <IoIosSearch className='text-[#B1A8A8] text-[30px]' />
                     <Input
-                        placeholder="Search by Name or Emp ID..."
+                        placeholder="Search by Name or Emp ID"
                         value={globalFilter}
                         onChange={(event) =>
                             setGlobalFilter(event.target.value)
@@ -165,8 +165,8 @@ export function DataTable({ columns, data }) {
 
             {isShow && (
                 <div className="fixed inset-0 flex items-center  justify-center z-20 bg-gray-800 bg-opacity-75">
-                    <div className="relative bg-white w-fit   cursor-pointer p-10 rounded shadow-lg">
-                        <div className="absolute top-0 right-[20px] z-10 flex justify-end" onClick={() => { setIsShow(false) }}>
+                    <div className="relative bg-white w-fit p-10 rounded shadow-lg">
+                        <div className="absolute top-0 right-[20px] z-10 cursor-pointer flex justify-end" onClick={() => { setIsShow(false) }}>
                             <button
                                 onClick={() => setIsShow(false)}
                                 className="mt-[23px] border-2 rounded-[50%] border-[#373857]"
@@ -174,7 +174,7 @@ export function DataTable({ columns, data }) {
                                 <IoIosClose className='text-[#373857] text-xl' />
                             </button>
                         </div>
-                        <h1 className='text-2xl sticky font-semibold flex justify-center min-w-[400px]'>Employee Registration </h1>
+                        <h1 className='text-2xl sticky font-semibold cursor-default flex justify-center min-w-[400px] '>Employee Registration </h1>
                         <div className="max-h-[500px] mt-[20px] Z-20">
                             <RegistrationForm setIsShow={setIsShow} />
                         </div>

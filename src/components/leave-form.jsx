@@ -112,6 +112,8 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
         fetchAllLeaveRequest();
     }, [user.user_id]);
 
+   
+
     const calculateTotalDays = (from_date, to_date) => {
         const [from_day, from_month, from_year] = from_date.split('-').map(Number);
         const [to_day, to_month, to_year] = to_date.split('-').map(Number);
@@ -184,6 +186,13 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
             console.error('There was an error submitting the form');
         }
     };
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = d.getFullYear();
+        return `${day}-${month}-${year}`;
+    };
     
 
     const handleDateChange = (e) => {
@@ -245,13 +254,14 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                                 >
                                     <option value="">Select</option>
                                     {optionHolidays.map((data, index) => (
+                                        
                                         <option
                                             key={index}
-                                            value={data.date}
+                                            value={formatDate(data.date)}
                                             disabled={data.date < currentDate}
                                             className={data.date < currentDate ? 'text-gray-500 text-[14px]' : ''}>
 
-                                            {data.date} {`(${data.description})`}
+                                            {formatDate(data.date)} {`(${data.description})`}
                                         </option>
                                     ))}
                                 </select>
