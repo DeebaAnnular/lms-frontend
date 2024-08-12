@@ -84,7 +84,8 @@ const Page = () => {
   };
 
   const handleDelete = async (id) => {
-    console.log("id",id);
+    const confirmDelete = confirm("Are you sure you want to delete this holiday?");
+    if (!confirmDelete) return;
     try {
       const response = await fetch(`https://lms-api.annularprojects.com:3001/api/holiday/delete_holiday/${id}`, {
         method: "DELETE",
