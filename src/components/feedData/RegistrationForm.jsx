@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 
+
+
 const RegistrationForm = ({ setIsShow }) => {
     const [formData, setFormData] = useState({
         emp_id: "",
@@ -25,12 +27,23 @@ const RegistrationForm = ({ setIsShow }) => {
     const handleInputChange = (id, value) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            [id]: value,
+            [id]: value.replace(/^\s+/, ''),
         }));
-    };
+    }; 
+    
+    
 
     const handleInputChangeEvent = (e) => {
         handleInputChange(e.target.id, e.target.value);
+    };
+    
+    const handleDateChange = (e) => {
+        const date = e.target.value;
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+
+        if (regex.test(date)) {
+            handleInputChange("date_of_joining", date);
+        }
     };
 
     const formatDate = (date) => {
@@ -48,20 +61,20 @@ const RegistrationForm = ({ setIsShow }) => {
 
     const validateForm = () => {
         const newErrors = {};
-
-        if (!formData.emp_id) newErrors.emp_id = "Please fill this field";
-        if (!formData.emp_name) newErrors.emp_name = "Please fill this field";
-        if (!formData.gender) newErrors.gender = "Please fill this field";
-        if (!formData.date_of_joining) newErrors.date_of_joining = "Please fill this field";
-        if (!formData.contact_number) newErrors.contact_number = "Please fill this field";
-        if (!formData.work_email) newErrors.work_email = "Please fill this field";
-        if (!formData.active_status) newErrors.active_status = "Please fill this field";
-        if (!formData.designation) newErrors.designation = "Please fill this field";
-        if (!formData.work_location) newErrors.work_location = "Please fill this field";
-        if (!formData.password) newErrors.password = "Please fill this field";
-
+    
+        if (!formData.emp_id.trim()) newErrors.emp_id = "Please fill this field";
+        if (!formData.emp_name.trim()) newErrors.emp_name = "Please fill this field";
+        if (!formData.gender.trim()) newErrors.gender = "Please fill this field";
+        if (!formData.date_of_joining.trim()) newErrors.date_of_joining = "Please fill this field";
+        if (!formData.contact_number.trim()) newErrors.contact_number = "Please fill this field";
+        if (!formData.work_email.trim()) newErrors.work_email = "Please fill this field";
+        if (!formData.active_status.trim()) newErrors.active_status = "Please fill this field";
+        if (!formData.designation.trim()) newErrors.designation = "Please fill this field";
+        if (!formData.work_location.trim()) newErrors.work_location = "Please fill this field";
+        if (!formData.password.trim()) newErrors.password = "Please fill this field";
+    
         setErrors(newErrors);
-
+    
         return Object.keys(newErrors).length === 0;
     };
 
@@ -124,10 +137,10 @@ const RegistrationForm = ({ setIsShow }) => {
     };
 
     return (
-        <div>
+        <div className="cursor-default">
             <div className="box md:max-h-[700px] relative top-1 flex flex-col items-center">
                 <div className="mt-6 min-w-[500px]">
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} autoComplete="off">
                         <div className="flex gap-20 flex-row">
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
@@ -142,6 +155,8 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('emp_name')}
+                                        minLength={2}
+                                        maxLength={25}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
@@ -170,9 +185,10 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         value={formData.date_of_joining}
                                         className={getInputClassName('date_of_joining')}
-                                        onChange={handleInputChangeEvent}
+                                        onChange={handleDateChange}
                                         type="date"
                                         title={getTooltip('date_of_joining')}
+                                        maxLength={10}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
@@ -187,6 +203,8 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('work_email')}
+                                        
+                                        
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
@@ -215,6 +233,8 @@ const RegistrationForm = ({ setIsShow }) => {
                                         className={getInputClassName('emp_id')}
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('emp_id')}
+                                        minLength={5}
+                                        maxLength={13}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
@@ -257,6 +277,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('password')}
+                                        
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
@@ -270,6 +291,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('active_status')}
+                                
                                     >
                                         <option value="">Select Status</option>
                                         <option value="true">Active</option>
