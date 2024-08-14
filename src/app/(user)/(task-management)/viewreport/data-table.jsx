@@ -61,7 +61,9 @@ export function DataTable({ allData, userId, startDate, endDate }) {
         const response = await deleteTask(id);
         const updatedData = await getAllTaskById(localStorage.getItem("user_id"), startDate, endDate)
         setData(updatedData.tasks)
-    };
+    }; 
+
+
 
     const columns = [
         {

@@ -26,6 +26,8 @@ import { cn } from "../../../../lib/utils";
 import { editTask, deleteTask, getAllTaskById, submitWeeklyTimeSheet, getTaskById, getAllTask } from "../../../../actions";
 import { all } from "axios";
 import { IoIosClose } from "react-icons/io";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export function DataTable({ allData, userId, startDate, endDate }) {
     const [sorting, setSorting] = useState([]);
@@ -58,7 +60,8 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             toDate: endDate,
         }; 
         const response = await submitWeeklyTimeSheet(data);
-        alert("Timesheet submitted successfully");
+        // alert("Timesheet submitted successfully");
+        toast.success("Timesheet submitted successfully");
     };
 
     const validateTime = (time) => {
@@ -350,7 +353,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                         <ul>
                             <div className="max-h-[200px] w-full overflow-y-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50 sticky top-0 z-10">
+                                    <thead className="bg-gray-50 sticky top-0 z-10 ">
                                         <tr>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Task Id
@@ -360,7 +363,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                             </th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Task Time
-                                            </th>
+                                            </th >
                                             {currDayStatus != 'approved' && (<th className="px-6 py-3 text-left text-xs  font-medium text-gray-500 uppercase tracking-wider">
                                                 Action
                                             </th>)}
@@ -400,7 +403,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                                         formatTime(task.task_time)
                                                     )}
                                                 </td>
-                                                {currDayStatus != 'approved' && (<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
+                                                {currDayStatus != 'approved' && (<td className="px- py-4 whitespace-nowrap text-sm text-gray-500 ">
                                                     {editingTaskId === task.task_id ? (
                                                         <>
                                                             <button

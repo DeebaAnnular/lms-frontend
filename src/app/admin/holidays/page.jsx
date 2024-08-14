@@ -21,7 +21,8 @@ import {
   TableRow,
 } from "../../../components/ui/table";
 import { capitalizeWords } from "../../../utils";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Page = () => {
   const [date, setDate] = useState(null);
@@ -84,8 +85,8 @@ const Page = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = confirm("Are you sure you want to delete this holiday?");
-    if (!confirmDelete) return;
+    // const confirmDelete = confirm("Are you sure you want to delete this holiday?");
+    // if (!confirmDelete) return;
     try {
       const response = await fetch(`https://lms-api.annularprojects.com:3001/api/holiday/delete_holiday/${id}`, {
         method: "DELETE",
@@ -119,7 +120,7 @@ const Page = () => {
                     className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
                   >
                     <CalendarIcon className="h-4 w-4 mr-2" />
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    {date ? format(date, "dd-MM-yyyy") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -135,8 +136,8 @@ const Page = () => {
                 onChange={(e) => setLeaveType(e.target.value)}
               >
                 <option value="">Select leave type</option>
-                <option value="optional_holidays">Optional Leave</option>
-                <option value="compulsory_holidays">Compulsory Leave</option>
+                <option value="optional_holidays">Optional Holiday</option>
+                <option value="compulsory_holidays">Mandatory Holiday</option>
               </select>
             </div>
 
@@ -170,8 +171,8 @@ const Page = () => {
             {holidays.map((holiday, index) => (
               <TableRow key={index} >
                 <TableCell className="">{index + 1}</TableCell>
-                <TableCell className="font-medium">{format(new Date(holiday.date), "PPP")}</TableCell>
-                <TableCell>{holiday.holiday_type === "optional_holidays" ? "Optional Leave" : "Compulsory Leave"}</TableCell>
+                <TableCell className="font-medium">{format(new Date(holiday.date), "dd-MM-yyyy")}</TableCell>
+                <TableCell>{holiday.holiday_type === "optional_holidays" ? "Optional Holiday" : "Compulsory Holiday"}</TableCell>
                 <TableCell>{capitalizeWords(holiday.description)}</TableCell>
                 <TableCell className="" onClick={() => handleDelete(holiday.holiday_id)}><MdDelete className="cursor-pointer" /></TableCell>
               </TableRow>

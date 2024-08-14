@@ -35,18 +35,14 @@ export function DataTable({ allData }) {
     //     pageIndex: 0,
     // });
   
-    const formatDate = (dateString) => {
+     const formatDate = (dateString) => {
         const d = new Date(dateString);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
         const year = d.getFullYear();
-        let month = "" + (d.getMonth() + 1);
-        let day = "" + d.getDate();
-
-        if (month.length < 2) month = "0" + month;
-        if (day.length < 2) day = "0" + day;
-
-        return [year, month, day].join("-");
-    };
-
+        
+        return `${day}-${month}-${year}`;
+    };
 
     const handleUserNameFilterChange = (e) => {
         setUserNameFilter(e.target.value);
@@ -67,7 +63,7 @@ export function DataTable({ allData }) {
         },
         {
             accessorKey: "user_name",
-            header: "User Name",
+            header: "Name",
         },
         {
             accessorKey: "from_date",
@@ -87,6 +83,7 @@ export function DataTable({ allData }) {
             header: "View Report",
             cell: ({ row }) => ( 
                 <Link
+                className="text-blue-600"
                     variant="outlined"
                     onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)}
                     href="viewreport"

@@ -9,6 +9,8 @@ import {
 import { API } from "../../config";
 import React, { useEffect, useState } from 'react';
 import { RiArrowDropDownLine } from "react-icons/ri";
+import { toast,ToastContainer } from "react-toastify";
+
 
 const LeaveSettings = ({ id, gender }) => {
     const [earnedLeave, setEarnedLeave] = useState(null);
@@ -63,7 +65,8 @@ const LeaveSettings = ({ id, gender }) => {
         setSickLeave(newLeaveBalances.sick_leave);
         setOptionalLeave(newLeaveBalances.optional_leave);
         setMaternityLeave(newLeaveBalances.maternity_leave);
-        alert("Leave balance updated");
+        // alert("Leave balance updated");
+        toast.success("Leave balance updated");
     };
 
     return (
@@ -163,7 +166,7 @@ const LeaveSettings = ({ id, gender }) => {
             <div className="bg-white relative flex flex-col items-end">
                 <div className='mt-3 ml-3'>
                     <button className='bg-[#134572] w-[213px] h-[45px] mt-7 px-[20px] py-[10px] text-white text-[16px] font-bold rounded-[5px] border-none cursor-pointer' onClick={handleAddLeave}>
-                        Add Leaves
+                        Add Leave
                     </button>
                 </div>
             </div>

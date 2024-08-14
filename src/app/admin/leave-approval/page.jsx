@@ -16,11 +16,16 @@ import { getAll_leave_req, getEmp_leave_balence } from '../../../actions';
 import LeaveReqTable from '../../../components/LeaveReqTable';
 import { API } from '../../../config/index';
 import { capitalizeWords, replaceUnderscore } from '../../../utils';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
 
 const Page = () => {
     const [leavedata, setLeaveData] = useState([]); // State to store leave requests
     const [currentPage, setCurrentPage] = useState(1); // State for current page
+    const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+    const [rejectionReason, setRejectionReason] = useState(''); // State for rejection reason
+    const [currentLeaveId, setCurrentLeaveId] = useState(null); // State to store current leave ID for rejection
 
     const fetchLeaveData = async () => {
         const data = await getAll_leave_req();
@@ -45,25 +50,31 @@ const Page = () => {
                 body: JSON.stringify({ leave_request_id: leaveRequestId, status: 'approved' }),
             });
             const data = await response.json();
-            alert("Leave Approved Successfully");
+            // alert("Leave Approved Successfully");
+            toast.success("Leave Approved Successfully");
             fetchLeaveData();
         } catch (error) {
-            console.error('Error approving leave request:', error);
+            // console.error('Error approving leave request:', error);
+            toast.error("Error approving leave request:", error);
         }
     };
 
-    const handleRejectClick = async (leaveRequestId, reason) => {
-        try {
-            const response = await fetch(`${API}/leave/update-leave-status`, {
+    const handleRejectClick = (leaveRequestId) => {
+        setCurrentLeaveId(leaveRequestId); // Set the current leave ID
+        setIsModalOpen(true); // Open the modal
+    };
+
+    const handleSubmitRejection = async () => {
+        if (rejectionReason) {
+            await fetch(`${API}/leave/update-leave-status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ leave_request_id: leaveRequestId, status: 'rejected', reason: reason }),
+                body: JSON.stringify({ leave_request_id: currentLeaveId, status: 'rejected', reason: rejectionReason }),
             });
-            const data = await response.json();
-            alert("Leave Rejected Successfully");
+            toast.success("Leave Rejected Successfully");
             fetchLeaveData();
-        } catch (error) {
-            console.error('Error rejecting leave request:', error);
+            setIsModalOpen(false); // Close the modal
+            setRejectionReason(''); // Reset the reason
         }
     };
 
@@ -81,6 +92,35 @@ const Page = () => {
 
     return (
         <main className='overflow-hidden mx-auto '>
+            {/* Modal for rejection reason */}
+            {isModalOpen && (
+                <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="modal-content bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                        <h2 className="text-lg font-bold mb-4">Enter Reason for Rejection</h2>
+                        <textarea 
+                            className="w-full h-24 border border-gray-300 rounded-md p-2 mb-4 resize-none"
+                            value={rejectionReason} 
+                            onChange={(e) => setRejectionReason(e.target.value)} 
+                            placeholder="Type your reason here..."
+                        />
+                        <div className="flex justify-end">
+                            <button 
+                                className="bg-black text-white rounded-md px-4 py-2 mr-2"
+                                onClick={handleSubmitRejection}
+                            >
+                                Submit
+                            </button>
+                            <button 
+                                className="bg-gray-300 text-black rounded-md px-4 py-2"
+                                onClick={() => setIsModalOpen(false)}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            <ToastContainer />
             <div className='min-w-[400px]  '>
                 <h1 className='text-[22px] text-md font-bold'>Leave Requests</h1>
                 <div className='min-w-[350px] rounded-lg p-3'>
@@ -108,15 +148,10 @@ const Page = () => {
                                         <TableCell>{formatDate(data.to_date)}</TableCell>
                                         <TableCell>{data.total_days}</TableCell>
                                         <TableCell className='flex gap-5'>
-                                            <p className='text-red-500 cursor-pointer' onClick={() => {
-                                            const reason = prompt('Enter reason for rejection:');
-                                            if (reason) {
-                                                handleRejectClick(data.leave_request_id, reason);
-                                            }
-                                        }}>Reject</p>
-                                        <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
-                                            Approve
-                                        </p>
+                                            <p className='text-red-500 cursor-pointer' onClick={() => handleRejectClick(data.leave_request_id)}>Reject</p>
+                                            <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
+                                                Approve
+                                            </p>
                                         </TableCell>
                                          
 

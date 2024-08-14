@@ -12,9 +12,10 @@ const RegistrationForm = ({ setIsShow }) => {
     const [formData, setFormData] = useState({
         emp_id: "",
         emp_name: "",
+        last_name: "", // Added last_name field
         gender: "",
         date_of_joining: "",
-        contact_number: "",
+        contact_number: "", // Store only the phone number without the country code
         work_email: "",
         active_status: "", // This will be boolean
         designation: "",
@@ -24,14 +25,21 @@ const RegistrationForm = ({ setIsShow }) => {
 
     const [errors, setErrors] = useState({});
 
+    const [countryCode, setCountryCode] = useState("+91"); // Default country code for India
+
     const handleInputChange = (id, value) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            [id]: value.replace(/^\s+/, ''),
+            [id]: value ? value.replace(/^\s+/, '') : '', // Check if value is defined
         }));
     }; 
-    
-    
+
+    const handleContactNumberChange = (value) => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            contact_number: value, // Store only the phone number
+        }));
+    };
 
     const handleInputChangeEvent = (e) => {
         handleInputChange(e.target.id, e.target.value);
@@ -59,11 +67,13 @@ const RegistrationForm = ({ setIsShow }) => {
         return [year, month, day].join("-");
     };
 
+    
     const validateForm = () => {
         const newErrors = {};
     
         if (!formData.emp_id.trim()) newErrors.emp_id = "Please fill this field";
         if (!formData.emp_name.trim()) newErrors.emp_name = "Please fill this field";
+        if (!formData.last_name.trim()) newErrors.last_name = "Please fill this field"; // Added last_name check
         if (!formData.gender.trim()) newErrors.gender = "Please fill this field";
         if (!formData.date_of_joining.trim()) newErrors.date_of_joining = "Please fill this field";
         if (!formData.contact_number.trim()) newErrors.contact_number = "Please fill this field";
@@ -87,6 +97,7 @@ const RegistrationForm = ({ setIsShow }) => {
 
         const dataToSend = {
             ...formData,
+            emp_name: `${formData.emp_name} ${formData.last_name}`, // Combine first and last name
             date_of_joining: formatDate(formData.date_of_joining),
             active_status: formData.active_status === "true", // Convert to boolean
         };
@@ -104,6 +115,7 @@ const RegistrationForm = ({ setIsShow }) => {
                 setFormData({
                     emp_id: "",
                     emp_name: "",
+                    last_name: "", // Reset last_name
                     gender: "",
                     date_of_joining: "",
                     contact_number: "",
@@ -145,7 +157,7 @@ const RegistrationForm = ({ setIsShow }) => {
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="emp_name" className="text-[14px] font-regular text-[#373857]">
-                                        Employee Name<span>*</span>
+                                        First Name<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="emp_name"
@@ -160,8 +172,24 @@ const RegistrationForm = ({ setIsShow }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
+                                    <label htmlFor="last_name" className="text-[14px] font-regular text-[#373857]">
+                                        Last Name<span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        id="last_name"
+                                        value={capitalizeWords(formData.last_name)}
+                                        className={getInputClassName('last_name')}
+                                        type="text"
+                                        required
+                                        onChange={handleInputChangeEvent}
+                                        title={getTooltip('last_name')}
+                                        minLength={2}
+                                        maxLength={25}
+                                    />
+                                </div>
+                                <div className='flex flex-col mb-3'>
                                     <label htmlFor="gender" className="text-[14px] font-regular text-[#373857]">
-                                        Gender<span>*</span>
+                                        Gender<span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         id="gender"
@@ -178,7 +206,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="date_of_joining" className="text-[14px] font-regular text-[#373857]">
-                                        Date of Joining<span>*</span>
+                                        Date of Joining<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="date_of_joining"
@@ -193,7 +221,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="work_email" className="text-[14px] font-regular text-[#373857]">
-                                        Work Email<span>*</span>
+                                        Work Email<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="work_email"
@@ -209,7 +237,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="work_location" className="text-[14px] font-regular text-[#373857]">
-                                        Location<span>*</span>
+                                        Location<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="work_location"
@@ -224,7 +252,7 @@ const RegistrationForm = ({ setIsShow }) => {
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="emp_id" className="text-[14px] font-regular text-[#373857]">
-                                        Employee Id<span>*</span>
+                                        Employee Id<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="emp_id"
@@ -239,22 +267,23 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="contact_number" className="text-[14px] font-regular text-[#373857]">
-                                        Contact No<span>*</span>
+                                        Contact No<span className="text-red-500">*</span>
                                     </label>
                                     <PhoneInput
                                         id="contact_number"
                                         defaultCountry="IN"
                                         required
                                         limitMaxLength={17}
-                                        value={formData.contact_number}
+                                        value={formData.contact_number} // Use the phone number only
                                         className={getInputClassName('contact_number')}
-                                        onChange={(value) => handleInputChange("contact_number", value)}
+                                        onChange={handleContactNumberChange} // Use the updated handler
                                         title={getTooltip('contact_number')}
+                                        international // This prop shows the country code next to the flag
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="designation" className="text-[14px] font-regular text-[#373857]">
-                                        Designation<span>*</span>
+                                        Designation<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="designation"
@@ -267,7 +296,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="password" className="text-[14px] font-regular text-[#373857]">
-                                        Password<span>*</span>
+                                        Password<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="password"
@@ -282,7 +311,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                 </div>
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="active_status" className="text-[14px] font-regular text-[#373857]">
-                                        Employee Status<span>*</span>
+                                        Employee Status<span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         id="active_status"
@@ -316,4 +345,3 @@ const RegistrationForm = ({ setIsShow }) => {
 };
 
 export default RegistrationForm;
-

@@ -7,7 +7,10 @@ import { CgDanger } from "react-icons/cg";
 
 import { getEmp_leave_balence } from "../../../actions";
 import { useSelector } from "react-redux";
-import { getLeaveBalance } from "../../../services/leaveServices";
+import { getLeaveBalance } from "../../../services/leaveServices"; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Page = () => {
   const user = useSelector((state) => state.user.userDetails);
@@ -22,10 +25,11 @@ const Page = () => {
     fetchLeaveBalanceById();
   }, []);
 
-  return <div className="w-full bg-[#FBF9F9] h-full md:p-3 xl:p-6">
+  return <><div className="w-full bg-[#FBF9F9] h-full md:p-3 xl:p-6">
+    <ToastContainer/>
     <div className="w-full h-full flex bg-white">
         <LeaveForm  fetchLeaveBalanceById = {fetchLeaveBalanceById}/>
-        {leaveBalance? (
+        {leaveBalance ? (
           <LeaveDetails leaveBalance={leaveBalance} />
         ) : (
           <div className="flex items-center py-4">
@@ -41,6 +45,7 @@ const Page = () => {
   
 
   </div>;
+  </> 
 };
 
 export default Page;

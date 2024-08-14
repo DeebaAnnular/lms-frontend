@@ -80,9 +80,42 @@ const Calendar = () => {
     const [day, setDay] = useState()
     const dateStr = (day) => {
         return `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`
-    }
+    } 
 
-
+    const handleTimeChange = (e) => {
+        let value = e.target.value;
+        
+        // Remove all non-digit characters
+        value = value.replace(/\D/g, '');
+        
+        // Add colon after hours
+        if (value.length > 2) {
+            value = value.slice(0, 2) + ':' + value.slice(2);
+        }
+        
+        // Limit the length to "hh:mm"
+        if (value.length > 5) {
+            value = value.slice(0, 5);
+        }
+    
+        // Ensure hours are between 00 and 23
+        let hours = parseInt(value.slice(0, 2));
+        if (hours > 23) {
+            value = '23' + value.slice(2);
+        }
+    
+        // Ensure minutes are between 00 and 59
+        if (value.length > 2) {
+            let minutes = parseInt(value.slice(3, 5));
+            if (minutes > 59) {
+                value = value.slice(0, 3) + '59';
+            }
+        }
+        if (value === '00:00') {
+            value = '';
+        }
+        setTime(value);
+    };
     const handleAddTask = (day) => {
         const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
         const today = new Date();
@@ -225,6 +258,7 @@ const Calendar = () => {
             task_time: editedTask.task_time,
             task_date: selectedDate,
             user_id: localStorage.getItem("user_id"),
+            approved_status: "pending"
         };
 
         const res = await editTask(taskId, req_body);
@@ -250,6 +284,15 @@ const Calendar = () => {
 
     const formatTime = (time) => {
         return time.slice(0, 5); // Extract the first 5 characters (HH:mm)
+    };
+
+    const closeModal = async () => {
+        const response = await getAllTask(user.user_id);
+        setAllTasks(response);
+        setShow(false);
+        setCurrDayStatus('pending');
+        setTask(""); // Reset task to empty string
+        setTime(""); // Reset time to empty string
     };
 
     return (
@@ -290,7 +333,20 @@ const Calendar = () => {
                         </div>
                     </div>
                 </div>
-
+                <div className="flex space-x-4">
+    <div className="flex items-center space-x-2">
+        <span className=" bg-yellow-200 rounded-full text-yellow-200"><FaRegCircle /></span>
+        <p>Pending</p>
+    </div>
+    <div className="flex items-center space-x-2">
+        <span className="bg-green-300 rounded-full text-green-300"><FaRegCircle /></span>
+        <p>Rejected</p>
+    </div>
+    <div className="flex items-center space-x-2">
+        <span className="bg-red-400 rounded-full text-red-400"><FaRegCircle /></span>
+        <p>Approved</p>
+    </div>
+</div>
                 <select
                     onChange={changeYear}
                     value={currentDate.getFullYear()}
@@ -302,6 +358,7 @@ const Calendar = () => {
                         </option>
                     ))}
                 </select>
+                
             </header>
 
             <div className="bg-[#F9F9F9] p-3">
@@ -373,12 +430,7 @@ const Calendar = () => {
             {show && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white border-2 md:min-h-[550px] md:min-w-[850px] p-6 rounded shadow-lg relative">
-                        <button onClick={async () => {
-                            const response = await getAllTask(user.user_id);
-                            setAllTasks(response)
-                            setShow(false)
-                            setCurrDayStatus('pending')
-                        }}
+                        <button onClick={closeModal}
                             className="absolute top-2 right-2 text-red-500 text-xl"
                         >
                             <IoIosClose />
@@ -407,7 +459,7 @@ const Calendar = () => {
                                         className="w-full p-2 border rounded"
                                         value={time}
                                         placeholder="hh:mm"
-                                        onChange={(e) => setTime(e.target.value)}
+                                        onChange={handleTimeChange}
                                     />
                                 </div>
                             </div>

@@ -35,6 +35,14 @@ const Page = () => {
          
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    };
+
     return (
         <div className="content-sextion w-full flex gap-5 flex-col ">
 
@@ -47,7 +55,7 @@ const Page = () => {
                     </div>
                     <div>
                         <p className="pb-[10px] text-[#4B5563] font-semibold">
-                            {capitalizeWords(resData.emp_name)} <span className="text-[14px] font-normal text-[#6B7280]">({resData.gender === "M" ? "Male" : "Female"})</span>
+                            {capitalizeWords(resData.emp_name)} 
                         </p>
                         <p className="pb-[10px] text-[#4B5563]">
                             <span className="text-[#6B7280] text-[14px] font-medium">Emp Id : </span> {resData.emp_id}
@@ -61,8 +69,8 @@ const Page = () => {
                         {capitalizeWords(resData.designation)}
                     </p>
                     <p className="pb-[10px] text-[#4B5563]">
-                        <span className="text-[#6B7280] text-[14px] font-medium">Date of Joining : </span>
-                        {new Date(resData.date_of_joining).toLocaleDateString("en-CA")}
+                        <span className="text-[#6B7280] text-[14px] font-medium">DOJ : </span>
+                        {formatDate(resData.date_of_joining)}
                     </p>
                 </div>
 
@@ -72,7 +80,7 @@ const Page = () => {
                         {capitalizeWords(resData.work_location)}
                     </p>
                     <p className="pb-[10px] text-[#4B5563]">
-                        <span className="text-[#6B7280] text-[14px] font-medium">Contact : </span>
+                        <span className="text-[#6B7280] text-[14px] font-medium">Contact Number : </span>
                         {resData.contact_number}
                     </p>
                 </div>    

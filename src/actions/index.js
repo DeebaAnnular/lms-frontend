@@ -127,7 +127,30 @@ export const postLeave_req = async (leaveData) => {
         console.error('There has been a problem with your fetch operation:', error);
         return null; // Return null or handle error as needed
     }
-};
+}; 
+export const updateEmpDetails = async (id, data) => {
+    console.log("data",data)
+    try {
+       const response = await fetch(`${API}/auth/update_user/${id}`, {
+        // const response = await fetch(http://localhost:3000/api/auth/update_user/8,{
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+ 
+      if (!response.ok) {
+        throw new Error("Network response was not ok: " + response.statusText);
+      }
+  
+      const responseData = await response.json();
+      return responseData; // Return the fetched data
+    } catch (error) {
+      console.error("There has been a problem with your fetch operation:", error);
+      throw error; // Re-throw the error for the caller to handle
+    }
+  };
 
 
 export const getLeave_history_by_id = async (id) => {

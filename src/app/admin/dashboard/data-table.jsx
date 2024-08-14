@@ -77,7 +77,7 @@ export function DataTable({ columns, data }) {
                 </div>
 
                 <div
-                    className="w-fit bg-[#A6C4F0] rounded-sm h-fit p-2 text-black cursor-pointer"
+                    className="w-fit bg-[#A6C4F0] rounded-sm h-fit p-2 text-black cursor-pointer hover:text-[#A6C4F0] hover:bg-[#134572]"
                     onClick={() => setIsShow(true)} // show the registration form on click
                 >
                     Add Employee
@@ -169,9 +169,9 @@ export function DataTable({ columns, data }) {
                         <div className="absolute top-0 right-[20px] z-10 cursor-pointer flex justify-end" onClick={() => { setIsShow(false) }}>
                             <button
                                 onClick={() => setIsShow(false)}
-                                className="mt-[23px] border-2 rounded-[50%] border-[#373857]"
+                                className="mt-[23px] border-2 rounded-[50%] border-red-600 "
                             >
-                                <IoIosClose className='text-[#373857] text-xl' />
+                                <IoIosClose className=' text-red-600 text-xl' />
                             </button>
                         </div>
                         <h1 className='text-2xl sticky font-semibold cursor-default flex justify-center min-w-[400px] '>Employee Registration </h1>

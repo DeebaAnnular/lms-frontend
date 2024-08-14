@@ -1,3 +1,4 @@
+
 "use client";
 import { useState } from "react";
 import {
@@ -58,14 +59,16 @@ export function DataTable({ allData }) {
             accessorKey: "from_date",
             header: "From Date",
             cell: ({ row }) => {
-                return <p>{new Date(row.original.from_date).toLocaleDateString()}</p>;
+                const date = new Date(row.original.from_date);
+                return <p>{`${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`}</p>;
             },
         },
         {
             accessorKey: "to_date",
             header: "To Date",
             cell: ({ row }) => {
-                return <p>{new Date(row.original.to_date).toLocaleDateString()}</p>;
+                const date = new Date(row.original.to_date);
+                return <p>{`${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`}</p>;
             },
         },
         {
@@ -75,6 +78,7 @@ export function DataTable({ allData }) {
                     variant="outlined"
                     onClick={() => handleClick(row.original.week_id, row.original.user_id, row.original.from_date, row.original.to_date)}
                     href="viewreport"
+                    className="text-blue-500"
                 >
                     View Report
                 </Link>

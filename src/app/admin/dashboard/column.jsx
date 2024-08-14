@@ -24,17 +24,24 @@ export const columns = [
     {
         accessorKey: "emp_id",
         header: "Employee Id",
-    },
-    {
-        accessorKey: "emp_name",
-        header: "Name",
         cell: ({ row }) => { 
             const url = row.original.user_id
 
             return (
-                <Link className="text-blue-500 underline" href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_name)}</Link>
+                <Link className="text-blue-500 " href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_id)}</Link>
             )
         },
+    },
+    {
+        accessorKey: "emp_name",
+        header: "Name",
+        // cell: ({ row }) => { 
+        //     const url = row.original.user_id
+
+        //     return (
+        //         <Link className="text-blue-500 underline" href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_name)}</Link>
+        //     )
+        // },
     },
 
     {
