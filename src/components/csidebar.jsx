@@ -19,7 +19,7 @@ const sidebarLinks = [
     label: "Leave Management",
     icon: <FaCalendarAlt />,
     subLinks: [
-      { label: "Dashboard", route: '/dashboard', icon: <LuLayoutDashboard /> },
+      { label: "Leave History", route: '/dashboard', icon: <LuLayoutDashboard /> },
       { label: "Apply Leave", route: '/apply-leave', icon: <FaCalendarAlt /> }
     ]
   },

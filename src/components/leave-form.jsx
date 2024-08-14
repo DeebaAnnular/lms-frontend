@@ -348,7 +348,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                     {(leave_type !== "maternity_leave" ||
                       leaveBalance.maternity_leave > 0) && (
                       <>
-                        <div className="w-full flex flex-col gap-4">
+                        <div className=" flex flex-col gap-4 w-[90%]">
                           <label
                             htmlFor="from_date"
                             className="text-[#373857] min-w-fit text-[16px]"
@@ -404,7 +404,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                             </PopoverContent>
                           </Popover>
                         </div>
-                        <div className="w-full flex flex-col gap-4">
+                        <div className="w-[90%] flex flex-col gap-4 ">
                           <label
                             htmlFor="to_date"
                             className="text-[#373857] min-w-fit text-[16px]"

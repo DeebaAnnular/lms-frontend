@@ -34,7 +34,7 @@ const Page = () => {
         ) : (
           <div className="flex items-center py-4">
              {/* <CgDanger className="mr-2" /> */}
-            <h3>Leave Balance not Available</h3>
+            <h3>Leave not Allotted</h3>
             <br/>
             <h3>Please contact Admin</h3>
           </div>
