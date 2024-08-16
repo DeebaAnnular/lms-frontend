@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import LeaveSettings from './leaveSettings';
 import RoleSetting from './RoleSetting'; // If you want to use this component
 import { capitalizeWords } from '../../utils';
-import { updateEmpDetails } from '../../actions';
+import { updateEmpDetails, getEmp_detail_by_id } from '../../actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -21,14 +21,18 @@ const EmployeeForm = ({ resData, id }) => {
         role: resData.role || '', // Ensure that role is included in the state
     });
 
-    // Use useEffect to format the date after component mounts
     useEffect(() => {
-        if (resData.date_of_joining) {
-            // Convert the date to YYYY-MM-DD format if it's not already
-            const formattedDate = new Date(resData.date_of_joining).toISOString().split('T')[0];
-            setFormData(prevState => ({ ...prevState, date_of_joining: formattedDate }));
-        }
-    }, [resData.date_of_joining]);
+        const fetchEmployeeDetails = async () => {
+            const updatedData = await getEmp_detail_by_id(id);
+            setFormData(prevState => ({
+                ...prevState,
+                ...updatedData,
+                date_of_joining: updatedData.date_of_joining ? new Date(updatedData.date_of_joining).toISOString().split('T')[0] : ''
+            }));
+        };
+
+        fetchEmployeeDetails();
+    }, [id]); // Fetch details when id changes
 
     const handleChange = (e) => {
         let { name, value } = e.target;
