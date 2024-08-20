@@ -77,7 +77,7 @@ const LeaveSettings = ({ id, gender }) => {
                         <p className='font-bold mb-2'>Earned Leave</p>
                         <DropdownMenu>
                             <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span>{tempEarnedLeave !== null ? tempEarnedLeave : (earnedLeave !== null ? earnedLeave : "Select total leave")}</span>
+                                <span>{tempEarnedLeave !== null ? tempEarnedLeave : (earnedLeave !== null ? earnedLeave : "Select")}</span>
                                 <RiArrowDropDownLine />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className='w-full'>
@@ -99,7 +99,7 @@ const LeaveSettings = ({ id, gender }) => {
                         <p className='font-bold mb-2'>Sick Leave</p>
                         <DropdownMenu>
                             <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span>{tempSickLeave !== null ? tempSickLeave : (sickLeave !== null ? sickLeave : "Select total leave")}</span>
+                                <span>{tempSickLeave !== null ? tempSickLeave : (sickLeave !== null ? sickLeave : "Select")}</span>
                                 <RiArrowDropDownLine />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className='w-full'>
@@ -118,10 +118,10 @@ const LeaveSettings = ({ id, gender }) => {
 
                 <div className='flex flex-col items-center w-full'>
                     <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                        <p className='font-bold mb-2'>Optional Leaves</p>
+                        <p className='font-bold mb-2'>Optional Holiday</p>
                         <DropdownMenu>
                             <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span>{tempOptionalLeave !== null ? tempOptionalLeave : (optionalLeave !== null ? optionalLeave : "Select total leave")}</span>
+                                <span>{tempOptionalLeave !== null ? tempOptionalLeave : (optionalLeave !== null ? optionalLeave : "Select")}</span>
                                 <RiArrowDropDownLine />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className='w-full'>
@@ -144,7 +144,7 @@ const LeaveSettings = ({ id, gender }) => {
                             <p className='font-bold mb-2'>Maternity Leaves</p>
                             <DropdownMenu>
                                 <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                    <span>{tempMaternityLeave !== null ? tempMaternityLeave : (maternityLeave !== null ? maternityLeave : "Select total leave")}</span>
+                                    <span>{tempMaternityLeave !== null ? tempMaternityLeave : (maternityLeave !== null ? maternityLeave : "Select")}</span>
                                     <RiArrowDropDownLine />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className='w-full'>

@@ -58,7 +58,7 @@ const Page = () => {
                             {capitalizeWords(resData.emp_name)} 
                         </p>
                         <p className="pb-[10px] text-[#4B5563]">
-                            <span className="text-[#6B7280] text-[14px] font-medium">Emp Id : </span> {resData.emp_id}
+                            <span className="text-[#6B7280] text-[14px] font-medium">Emp ID : </span> {resData.emp_id}
                         </p>
                     </div>
                 </div>

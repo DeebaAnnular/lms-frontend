@@ -8,16 +8,16 @@ import AuthRoute from '../../HOC/AuthRoute'
 const Layout = ({ children }) => {
 
     return (
-        <div className='flex'>
-            <CSidebar />
-            <main className='w-full flex flex-col'>
-                <Navbar />
-                <div className='p-5 bg-[#FBF9F9]'>
-                    {children}
-                </div>
-                 
-            </main>
-        </div>
+        <div className='h-screen w-full overflow-y-hidden'>
+        <div className=' h-full w-full flex items-center justify-center'>
+            <div className='w-[23%] h-full'> <CSidebar /></div>
+            <div className='w-[87%] h-full flex flex-col item-center justify-center'>
+                <div className=' h-[10%] w-full'><Navbar  /></div>
+                <div className=' h-[90%] overflow-y-scroll w-full bg-[#FBF9F9] p-5'>{children}</div>
+            </div>
+            </div> 
+
+        </div>
 
 
     )

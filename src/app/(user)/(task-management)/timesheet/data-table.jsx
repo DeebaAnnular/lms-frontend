@@ -29,7 +29,7 @@ import { IoIosClose } from "react-icons/io";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export function DataTable({ allData, userId, startDate, endDate }) {
+export function DataTable({ allData, userId, startDate, endDate,setStartDate,setEndDate }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
@@ -60,8 +60,13 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             toDate: endDate,
         }; 
         const response = await submitWeeklyTimeSheet(data);
-        // alert("Timesheet submitted successfully");
         toast.success("Timesheet submitted successfully");
+        setData([]); // Clear the table data after successful submission
+        setStartDate([]);
+        setEndDate([]);
+        
+        // setSelectedDay(null); // Clear the selected day
+        // setSeletedDate(null); // Clear the selected date
     };
 
     const validateTime = (time) => {
@@ -267,7 +272,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
+                                No records found
                                 </TableCell>
                             </TableRow>
                         )}
@@ -364,7 +369,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Task Time
                                             </th >
-                                            {currDayStatus != 'approved' && (<th className="px-6 py-3 text-left text-xs  font-medium text-gray-500 uppercase tracking-wider">
+                                            {currDayStatus !== 'approved' && (<th className="px-6 py-3 text-left text-xs  font-medium text-gray-500 uppercase tracking-wider">
                                                 Action
                                             </th>)}
                                              
@@ -403,7 +408,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                                         formatTime(task.task_time)
                                                     )}
                                                 </td>
-                                                {currDayStatus != 'approved' && (<td className="px- py-4 whitespace-nowrap text-sm text-gray-500 ">
+                                                {currDayStatus !== 'approved' && (<td className="px- py-4 whitespace-nowrap text-sm text-gray-500 ">
                                                     {editingTaskId === task.task_id ? (
                                                         <>
                                                             <button
@@ -420,7 +425,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                                             </button>
                                                         </>
                                                     ) : (
-                                                        currDayStatus !== 'approved' && (
+                                                        (currDayStatus === 'pending' || currDayStatus === 'rejected') && (
                                                             <div className="flex gap-4 w-full justify-center">
                                                                 <button
                                                                     className="text-blue-600 hover:text-blue-900"
@@ -437,39 +442,6 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                                                             </div>
                                                         ))}
                                                 </td>)}
-                                                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {editingTaskId === task.task_id ? (
-                                                        <>
-                                                            <button
-                                                                className="text-green-600 hover:text-green-900"
-                                                                onClick={() => handleSave(task.task_id)}
-                                                            >
-                                                                Save
-                                                            </button>
-                                                            <button
-                                                                className="text-gray-600 hover:text-gray-900 ml-2"
-                                                                onClick={handleCancel}
-                                                            >
-                                                                Cancel
-                                                            </button>
-                                                        </>
-                                                    ) : (
-                                                        <button
-                                                            className="text-blue-600 hover:text-blue-900"
-                                                            onClick={() => handleEdit(task)}
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                    )}
-                                                </td> */}
-                                                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    <button
-                                                        className="text-red-600 hover:text-red-900"
-                                                        onClick={() => handleDelete(task.task_id)}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </td> */}
                                             </tr>
                                         ))}
                                     </tbody>

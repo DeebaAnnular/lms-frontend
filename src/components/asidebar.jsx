@@ -14,12 +14,12 @@ import { FaHistory } from "react-icons/fa";
 
 export const sidebarLinks = [
     {
-        label: "Dashboard",
+        label: "Employee Management",
         route: '/admin/dashboard',
         icon: <LuLayoutDashboard />
     },
     {
-        label: "Leave Approval",
+        label: "Leave Management",
         route: '/admin/leave-approval',
         icon: <FaCalendarAlt />
     },
@@ -39,7 +39,7 @@ export const sidebarLinks = [
 const Sidebar = () => {
     const pathname = usePathname();
     return (
-        <section className="sticky left-0 top-0 flex h-screen w-fit flex-col justify-between bg-[#134572]  pt-0  min-w-[220px]"
+        <section className="sticky left-0 top-0 flex h-screen w-full flex-col justify-between bg-[#134572]  pt-0"
         >
             <div className="logo h-[85px] py-[20px] relative w-full  object-contain">
 

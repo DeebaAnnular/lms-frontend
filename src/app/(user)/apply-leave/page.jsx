@@ -25,7 +25,8 @@ const Page = () => {
     fetchLeaveBalanceById();
   }, []);
 
-  return <><div className="w-full bg-[#FBF9F9] h-full md:p-3 xl:p-6">
+  return <>
+  <div className="w-full bg-[#FBF9F9] h-fit md:p-3 xl:p-6 ">
     <ToastContainer/>
     <div className="w-full h-full flex bg-white">
         <LeaveForm  fetchLeaveBalanceById = {fetchLeaveBalanceById}/>
@@ -44,7 +45,7 @@ const Page = () => {
 
   
 
-  </div>;
+  </div>
   </> 
 };
 

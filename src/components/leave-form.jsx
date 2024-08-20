@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { cn } from "../lib/utils";
 
 import { Button } from "./ui/button";
@@ -18,8 +17,6 @@ import {
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Calendar } from "./ui/calender";
 
 // Define the validation schema using zod
 const leaveSchema = z
@@ -104,6 +101,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
   const [appliedOptionalLeaves, setAppliedOptionalHolidays] = useState([]);
   const [backendError, setBackendError] = useState(null);
   const [leaveMessage, setLeaveMessage] = useState(null);
+  const [dateError, setDateError] = useState(null);
 
   useEffect(() => {
     const fetchLeaveBalence = async () => {
@@ -212,26 +210,46 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     const end = new Date(to_date);
     let count = 0;
 
-    while (start <= end) {
-      const day = start.getDay();
-      const formattedDate = start.toISOString().split("T")[0];
-
-      if (
-        day !== 0 &&
-        day !== 6 &&
-        !compulsaryHolidays.includes(formattedDate) &&
-        !appliedOptionalLeaves.includes(formattedDate)
-      ) {
-        count++;
-      }
-
-      start.setDate(start.getDate() + 1);
+    if (start.getTime() === end.getTime()) {
+        return 1; // If start and end dates are the same, return 1 day
     }
 
-    return count;
+    while (start <= end) {
+        const day = start.getDay();
+        const formattedDate = start.toISOString().split("T")[0];
+
+        if (
+            day !== 0 &&
+            day !== 6 &&
+            !compulsaryHolidays.includes(formattedDate) &&
+            !appliedOptionalLeaves.includes(formattedDate)
+        ) {
+            count++;
+        }
+
+        start.setDate(start.getDate() + 1);
+    }
+
+    return count; // Return the count of days
   };
 
   const onSubmit = async (data) => {
+    // Check if start date is a weekday (Monday to Friday)
+    const startDate = new Date(data.from_date);
+    const endDate = new Date(data.to_date);
+    
+    if (startDate.getDay() === 0 || startDate.getDay() === 6) {
+        setLeaveMessage("Can't apply leave on Saturday or Sunday.");
+        return;
+    }
+    
+    // Remove the check for end date if leave type is optional or maternity
+    if ((data.leave_type !== "optional_leave" && data.leave_type !== "maternity_leave") && 
+        (endDate.getDay() === 0 || endDate.getDay() === 6)) {
+        setLeaveMessage("Can't apply leave on Saturday or Sunday.");
+        return;
+    }
+
     // Convert dates to DD-MM-YYYY format for backend
     data.from_date = data.from_date;
     data.to_date = data.to_date;
@@ -275,13 +293,6 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
       );
       console.error("There was an error submitting the form");
     }
-  };
-  const formatDate = (date) => {
-    const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = d.getFullYear();
-    return `${day}-${month}-${year}`;
   };
 
   const currentDate = new Date().toLocaleDateString("en-CA");
@@ -355,54 +366,28 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                           >
                             Start Date
                           </label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full justify-start text-left font-normal",
-                                  !from_date && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="h-4 w-4 mr-2" />
-                                {from_date ? (
-                                  format(new Date(from_date), "dd-MM-yyyy")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                mode="single"
-                                selected={
-                                  from_date ? new Date(from_date) : undefined
-                                }
-                                onSelect={(date) => {
-                                  if (date) {
-                                    const selectedDate = new Date(
-                                      Date.UTC(
-                                        date.getFullYear(),
-                                        date.getMonth(),
-                                        date.getDate()
-                                      )
-                                    );
-                                    setValue(
-                                      "from_date",
-                                      selectedDate.toISOString().split("T")[0]
-                                    );
-                                    if (session === "FN" || session === "AN") {
-                                      setValue(
-                                        "to_date",
-                                        selectedDate.toISOString().split("T")[0]
-                                      );
-                                    }
+                          <input
+                            type="date"
+                            id="from_date"
+                            {...register("from_date")}
+                            className="block w-full rounded-md border p-2"
+                            onChange={(e) => {
+                              const dateValue = e.target.value;
+                              const year = dateValue.split("-")[0]; // Extract the year from the date string
+
+                              if (year.length > 4) {
+                                  const formattedDate = `${dateValue.split("-")[2]}-${dateValue.split("-")[1]}-${dateValue.split("-")[0]}`; // Format to DD-MM-YYYY
+                                  setDateError(`Year Out of range: ${formattedDate}`); // Set error message if year exceeds 4 digits
+                                  setValue("from_date", ""); // Clear the input
+                              } else {
+                                  setDateError(null); // Clear error if valid
+                                  setValue("from_date", dateValue);
+                                  if (session === "FN" || session === "AN") {
+                                      setValue("to_date", dateValue);
                                   }
-                                }}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
+                              }
+                            }}
+                          />
                         </div>
                         <div className="w-[90%] flex flex-col gap-4 ">
                           <label
@@ -411,48 +396,25 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                           >
                             End Date
                           </label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full justify-start text-left font-normal",
-                                  !to_date && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="h-4 w-4 mr-2" />
-                                {to_date ? (
-                                  format(new Date(to_date), "dd-MM-yyyy")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                mode="single"
-                                selected={
-                                  to_date ? new Date(to_date) : undefined
-                                }
-                                onSelect={(date) => {
-                                  if (date) {
-                                    const selectedDate = new Date(
-                                      Date.UTC(
-                                        date.getFullYear(),
-                                        date.getMonth(),
-                                        date.getDate()
-                                      )
-                                    );
-                                    setValue(
-                                      "to_date",
-                                      selectedDate.toISOString().split("T")[0]
-                                    );
-                                  }
-                                }}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
+                          <input
+                            type="date"
+                            id="to_date"
+                            {...register("to_date")}
+                            className="block w-full rounded-md border p-2"
+                            onChange={(e) => {
+                              const dateValue = e.target.value;
+                              const year = dateValue.split("-")[0]; // Extract the year from the date string
+
+                              if (year.length > 4) {
+                                  const formattedDate = `${dateValue.split("-")[2]}-${dateValue.split("-")[1]}-${dateValue.split("-")[0]}`; // Format to DD-MM-YYYY
+                                  setDateError(`Year Out of range: ${formattedDate}`); // Set error message if year exceeds 4 digits
+                                  setValue("to_date", ""); // Clear the input
+                              } else {
+                                  setDateError(null); // Clear error if valid
+                                  setValue("to_date", dateValue);
+                              }
+                            }}
+                          />
                         </div>
                         <div className="w-full flex flex-col gap-4">
                           <label
@@ -491,25 +453,27 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                         <option value="" className="text-[#99A0B0]">
                           Select
                         </option>
-                        {optionHolidays.map((holiday, index) => {
-                          const holidayDate = new Date(holiday.date);
-                          const formattedDisplayDate = `${String(
-                            holidayDate.getDate()
-                          ).padStart(2, "0")}-${String(
-                            holidayDate.getMonth() + 1
-                          ).padStart(2, "0")}-${holidayDate.getFullYear()}`;
-                          const isDisabled = holidayDate < new Date(); // Disable if the date is before today
+                        {optionHolidays
+                          .sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort by date
+                          .map((holiday, index) => {
+                            const holidayDate = new Date(holiday.date);
+                            const formattedDisplayDate = `${String(
+                              holidayDate.getDate()
+                            ).padStart(2, "0")}-${String(
+                              holidayDate.getMonth() + 1
+                            ).padStart(2, "0")}-${holidayDate.getFullYear()}`;
+                            const isDisabled = holidayDate < new Date(); // Disable if the date is before today
 
-                          return (
-                            <option
-                              key={index}
-                              value={holiday.date}
-                              disabled={isDisabled}
-                            >
-                              {formattedDisplayDate} - {holiday.description}
-                            </option>
-                          );
-                        })}
+                            return (
+                              <option
+                                key={index}
+                                value={holiday.date}
+                                disabled={isDisabled}
+                              >
+                                {formattedDisplayDate} - {holiday.description}
+                              </option>
+                            );
+                          })}
                       </select>
                     </div>
                   </div>
@@ -548,6 +512,8 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
           {(backendError || leaveMessage) && (
             <p className="text-red-500 mt-4">{backendError || leaveMessage}</p>
           )}
+
+          {dateError && <p className="text-red-500">{dateError}</p>}
 
           {leave_type !== "maternity_leave" ||
           (leave_type === "maternity_leave" &&

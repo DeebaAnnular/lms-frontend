@@ -49,8 +49,9 @@ export const columns = [
         accessorKey: "leave_type",
         header: "Leave Type",
         cell: ({ row }) => {
+            const leaveType = row.original.leave_type === "optional_leave" ? "Optional Holiday" : capitalizeWords(replaceUnderscore(row.original.leave_type));
             return (
-                <p>{capitalizeWords(replaceUnderscore( row.original.leave_type))}</p>
+                <p>{leaveType}</p>
             )
         },
     },

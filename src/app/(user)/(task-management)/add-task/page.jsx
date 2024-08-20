@@ -13,6 +13,9 @@ import {
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { all } from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Calendar = () => {
     const user = useSelector((state) => state.user.userDetails);
@@ -88,16 +91,16 @@ const Calendar = () => {
         // Remove all non-digit characters
         value = value.replace(/\D/g, '');
         
+        // Limit the length to 4 characters
+        if (value.length > 4) {
+            value = value.slice(0, 4);
+        }
+        
         // Add colon after hours
         if (value.length > 2) {
             value = value.slice(0, 2) + ':' + value.slice(2);
         }
         
-        // Limit the length to "hh:mm"
-        if (value.length > 5) {
-            value = value.slice(0, 5);
-        }
-    
         // Ensure hours are between 00 and 23
         let hours = parseInt(value.slice(0, 2));
         if (hours > 23) {
@@ -111,10 +114,14 @@ const Calendar = () => {
                 value = value.slice(0, 3) + '59';
             }
         }
+        
+        // Do not accept "00:00"
         if (value === '00:00') {
             value = '';
         }
-        setTime(value);
+        
+        setTime(value); // Update state
+        return value; // Return the formatted time
     };
     const handleAddTask = (day) => {
         const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
@@ -143,7 +150,8 @@ const Calendar = () => {
     
             setTasksForSelectedDate(tasksForDate);
         } else {
-            alert('You can only add tasks for dates within 30 days from today.');
+            // alert('You can only add tasks for dates within 30 days from today.');
+            toast.error('You can only add tasks for dates within 30 days from today.');
         }
     };
     
@@ -185,7 +193,10 @@ const Calendar = () => {
             return;
         }
 
-        if (!time.match(timeFormat)) {
+        // Use the same time formatting logic here
+        const formattedTime = handleTimeChange({ target: { value: time } });
+
+        if (!formattedTime.match(timeFormat)) {
             alert('Time must be in the format "hh:mm:".');
             return;
         } 
@@ -193,7 +204,7 @@ const Calendar = () => {
         const newTask = {
             task_date: selectedDate,
             task_name: task,
-            task_time: time,
+            task_time: formattedTime, // Use formatted time
             user_id: user.user_id,
         };
         try {
@@ -248,7 +259,39 @@ const Calendar = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setEditedTask((prevTask) => ({ ...prevTask, [name]: value }));
+        if (name === "task_time") {
+            // Remove non-digit characters and limit to 4 characters
+            let formattedValue = value.replace(/\D/g, '').slice(0, 4);
+            
+            // Add colon after hours if applicable
+            if (formattedValue.length > 2) {
+                formattedValue = formattedValue.slice(0, 2) + ':' + formattedValue.slice(2);
+            }
+
+            // Ensure hours are between 00 and 23
+            let hours = parseInt(formattedValue.slice(0, 2));
+            if (hours > 23) {
+                formattedValue = '23' + formattedValue.slice(2);
+            }
+
+            // Ensure minutes are between 00 and 59
+            if (formattedValue.length > 2) {
+                let minutes = parseInt(formattedValue.slice(3, 5));
+                if (minutes > 59) {
+                    formattedValue = formattedValue.slice(0, 3) + '59';
+                }
+            }
+
+            // Do not accept "00:00"
+            if (formattedValue === '00:00') {
+                formattedValue = '';
+            }
+
+            // Update the state with the formatted value
+            setEditedTask((prevTask) => ({ ...prevTask, [name]: formattedValue }));
+        } else {
+            setEditedTask((prevTask) => ({ ...prevTask, [name]: value }));
+        }
     };
 
     const handleSave = async (taskId) => {
@@ -297,6 +340,7 @@ const Calendar = () => {
 
     return (
         <div className="p-5 bg-white">
+            <ToastContainer/>
             <header className="flex justify-between items-center mb-4  bg-white">
                 <div className="flex gap-3 items-center font-medium text-[18px]">
                     <div className=" flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]">
@@ -340,11 +384,11 @@ const Calendar = () => {
     </div>
     <div className="flex items-center space-x-2">
         <span className="bg-green-300 rounded-full text-green-300"><FaRegCircle /></span>
-        <p>Rejected</p>
+        <p>Approved</p>
     </div>
     <div className="flex items-center space-x-2">
         <span className="bg-red-400 rounded-full text-red-400"><FaRegCircle /></span>
-        <p>Approved</p>
+        <p>Rejected</p>
     </div>
 </div>
                 <select

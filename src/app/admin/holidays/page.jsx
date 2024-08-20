@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "../../../components/ui/button";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { ArrowUpDown, Calendar as CalendarIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "../../../lib/utils";
 import { Calendar } from "../../../components/ui/calender";
@@ -29,6 +29,25 @@ const Page = () => {
   const [leaveType, setLeaveType] = useState("");
   const [description, setDescription] = useState("");
   const [holidays, setHolidays] = useState([]);
+  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'ascending' });
+
+  const sortedHolidays = [...holidays].sort((a, b) => {
+    const isAsc = sortConfig.direction === 'ascending';
+    if (sortConfig.key === 'date') {
+      return isAsc ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date);
+    } else if (sortConfig.key === 'leaveType') {
+      return isAsc ? a.holiday_type.localeCompare(b.holiday_type) : b.holiday_type.localeCompare(a.holiday_type);
+    }
+    return 0;
+  });
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
 
   const fetchHolidays = async () => {
     try {
@@ -135,7 +154,7 @@ const Page = () => {
                 value={leaveType}
                 onChange={(e) => setLeaveType(e.target.value)}
               >
-                <option value="">Select leave type</option>
+                <option value="">Select</option>
                 <option value="optional_holidays">Optional Holiday</option>
                 <option value="compulsory_holidays">Mandatory Holiday</option>
               </select>
@@ -161,18 +180,22 @@ const Page = () => {
           <TableHeader className="bg-[#f7f7f7] h-[60px] text-[#333843]">
             <TableRow>
               <TableHead className="text-[16px] font-bold text-[#333843] p-3">S.No</TableHead>
-              <TableHead className="text-[16px] font-bold text-[#333843]">Date</TableHead>
-              <TableHead className="text-[16px] font-bold text-[#333843]">Type of Leave</TableHead>
-              <TableHead className="text-[16px] font-bold text-[#333843]">Name</TableHead>
-              <TableHead className="text-[16px] font-bold text-[#333843] p-2">Actions</TableHead>
+              <TableHead className="text-[16px] font-bold text-[#333843] cursor-pointer" onClick={() => requestSort('date')}>
+                Date <ArrowUpDown className="inline" />
+              </TableHead>
+              <TableHead className="text-[16px] font-bold text-[#333843] cursor-pointer" onClick={() => requestSort('leaveType')}>
+                Leave Type <ArrowUpDown className="inline" />
+              </TableHead>
+              <TableHead className="text-[16px] font-bold text-[#333843]">Description</TableHead>
+              <TableHead className="text-[16px] font-bold text-[#333843] p-2">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-[#667085]">
-            {holidays.map((holiday, index) => (
+            {sortedHolidays.map((holiday, index) => (
               <TableRow key={index} >
                 <TableCell className="">{index + 1}</TableCell>
                 <TableCell className="font-medium">{format(new Date(holiday.date), "dd-MM-yyyy")}</TableCell>
-                <TableCell>{holiday.holiday_type === "optional_holidays" ? "Optional Holiday" : "Compulsory Holiday"}</TableCell>
+                <TableCell>{holiday.holiday_type === "optional_holidays" ? "Optional Holiday" : "Mandatory Holiday"}</TableCell>
                 <TableCell>{capitalizeWords(holiday.description)}</TableCell>
                 <TableCell className="" onClick={() => handleDelete(holiday.holiday_id)}><MdDelete className="cursor-pointer" /></TableCell>
               </TableRow>

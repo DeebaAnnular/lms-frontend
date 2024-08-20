@@ -59,7 +59,7 @@ export function DataTable({ allData }) {
     const columns = [
         {
             accessorKey: "week_id",
-            header: "Week ID",
+            header: "S.No",
         },
         {
             accessorKey: "user_name",
@@ -168,7 +168,7 @@ export function DataTable({ allData }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
+                                No records found
                                 </TableCell>
                             </TableRow>
                         )}

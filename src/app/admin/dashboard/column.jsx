@@ -23,7 +23,16 @@ export const columns = [
     },
     {
         accessorKey: "emp_id",
-        header: "Employee Id",
+        header: ({ column }) => (
+            <Button
+                variant="ghost"
+                className='text-[16px] font-bold text-[#333843]'
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                Emp ID
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
         cell: ({ row }) => { 
             const url = row.original.user_id
 
@@ -31,10 +40,25 @@ export const columns = [
                 <Link className="text-blue-500 " href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_id)}</Link>
             )
         },
+        // Add sorting function for emp_id
+        sortingFn: (rowA, rowB) => {
+            const numA = parseInt(rowA.original.emp_id.replace(/\D/g, ''), 10);
+            const numB = parseInt(rowB.original.emp_id.replace(/\D/g, ''), 10);
+            return numA - numB;
+        },
     },
     {
         accessorKey: "emp_name",
-        header: "Name",
+        header: ({ column }) => (
+            <Button
+                variant="ghost"
+                className='text-[16px] font-bold text-[#333843]'
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                Emp Name
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
         // cell: ({ row }) => { 
         //     const url = row.original.user_id
 
@@ -42,6 +66,10 @@ export const columns = [
         //         <Link className="text-blue-500 underline" href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_name)}</Link>
         //     )
         // },
+        // Add sorting function for emp_name
+        sortingFn: (rowA, rowB) => {
+            return rowA.original.emp_name.localeCompare(rowB.original.emp_name);
+        },
     },
 
     {
@@ -50,7 +78,7 @@ export const columns = [
     },
     {
         accessorKey: "contact_number",
-        header: "Number"
+        header: "Contact Number"
     },
     {
         accessorKey: "work_location",

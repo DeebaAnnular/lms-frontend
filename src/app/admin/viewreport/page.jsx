@@ -22,7 +22,8 @@ const Page = () => {
     
     const getData = async () => { 
        const data = await getAllTaskByIdAdmin(localStorage.getItem('week_id'),from_date,to_date)   
-       setTasks(data.tasks) 
+       setTasks(data.tasks)
+        
     }
 
     useEffect( () => {

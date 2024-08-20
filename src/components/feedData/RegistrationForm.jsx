@@ -1,14 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { capitalizeWords } from "../../utils";
-import { ToastContainer, toast } from "react-toastify"; 
-import 'react-toastify/dist/ReactToastify.css'; 
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
+import { getallemp } from "../../actions";
 
 
 
-const RegistrationForm = ({ setIsShow }) => {
+const RegistrationForm = ({ setIsShow,setEmp_list }) => {
     const [formData, setFormData] = useState({
         emp_id: "",
         emp_name: "",
@@ -24,6 +25,7 @@ const RegistrationForm = ({ setIsShow }) => {
     });
 
     const [errors, setErrors] = useState({});
+    
 
     const [countryCode, setCountryCode] = useState("+91"); // Default country code for India
 
@@ -32,7 +34,7 @@ const RegistrationForm = ({ setIsShow }) => {
             ...prevFormData,
             [id]: value ? value.replace(/^\s+/, '') : '', // Check if value is defined
         }));
-    }; 
+    };
 
     const handleContactNumberChange = (value) => {
         setFormData((prevFormData) => ({
@@ -44,7 +46,7 @@ const RegistrationForm = ({ setIsShow }) => {
     const handleInputChangeEvent = (e) => {
         handleInputChange(e.target.id, e.target.value);
     };
-    
+
     const handleDateChange = (e) => {
         const date = e.target.value;
         const regex = /^\d{4}-\d{2}-\d{2}$/;
@@ -65,33 +67,111 @@ const RegistrationForm = ({ setIsShow }) => {
         if (day.length < 2) day = "0" + day;
 
         return [year, month, day].join("-");
+    }; 
+    const fetchEmployees = async () => {
+        const data = await getallemp();
+        setEmp_list(data);
     };
 
-    
+
     const validateForm = () => {
         const newErrors = {};
-    
-        if (!formData.emp_id.trim()) newErrors.emp_id = "Please fill this field";
-        if (!formData.emp_name.trim()) newErrors.emp_name = "Please fill this field";
-        if (!formData.last_name.trim()) newErrors.last_name = "Please fill this field"; // Added last_name check
-        if (!formData.gender.trim()) newErrors.gender = "Please fill this field";
-        if (!formData.date_of_joining.trim()) newErrors.date_of_joining = "Please fill this field";
-        if (!formData.contact_number.trim()) newErrors.contact_number = "Please fill this field";
-        if (!formData.work_email.trim()) newErrors.work_email = "Please fill this field";
-        if (!formData.active_status.trim()) newErrors.active_status = "Please fill this field";
-        if (!formData.designation.trim()) newErrors.designation = "Please fill this field";
-        if (!formData.work_location.trim()) newErrors.work_location = "Please fill this field";
-        if (!formData.password.trim()) newErrors.password = "Please fill this field";
-    
+
+        if (!formData.emp_id.trim()) {
+            newErrors.emp_id = "Please fill this field";
+            toast.error("Please fill Employee ID field"); // New toast notification
+        }
+        if (!formData.emp_name.trim()) {
+            newErrors.emp_name = "Please fill this field";
+            toast.error("Please fill First Name field"); // New toast notification
+        }
+        if (!formData.last_name.trim()) {
+            newErrors.last_name = "Please fill this field"; // Added last_name check
+            toast.error("Please fill Last Name field"); // New toast notification
+        }
+        if (!formData.gender.trim()) {
+            newErrors.gender = "Please fill this field";
+            toast.error("Please fill Gender field"); // New toast notification
+        }
+        if (!formData.date_of_joining.trim()) {
+            newErrors.date_of_joining = "Please fill this field";
+            toast.error("Please fill Date of Joining field"); // New toast notification
+        }
+        if (!formData.contact_number.trim()) {
+            newErrors.contact_number = "Please fill this field";
+            toast.error("Please fill Contact Number field"); // New toast notification
+        }
+        if (!formData.work_email.trim()) {
+            newErrors.work_email = "Please fill this field";
+            toast.error("Please fill Work Email field"); // New toast notification
+        }
+        if (!formData.active_status.trim()) {
+            newErrors.active_status = "Please fill this field";
+            toast.error("Please fill Employee Status field"); // New toast notification
+        }
+        if (!formData.designation.trim()) {
+            newErrors.designation = "Please fill this field";
+            toast.error("Please fill Designation field"); // New toast notification
+        }
+        if (!formData.work_location.trim()) {
+            newErrors.work_location = "Please fill this field";
+            toast.error("Please fill Location field"); // New toast notification
+        }
+        if (!formData.password.trim()) {
+            newErrors.password = "Please fill this field";
+            toast.error("Please fill Password field"); // New toast notification
+        }
+
+        // Check for special characters in specific fields
+        const specialCharRegex = /[^a-zA-Z0-9 ]/; // Allow spaces
+
+        if (specialCharRegex.test(formData.emp_name)) {
+            newErrors.emp_name = "First Name should not contain special characters";
+            toast.error("First Name should not contain special characters"); // New toast notification
+        }
+        if (specialCharRegex.test(formData.last_name)) {
+            newErrors.last_name = "Last Name should not contain special characters";
+            toast.error("Last Name should not contain special characters"); // New toast notification
+        }
+        if (specialCharRegex.test(formData.designation)) {
+            newErrors.designation = "Designation should not contain special characters";
+            toast.error("Designation should not contain special characters"); // New toast notification
+        }
+        if (specialCharRegex.test(formData.work_location)) {
+            newErrors.work_location = "Location should not contain special characters"; // Added toast for location
+            toast.error("Location should not contain special characters"); // New toast notification
+        }
+
         setErrors(newErrors);
-    
+
         return Object.keys(newErrors).length === 0;
+    };
+
+    const handleInput = (e) => {
+        let { name, value } = e.target;
+
+        // Remove special characters from the input value
+        value = value.replace(/[^a-zA-Z0-9 ]/g, '');
+
+        // Enforce maxLength for emp_id
+        if (name === "emp_id" && value.length > 7) {
+            value = value.slice(0, 6); // Limit to 7 characters
+        }
+
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validate form
         if (!validateForm()) {
+            return;
+        }
+
+        // Check for special characters in emp_id
+        if (/[^a-zA-Z0-9]/.test(formData.emp_id)) {
+            toast.error("Employee ID should not contain special characters");
             return;
         }
 
@@ -127,9 +207,13 @@ const RegistrationForm = ({ setIsShow }) => {
                 });
                 setIsShow(false);
                 toast.success("Registered Successfully")
+                fetchEmployees();
+                
+                
             } else {
                 const errorData = await response.json();
-                toast.error(errorData.message || "Error Registering User");
+                console.log("checking", errorData);
+                toast.error(errorData.error || errorData.message || "Error Registering User");
             }
         } catch (error) {
             console.error("Failed to register");
@@ -183,8 +267,8 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('last_name')}
-                                        minLength={2}
-                                        maxLength={25}
+                                        minLength={1}
+                                        maxLength={5}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
@@ -199,7 +283,7 @@ const RegistrationForm = ({ setIsShow }) => {
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('gender')}
                                     >
-                                        <option value="">Select Gender</option>
+                                        <option value="">Select</option>
                                         <option value="M">Male</option>
                                         <option value="F">Female</option>
                                     </select>
@@ -231,23 +315,28 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('work_email')}
-                                        
-                                        
+
+
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="work_location" className="text-[14px] font-regular text-[#373857]">
-                                        Location<span className="text-red-500">*</span>
+                                    <label htmlFor="password" className="text-[14px] font-regular text-[#373857]">
+                                        Password<span className="text-red-500">*</span>
                                     </label>
                                     <input
-                                        id="work_location"
-                                        value={formData.work_location}
-                                        className={getInputClassName('work_location')}
+                                        id="password"
+                                        type="password"
+                                        value={formData.password}
+                                        className={getInputClassName('password')}
                                         required
                                         onChange={handleInputChangeEvent}
-                                        title={getTooltip('work_location')}
+                                        title={getTooltip('password')}
+                                        minLength={4}
+                                        maxLength={25}
+
                                     />
                                 </div>
+                                
                             </div>
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
@@ -260,9 +349,10 @@ const RegistrationForm = ({ setIsShow }) => {
                                         value={formData.emp_id}
                                         className={getInputClassName('emp_id')}
                                         onChange={handleInputChangeEvent}
+                                        onInput={handleInput}
                                         title={getTooltip('emp_id')}
-                                        minLength={5}
-                                        maxLength={13}
+                                        minLength={3}
+                                        maxLength={6}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
@@ -293,22 +383,23 @@ const RegistrationForm = ({ setIsShow }) => {
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('designation')}
                                     />
-                                </div>
+                                </div> 
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="password" className="text-[14px] font-regular text-[#373857]">
-                                        Password<span className="text-red-500">*</span>
+                                    <label htmlFor="work_location" className="text-[14px] font-regular text-[#373857]">
+                                        Location<span className="text-red-500">*</span>
                                     </label>
                                     <input
-                                        id="password"
-                                        type="password"
-                                        value={formData.password}
-                                        className={getInputClassName('password')}
+                                        id="work_location"
+                                        value={formData.work_location}
+                                        className={getInputClassName('work_location')}
                                         required
                                         onChange={handleInputChangeEvent}
-                                        title={getTooltip('password')}
-                                        
+                                        title={getTooltip('work_location')} 
+                                        minLength={2}
+                                        maxLength={30}
                                     />
                                 </div>
+                                
                                 <div className='flex flex-col mb-3'>
                                     <label htmlFor="active_status" className="text-[14px] font-regular text-[#373857]">
                                         Employee Status<span className="text-red-500">*</span>
@@ -320,9 +411,9 @@ const RegistrationForm = ({ setIsShow }) => {
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('active_status')}
-                                
+
                                     >
-                                        <option value="">Select Status</option>
+                                        <option value="">Select</option>
                                         <option value="true">Active</option>
                                         <option value="false">Inactive</option>
                                     </select>

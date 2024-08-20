@@ -186,7 +186,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     },
     {
       accessorKey: "actions",
-      header: () => <span className="float-right mr-[44px]">Actions</span>,
+      header: () => <span className="float-right mr-[44px]">Action</span>,
       cell: ({ row }) => {
         const status = row.original.approved_status;
 
@@ -327,7 +327,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
               <TableHeader>
                 <TableRow className="bg-[#F7F7F7]">
                   <TableHead className="p-0 px-3 text-[#333843]">
-                    S.No
+                    Task ID
                   </TableHead>
                   <TableHead className="p-0 px-3 pl-5 text-[#333843]">
                     Task
@@ -344,9 +344,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                           key={index + 1}
                           className="py-2 px-3 pl-5 border-b text-[#667085]"
                         >
-                          {index + 1}
-                          {/* {fetchTaskTime(id)}
-                                                {time[id] && <span>{` - ${time[id]}`}</span>} */}
+                          {id}
                         </p>
                       ))}
                   </TableCell>

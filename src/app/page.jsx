@@ -129,7 +129,7 @@ const Signin = () => {
                                 id="email" 
                                 required 
                                 value={loginData.email} 
-                                placeholder='Enter your Email' 
+                                placeholder='Enter Email' 
                                 onChange={handleChange}  
                                 onKeyDown={handleKeyDown}
                             />

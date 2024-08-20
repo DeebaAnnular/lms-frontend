@@ -40,7 +40,12 @@ const EmployeeForm = ({ resData, id }) => {
         // Format the date_of_joining if the input field is being changed
         if (name === 'date_of_joining') {
             const dateObj = new Date(value);
-            value = dateObj.toISOString().split('T')[0]; // Convert to YYYY-MM-DD format
+            // Check if the date is valid
+            if (!isNaN(dateObj.getTime())) {
+                value = dateObj.toISOString().split('T')[0]; // Convert to YYYY-MM-DD format
+            } else {
+                value = ''; // Reset to empty if invalid
+            }
         }
 
         setFormData({ ...formData, [name]: value });
@@ -48,8 +53,25 @@ const EmployeeForm = ({ resData, id }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validate date_of_joining
+        const joiningDate = new Date(formData.date_of_joining);
+        const year = joiningDate.getFullYear();
+        if (year < 1995 || year > 2040) {
+            toast.error("Date of Joining must be between 1995 and 2040!");
+            return; // Exit the function if the date is invalid
+        }
+
+        // Validate special characters in designation, emp_name, and work_location
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+        if (specialCharRegex.test(formData.designation) || 
+            specialCharRegex.test(formData.emp_name) || 
+            specialCharRegex.test(formData.work_location)) {
+            toast.error("Designation, Name, and Work Location must not contain special characters!");
+            return; // Exit the function if validation fails
+        }
+
         await updateEmpDetails(id, formData);
-        // alert('Employee details updated successfully!');
         toast.success("Employee details updated successfully!");
     };
 
@@ -69,6 +91,8 @@ const EmployeeForm = ({ resData, id }) => {
                                     value={formData.emp_id}
                                     onChange={handleChange}
                                     className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                    minLength={3}
+                                    maxLength={7}
                                 />
                             </div>
                             <div className='flex flex-col'>
@@ -79,6 +103,8 @@ const EmployeeForm = ({ resData, id }) => {
                                     value={capitalizeWords(formData.emp_name)}
                                     onChange={handleChange}
                                     className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                    minLength={3}
+                                    maxLength={30}
                                 />
                             </div>
                             <div className='flex flex-col'>
@@ -127,6 +153,8 @@ const EmployeeForm = ({ resData, id }) => {
                                     value={capitalizeWords(formData.designation)}
                                     onChange={handleChange}
                                     className='mt-1 p-2 border rounded min-min-w-[356px] h-[45px] text-[#667085]'
+                                    minLength={2}
+                                    maxLength={20}
                                 />
                             </div>
                             <div className='flex flex-col'>
@@ -147,6 +175,8 @@ const EmployeeForm = ({ resData, id }) => {
                                     value={capitalizeWords(formData.work_location)}
                                     onChange={handleChange}
                                     className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                    minLength={2}
+                                    maxLength={30}
                                 />
                             </div>
                             <div className='flex flex-col'>

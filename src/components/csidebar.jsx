@@ -43,9 +43,9 @@ const Sidebar = () => {
   };
 
   return (
-    <section className="sticky left-0 top-0 flex h-screen w-fit flex-col justify-between bg-[#134572] pt-0 min-w-[250px]">
+    <section className="sticky left-0 top-0 flex h-screen w-full flex-col justify-between bg-[#134572] pt-0">
       <div className="logo h-[75px] relative w-full object-contain">
-        <Image src='/imgs/logo1.png' alt='logo' layout="fill" objectFit="contain" className="h-[75px] w-full mt-[20px] object-contain" />
+        <Image src='/imgs/logo2.png' alt='logo' layout="fill" objectFit="contain" className="h-[75px] w-full mt-[20px] object-contain" />
       </div>
       <div className="flex mt-8 flex-1 flex-col gap-3">
         {sidebarLinks.map((section, index) => {

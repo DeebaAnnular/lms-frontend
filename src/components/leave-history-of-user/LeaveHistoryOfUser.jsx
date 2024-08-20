@@ -17,6 +17,7 @@ const LeaveHistoryOfUser = ({id}) => {
     useEffect(() => {
         const fetchData = async () => {
             const Response = await getLeave_history_by_id(id);
+            console.log(Response)
             setRes(Response);
         };
 

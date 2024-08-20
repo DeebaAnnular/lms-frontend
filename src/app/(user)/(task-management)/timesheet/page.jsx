@@ -74,7 +74,11 @@ const Page = () => {
                     </div>
 
                     <div className="mx-auto py-5 px-0">
-                        {tasks.length > 0 && <DataTable allData={tasks} userId={user.user_id} startDate={startDate} endDate={endDate} />}
+                        {tasks.length > 0 ? (
+                            <DataTable allData={tasks} userId={user.user_id} startDate={startDate} setEndDate={setEndDate} setStartDate={setStartDate} endDate={endDate} />
+                        ) : (
+                            <p className="text-center text-gray-500">No records found</p>
+                        )}
                     </div>
                 </div>
             </div>

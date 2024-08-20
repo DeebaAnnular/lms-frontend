@@ -29,7 +29,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-export function DataTable({ columns, data }) {
+export function DataTable({ columns, setEmp_list,data}) {
 
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
@@ -67,7 +67,7 @@ export function DataTable({ columns, data }) {
                 <div className="flex border border-[#DCDCDC] items-center px-3 h-full  ">
                     <IoIosSearch className='text-[#B1A8A8] text-[30px]' />
                     <Input
-                        placeholder="Search by Name or Emp ID"
+                        placeholder="Search by Emp Name or ID"
                         value={globalFilter}
                         onChange={(event) =>
                             setGlobalFilter(event.target.value)
@@ -112,7 +112,7 @@ export function DataTable({ columns, data }) {
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id}  style={{ paddingLeft: cell.column.id === 'emp_id' || cell.column.id === 'emp_name' ? '38px' : '30px' }}  >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
@@ -124,7 +124,7 @@ export function DataTable({ columns, data }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
+                                No records found
                                 </TableCell>
                             </TableRow>
                         )}
@@ -176,7 +176,7 @@ export function DataTable({ columns, data }) {
                         </div>
                         <h1 className='text-2xl sticky font-semibold cursor-default flex justify-center min-w-[400px] '>Employee Registration </h1>
                         <div className="max-h-[500px] mt-[20px] Z-20">
-                            <RegistrationForm setIsShow={setIsShow} />
+                            <RegistrationForm setIsShow={setIsShow} setEmp_list={setEmp_list} />
                         </div>
                     </div>
                 </div>

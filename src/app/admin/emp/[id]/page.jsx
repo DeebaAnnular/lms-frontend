@@ -10,13 +10,13 @@ const Page = async ({ params }) => {
     const resData = await getEmp_detail_by_id(params.id);
 
     return (
-        <div className="content-section w-full flex flex-col">
+        <div className="content-section w-full flex flex-col ">
             <ToastContainer />
             <div className="personal-data bg-white rounded-none px-5 py-3">
                 <p className='text-[20px] font-bold mb-2'>Employee Details</p>
                 <EmployeeForm resData={resData} id = {params.id}/>
-                <div className="personal-data w-full bg-white rounded-md px-5 py-3 mt-[-10px]">
-                    <p className='text-[20px] font-bold mb-2'>Leave Settings</p>
+                <div className="personal-data w-full bg-white rounded-md px-5 py-6 mt-[-10px]">
+                    <p className='text-[20px] font-bold mb-2'>Leave Allocation</p>
                     <LeaveSettings id={id} gender={resData.gender} />
                 </div>
             </div>

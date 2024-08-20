@@ -149,8 +149,8 @@ export const updateEmpDetails = async (id, data) => {
     } catch (error) {
       console.error("There has been a problem with your fetch operation:", error);
       throw error; // Re-throw the error for the caller to handle
-    }
-  };
+    }
+  };
 
 
 export const getLeave_history_by_id = async (id) => {
@@ -348,8 +348,8 @@ export const getAllTaskByIdAdmin = async (weekId, startDate, endDate) => {
         return data; // Return the fetched data
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
-        return []; // Return an empty array or handle error as needed
-    }
+        return []; // Return an empty array or handle error as needed
+    }
 }
 
     export const handleApprove = async (task_id) => {
@@ -434,4 +434,19 @@ export const getAllTaskByIdAdmin = async (weekId, startDate, endDate) => {
         } catch (error) {
             console.error("Error rejecting daily task:", error);
         }
-    };
+    };  
+
+
+export const getallemp = async () => {
+    try {
+        const response = await fetch(`${API}/auth/users`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        return []; // Return an empty array on error
+    }
+};

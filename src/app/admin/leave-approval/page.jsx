@@ -38,7 +38,10 @@ const Page = () => {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toISOString().split('T')[0]; // Returns date in YYYY-MM-DD format
+        const day = String(date.getDate()).padStart(2, '0'); // Get day and pad with zero if needed
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed) and pad
+        const year = date.getFullYear(); // Get full year
+        return `${day}-${month}-${year}`; // Return in dd-mm-yyyy format
     };
 
     const handleApproveClick = async (leaveRequestId) => {
@@ -125,41 +128,43 @@ const Page = () => {
                 <h1 className='text-[22px] text-md font-bold'>Leave Requests</h1>
                 <div className='min-w-[350px] rounded-lg p-3'>
                     <div className="bg-white mt-2  p-5 overflow-clip">
-                        <Table className=" ">
-                            <TableHeader className='bg-[#F7F7F7] h-[60px]'>
-                                <TableRow className=' text-[16px] font-bold text-[#333843]'>
-                                    <TableHead className="w-[100px] text-[16px] font-bold text-[#333843]">S.No</TableHead>
-                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Name</TableHead>
-                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Leave Type</TableHead>
-                                    <TableHead className='text-[16px] font-bold text-[#333843]'>From Date   </TableHead>
-                                    <TableHead className='text-[16px] font-bold text-[#333843]'>To Date   </TableHead>
-                                    <TableHead className='text-[16px] font-bold text-[#333843]'>Total Days</TableHead>
-                                    <TableHead className='text-[16px] font-bold text-[#333843] text-center'>Action</TableHead> 
-
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody className='text-[#667085]'>
-                                {leavedata?.map((data, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell className="font-medium">{index + 1}</TableCell>
-                                        <TableCell>{capitalizeWords(data.emp_name)}</TableCell>
-                                        <TableCell>{capitalizeWords(replaceUnderscore(data.leave_type))}</TableCell>
-                                        <TableCell>{formatDate(data.from_date)}</TableCell>
-                                        <TableCell>{formatDate(data.to_date)}</TableCell>
-                                        <TableCell>{data.total_days}</TableCell>
-                                        <TableCell className='flex gap-5'>
-                                            <p className='text-red-500 cursor-pointer' onClick={() => handleRejectClick(data.leave_request_id)}>Reject</p>
-                                            <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
-                                                Approve
-                                            </p>
-                                        </TableCell>
-                                         
+                        <div className="overflow-x-auto">
+                            <Table className="min-w-[800px] table-fixed">
+                                <TableHeader className='bg-[#F7F7F7] h-[60px]'>
+                                    <TableRow className=' text-[16px] font-bold text-[#333843]'>
+                                        <TableHead className="w-[100px] text-[16px] font-bold text-[#333843]">S.No</TableHead>
+                                        <TableHead className='w-[200px] text-[16px] font-bold text-[#333843]'>Name</TableHead>
+                                        <TableHead className='w-[200px] text-[16px] font-bold text-[#333843]'>Leave Type</TableHead>
+                                        <TableHead className='w-[150px] text-[16px] font-bold text-[#333843]'>From Date</TableHead>
+                                        <TableHead className='w-[150px] text-[16px] font-bold text-[#333843]'>To Date</TableHead>
+                                        <TableHead className='w-[150px] text-[16px] font-bold text-[#333843]'>Total Count</TableHead>
+                                        <TableHead className='w-[200px] text-[16px] font-bold text-[#333843] text-center'>Action</TableHead> 
 
                                     </TableRow>
-                                ))}
-                            </TableBody>
+                                </TableHeader>
+                                <TableBody className='text-[#667085]'>
+                                    {leavedata?.map((data, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell className="font-medium">{index + 1}</TableCell>
+                                            <TableCell>{capitalizeWords(data.emp_name)}</TableCell>
+                                            <TableCell>{capitalizeWords(data.leave_type === 'optional_leave' ? 'optional holiday' : replaceUnderscore(data.leave_type))}</TableCell>
+                                            <TableCell>{formatDate(data.from_date)}</TableCell>
+                                            <TableCell>{formatDate(data.to_date)}</TableCell>
+                                            <TableCell>{data.total_days}</TableCell>
+                                            <TableCell className='flex gap-5'>
+                                                <p className='text-red-500 cursor-pointer' onClick={() => handleRejectClick(data.leave_request_id)}>Reject</p>
+                                                <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
+                                                    Approve
+                                                </p>
+                                            </TableCell>
+                                             
 
-                        </Table>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+
+                            </Table>
+                        </div>
                         {/* <div className="flex w-full justify-end gap-2 mt-4">
                             <button
                                 onClick={handlePrevPage}
