@@ -189,7 +189,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
         clearErrors("maternity_leave_balance");
       }
     } else if (from_date && to_date) {
-      const days = calculateTotalDays(from_date, to_date);
+      const days = calculateTotalDays(from_date, to_date, leave_type);
       setTotalDays(days);
       setValue("total_days", days.toString());
     }
@@ -205,49 +205,97 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     clearErrors,
   ]);
 
-  const calculateTotalDays = (from_date, to_date) => {
+  const calculateTotalDays = (from_date, to_date, leaveType) => {
     const start = new Date(from_date);
     const end = new Date(to_date);
     let count = 0;
 
-    if (start.getTime() === end.getTime()) {
-        return 1; // If start and end dates are the same, return 1 day
-    }
+    // Ensure the end date is inclusive
+    end.setHours(23, 59, 59, 999); // Set end date to the end of the day
 
     while (start <= end) {
-        const day = start.getDay();
-        const formattedDate = start.toISOString().split("T")[0];
+        const day = start.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
 
-        if (
-            day !== 0 &&
-            day !== 6 &&
-            !compulsaryHolidays.includes(formattedDate) &&
-            !appliedOptionalLeaves.includes(formattedDate)
-        ) {
+        // Count only weekdays for sick, earned, and loss of pay
+        if ((leaveType === "sick_leave" || leaveType === "earned_leave" || leaveType === "loss_of_pay") && (day !== 0 && day !== 6)) {
+            count++;
+        }
+        // Count all days for work from home
+        else if (leaveType === "work_from_home") {
             count++;
         }
 
-        start.setDate(start.getDate() + 1);
+        start.setDate(start.getDate() + 1); // Move to the next day
     }
 
     return count; // Return the count of days
   };
 
   const onSubmit = async (data) => {
-    // Check if start date is a weekday (Monday to Friday)
+    // Check if start date is a weekend (Saturday or Sunday)
     const startDate = new Date(data.from_date);
     const endDate = new Date(data.to_date);
-    
-    if (startDate.getDay() === 0 || startDate.getDay() === 6) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to midnight for comparison
+
+    // Set start date to midnight for comparison
+    startDate.setHours(0, 0, 0, 0);
+
+    // Weekend check for Loss of Pay
+    if (data.leave_type === "loss_of_pay") {
+        if (startDate.getDay() === 0 || startDate.getDay() === 6) {
+            setLeaveMessage("Loss of Pay can't be applied on Saturday or Sunday.");
+            return;
+        }
+
+        const sickLeaveBalance = leaveBalance.sick_leave || 0;
+        const earnedLeaveBalance = leaveBalance.earned_leave || 0;
+
+        // Check if either Sick or Earned leave balance is greater than 0
+        if (sickLeaveBalance > 0 || earnedLeaveBalance > 0) {
+            setLeaveMessage("Loss of Pay can only be applied if Sick and Earned leave balances are 0.");
+            return;
+        }
+    }
+
+    // Check if session is FN or AN and start date is not today
+    if ((data.session === "FN" || data.session === "AN") && startDate.getTime() !== today.getTime()) {
+        setLeaveMessage("Leave can only be applied today for FN or AN sessions.");
+        return;
+    }
+
+    // Weekend check for all leave types except Work From Home
+    if (data.leave_type !== "work_from_home" && (startDate.getDay() === 0 || startDate.getDay() === 6)) {
         setLeaveMessage("Can't apply leave on Saturday or Sunday.");
         return;
     }
     
-    // Remove the check for end date if leave type is optional or maternity
-    if ((data.leave_type !== "optional_leave" && data.leave_type !== "maternity_leave") && 
-        (endDate.getDay() === 0 || endDate.getDay() === 6)) {
-        setLeaveMessage("Can't apply leave on Saturday or Sunday.");
-        return;
+    // Allow Work From Home without checking leave balance
+    if (data.leave_type === "work_from_home") {
+        // No checks for leave balance or any other conditions
+    } else {
+        // Check if leave type is not optional or maternity and if end date is a weekend
+        if ((data.leave_type !== "optional_leave" && data.leave_type !== "maternity_leave") && 
+            (endDate.getDay() === 0 || endDate.getDay() === 6)) {
+            setLeaveMessage("Can't apply leave on Saturday or Sunday.");
+            return;
+        }
+
+        // Remove balance check for Loss of Pay
+        if (data.leave_type !== "loss_of_pay") {
+            const availableBalance = leaveBalance[data.leave_type] || 0;
+            const totalDaysRequested = totalDays;
+
+            if (totalDaysRequested > availableBalance) {
+                setLeaveMessage(
+                    `Requested leave exceeds available balance. You have ${availableBalance} days left for ${data.leave_type.replace(
+                        "_",
+                        " "
+                    )}.`
+                );
+                return;
+            }
+        }
     }
 
     // Convert dates to DD-MM-YYYY format for backend
@@ -261,16 +309,6 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
 
     if (leaveType === "maternity_leave" && availableBalance === 0) {
       setLeaveMessage("You don't have any maternity leave balance available.");
-      return;
-    }
-
-    if (totalDaysRequested > availableBalance) {
-      setLeaveMessage(
-        `Requested leave exceeds available balance. You have ${availableBalance} days left for ${leaveType.replace(
-          "_",
-          " "
-        )}.`
-      );
       return;
     }
 
@@ -311,7 +349,12 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
             <div className="w-full">
               <select
                 id="leave_type"
-                {...register("leave_type")}
+                {...register("leave_type", {
+                    onChange: () => {
+                        // Clear any existing leave message when leave type changes
+                        setLeaveMessage(null);
+                    }
+                })}
                 className="px-2 rounded-md py-2 border w-[90%]"
               >
                 <option value="" className="text-[#99A0B0]">
@@ -346,7 +389,18 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                         <div className="w-full">
                           <select
                             id="session"
-                            {...register("session")}
+                            {...register("session", {
+                                onChange: (e) => {
+                                    const selectedSession = e.target.value;
+                                    // Clear any existing leave message when session changes
+                                    setLeaveMessage(null);
+                                    // If session is FN or AN, clear the date fields
+                                    if (selectedSession === "FN" || selectedSession === "AN") {
+                                        setValue("from_date", ""); // Clear start date
+                                        setValue("to_date", ""); // Clear end date
+                                    }
+                                }
+                            })}
                             className="p-2 rounded-md border w-[90%] text-[14px]"
                           >
                             <option value="full_day">Full Day</option>
@@ -535,3 +589,4 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
 };
 
 export default LeaveForm;
+
