@@ -352,7 +352,7 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                         onInput={handleInput}
                                         title={getTooltip('emp_id')}
                                         minLength={3}
-                                        maxLength={6}
+                                        maxLength={7}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
