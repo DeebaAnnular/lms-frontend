@@ -347,7 +347,7 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
                                 // setAllData(response) 
                                 setShow(false)
                             }}
-                            className="absolute top-2 right-2 text-red-500 text-xl"
+                            className="absolute top-2 right-2 text-red-500 text-xl border border-red-500 rounded-full"
                         >
                             <IoIosClose />
                         </button>

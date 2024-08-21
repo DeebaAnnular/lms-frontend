@@ -474,11 +474,13 @@ const Calendar = () => {
             {show && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white border-2 md:min-h-[550px] md:min-w-[850px] p-6 rounded shadow-lg relative">
+                        
                         <button onClick={closeModal}
-                            className="absolute top-2 right-2 text-red-500 text-xl"
+                            className="absolute top-2 border border-red-500 right-2 text-red-500 text-xl rounded-full"
                         >
                             <IoIosClose />
                         </button>
+                        
 
 
                         {currDayStatus != 'approved' && (<form onSubmit={submitTask} className="space-y-4">
