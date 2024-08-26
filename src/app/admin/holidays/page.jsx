@@ -191,15 +191,21 @@ const Page = () => {
             </TableRow>
           </TableHeader>
           <TableBody className="text-[#667085]">
-            {sortedHolidays.map((holiday, index) => (
-              <TableRow key={index} >
-                <TableCell className="">{index + 1}</TableCell>
-                <TableCell className="font-medium">{format(new Date(holiday.date), "dd-MM-yyyy")}</TableCell>
-                <TableCell>{holiday.holiday_type === "optional_holidays" ? "Optional Holiday" : "Mandatory Holiday"}</TableCell>
-                <TableCell>{capitalizeWords(holiday.description)}</TableCell>
-                <TableCell className="" onClick={() => handleDelete(holiday.holiday_id)}><MdDelete className="cursor-pointer" /></TableCell>
+            {sortedHolidays.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">No records found</TableCell>
               </TableRow>
-            ))}
+            ) : (
+              sortedHolidays.map((holiday, index) => (
+                <TableRow key={index}>
+                  <TableCell className="">{index + 1}</TableCell>
+                  <TableCell className="font-medium">{format(new Date(holiday.date), "dd-MM-yyyy")}</TableCell>
+                  <TableCell>{holiday.holiday_type === "optional_holidays" ? "Optional Holiday" : "Mandatory Holiday"}</TableCell>
+                  <TableCell>{capitalizeWords(holiday.description)}</TableCell>
+                  <TableCell className="" onClick={() => handleDelete(holiday.holiday_id)}><MdDelete className="cursor-pointer" /></TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

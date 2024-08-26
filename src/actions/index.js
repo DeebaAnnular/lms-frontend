@@ -36,6 +36,7 @@ export async function getAllEmpIds() {
 export const getEmp_detail_by_id = async (id) => {
     try {
         const response = await fetch(`${API}/auth/user/${id}`);
+        
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -128,8 +129,8 @@ export const postLeave_req = async (leaveData) => {
         return null; // Return null or handle error as needed
     }
 }; 
+
 export const updateEmpDetails = async (id, data) => {
-    console.log("data",data)
     try {
        const response = await fetch(`${API}/auth/update_user/${id}`, {
         // const response = await fetch(http://localhost:3000/api/auth/update_user/8,{
@@ -306,7 +307,6 @@ export const getAllTaskById = async (userId, startDate, endDate) => {
 
 
 export const submitWeeklyTimeSheet = async (data) => { 
-    console.log("submitweekyl",data);
         const response = await fetch(`${API}/task/create_weekly_status`,{
             method:'POST',
             headers:{
@@ -317,7 +317,6 @@ export const submitWeeklyTimeSheet = async (data) => {
         )
 
         const resData = await response.json()
-        console.log("weeklyresponse",resData)
         return resData
 }
 

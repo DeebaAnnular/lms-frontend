@@ -143,24 +143,30 @@ const Page = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody className='text-[#667085]'>
-                                    {leavedata?.map((data, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell className="font-medium">{index + 1}</TableCell>
-                                            <TableCell>{capitalizeWords(data.emp_name)}</TableCell>
-                                            <TableCell>{capitalizeWords(data.leave_type === 'optional_leave' ? 'optional holiday' : replaceUnderscore(data.leave_type))}</TableCell>
-                                            <TableCell>{formatDate(data.from_date)}</TableCell>
-                                            <TableCell>{formatDate(data.to_date)}</TableCell>
-                                            <TableCell>{data.total_days}</TableCell>
-                                            <TableCell className='flex gap-5'>
-                                                <p className='text-red-500 cursor-pointer' onClick={() => handleRejectClick(data.leave_request_id)}>Reject</p>
-                                                <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
-                                                    Approve
-                                                </p>
-                                            </TableCell>
-                                             
-
-                                        </TableRow>
-                                    ))}
+                                {leavedata.length > 0 ? (
+        leavedata.map((data, index) => (
+            <TableRow key={index}>
+                <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell>{capitalizeWords(data.emp_name)}</TableCell>
+                <TableCell>{capitalizeWords(data.leave_type === 'optional_leave' ? 'optional holiday' : replaceUnderscore(data.leave_type))}</TableCell>
+                <TableCell>{formatDate(data.from_date)}</TableCell>
+                <TableCell>{formatDate(data.to_date)}</TableCell>
+                <TableCell>{data.total_days}</TableCell>
+                <TableCell className='flex gap-5'>
+                    <p className='text-red-500 cursor-pointer' onClick={() => handleRejectClick(data.leave_request_id)}>Reject</p>
+                    <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
+                        Approve
+                    </p>
+                </TableCell>
+            </TableRow>
+        ))
+    ) : (
+        <TableRow>
+            <TableCell colSpan={7} className="text-center py-4">
+                No records found
+            </TableCell>
+        </TableRow>
+    )}
                                 </TableBody>
 
                             </Table>

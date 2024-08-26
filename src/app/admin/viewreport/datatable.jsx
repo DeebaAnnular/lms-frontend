@@ -313,10 +313,10 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
       {show && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded min-w-[300px] w-[600px] min-h-[500px] shadow-lg relative">
+          <div className="bg-white p-6 rounded h-fit min-w-[300px] w-[600px] max-h-[500px] shadow-lg relative">
             <button
               onClick={() => setShow(false)}
-              className="absolute top-2 right-2 text-red-500 text-xl"
+              className="absolute top-2 right-2 text-red-500 text-xl border border-red-500 rounded-full"
             >
               <IoIosClose />
             </button>
