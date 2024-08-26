@@ -597,7 +597,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
           (leave_type === "maternity_leave" &&
             leaveBalance.maternity_leave > 0) ? (
             <div className="flex w-[90%] justify-end">
-              <Button type="submit" className="mt-4">
+              <Button type="submit" className="mt-4 text-white bg-[#134572]">
                 Submit
               </Button>
             </div>

@@ -170,7 +170,7 @@ const Page = () => {
             </div>
 
             <div className=" ">
-              <Button className="px-5 py-2 bg-black rounded-md ">Add</Button>
+              <Button className="px-5 py-2 text-white bg-[#134572] rounded-md ">Add</Button>
             </div>
           </form>
         </div>

@@ -77,7 +77,7 @@ export function DataTable({ columns, setEmp_list,data}) {
                 </div>
 
                 <div
-                    className="w-fit bg-[#A6C4F0] rounded-sm h-fit p-2 text-black cursor-pointer hover:text-[#A6C4F0] hover:bg-[#134572]"
+                    className="w-fit  bg-[#134572] rounded-sm h-fit p-2 text-white cursor-pointer hover:text-[#A6C4F0] hover:bg-[#134572]"
                     onClick={() => setIsShow(true)} // show the registration form on click
                 >
                     Add Employee

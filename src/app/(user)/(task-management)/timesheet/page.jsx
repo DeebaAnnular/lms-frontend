@@ -66,7 +66,7 @@ const Page = () => {
                         <div className="setDate-button">
                             <Button
                                 onClick={getData}
-                                className="bg-[#A6C4F0] font-bolder font-sans text-[15px] py-2 px-6 text-black"
+                                className="text-white bg-[#134572] font-bolder font-sans text-[15px] py-2 px-6"
                             >
                                 Get Timesheet
                             </Button>

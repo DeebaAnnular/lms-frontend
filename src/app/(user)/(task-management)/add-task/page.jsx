@@ -510,7 +510,7 @@ const Calendar = () => {
                             <div className="flex justify-end">
                                 <button
                                     type="submit"
-                                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                                    className="text-white bg-[#134572] px-4 py-2 rounded"
                                 >
                                     Add
                                 </button>
