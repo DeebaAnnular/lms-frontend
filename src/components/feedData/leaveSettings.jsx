@@ -65,8 +65,23 @@ const LeaveSettings = ({ id, gender }) => {
         setSickLeave(newLeaveBalances.sick_leave);
         setOptionalLeave(newLeaveBalances.optional_leave);
         setMaternityLeave(newLeaveBalances.maternity_leave);
-        // alert("Leave balance updated");
-        toast.success("Leave balance updated");
+        // alert("Leave balance updated"); 
+
+        const fetchLeaveBalancess = async () => {
+            const res = await fetch(`${API}/leave/leave-balance/${id}`);
+            const data = await res.json();
+
+            if(data.sick_leave || data.earned_leave || data.optional_leave)
+            {
+                toast.success("Leave balance updated succesffully");
+            }
+            else
+            {
+                toast.success("Leave allocated successfully")
+            }
+        }
+        fetchLeaveBalancess();
+       
     };
 
     return (
@@ -141,7 +156,7 @@ const LeaveSettings = ({ id, gender }) => {
                 {gender === 'F' && (
                     <div className='flex flex-col items-center w-full'>
                         <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                            <p className='font-bold mb-2'>Maternity Leaves</p>
+                            <p className='font-bold mb-2'>Maternity Leave</p>
                             <DropdownMenu>
                                 <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
                                     <span>{tempMaternityLeave !== null ? tempMaternityLeave : (maternityLeave !== null ? maternityLeave : "Select")}</span>

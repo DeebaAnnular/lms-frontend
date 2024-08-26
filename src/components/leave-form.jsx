@@ -334,6 +334,8 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     data.total_days = totalDaysRequested;
     data.user_id = user.user_id || null;
     data.emp_name = user.user_id || null;
+    // data.reason=data.reason;
+    console.log("data-reason",data)
 
     const result = await postLeave_req(data);
 
@@ -537,15 +539,16 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                             ).padStart(2, "0")}-${String(
                               holidayDate.getMonth() + 1
                             ).padStart(2, "0")}-${holidayDate.getFullYear()}`;
-                            const isDisabled = holidayDate < new Date(); // Disable if the date is before today
-
+                            // const isDisabled = holidayDate < new Date(); // Disable if the date is before today
+                            const isDisabled =
+                            holidayDate < new Date().setHours(0, 0, 0, 0) || appliedOptionalHolidays.includes(holiday.date);
                             return (
                           <option
                             key={holiday.date}
                             value={holiday.date}
-                            disabled={appliedOptionalHolidays.includes(holiday.date)}
+                            disabled={isDisabled}
                           >
-                            {holiday.date} - {holiday.description}
+                            {formattedDisplayDate} - {holiday.description}
                           </option>
                             );
                           })}
