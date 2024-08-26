@@ -36,7 +36,7 @@ const LeaveSettings = ({ id, gender }) => {
             }
         };
         fetchLeaveBalances();
-    }, [id]);
+    }, []);
 
     const handleAddLeave = () => {
         const newLeaveBalances = {
