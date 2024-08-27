@@ -12,6 +12,10 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
 
   
     const[updatedDetails,setUpdatedDetails]=useState([]);
+    const [dateError, setDateError] = useState('');
+    const [empIdError, setEmpIdError] = useState('');
+    const [nameError,setnameError]=useState('');
+
     const [formData, setFormData] = useState({
         user_id: id,
         emp_id: resData.emp_id,
@@ -47,31 +51,63 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
     }, [resData]); // Fetch details when id changes
 
     const handleChange = (e) => {
-        let { name, value } = e.target;
+        let { name, value } = e.target; 
+
+        if (name === 'emp_id') {
+            const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+            if (specialCharRegex.test(value)) {
+                setEmpIdError("Employee ID must not contain special characters!");
+            } else {
+                setEmpIdError('');
+            }
+        } 
+        if (name === 'emp_name') {
+            const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+            if (specialCharRegex.test(value)) {
+                setnameError("Employee Name must not contain special characters!");
+            } else {
+                setnameError('');
+            }
+        }
+
 
         // Format the date_of_joining if the input field is being changed
         if (name === 'date_of_joining') {
             const dateObj = new Date(value);
-            // Check if the date is valid
-            if (!isNaN(dateObj.getTime())) {
+            const currentDate = new Date();
+            const threeMonthsAgo = new Date(currentDate.getFullYear(), currentDate.getMonth() - 3, currentDate.getDate());
+            const threeMonthsFromNow = new Date(currentDate.getFullYear(), currentDate.getMonth() + 3, currentDate.getDate());
+            
+            if (!isNaN(dateObj.getTime()) && dateObj >= threeMonthsAgo && dateObj <= threeMonthsFromNow) {
+                setDateError('');
                 value = dateObj.toISOString().split('T')[0]; // Convert to YYYY-MM-DD format
             } else {
+                setDateError('Date of Joining must be within the last 3 months or the upcoming 3 months.');
                 value = ''; // Reset to empty if invalid
             }
         }
-
+    
         setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (empIdError || dateError || nameError) {
+            toast.error("Please correct the errors before submitting.");
+            return;
+        }
 
         // Validate date_of_joining
-        const joiningDate = new Date(formData.date_of_joining);
-        const year = joiningDate.getFullYear();
-        if (year < 1995 || year > 2040) {
-            toast.error("Date of Joining must be between 1995 and 2040!");
-            return; // Exit the function if the date is invalid
+        // const joiningDate = new Date(formData.date_of_joining);
+        // const year = joiningDate.getFullYear();
+        // if (year < 1995 || year > 2040) {
+        //     toast.error("Date of Joining must be between 1995 and 2040!");
+        //     return; // Exit the function if the date is invalid
+        // } 
+
+        if(dateError)
+        {
+            toast.error(dateError);
         }
 
         // Validate special characters in designation, emp_name, and work_location
@@ -83,9 +119,18 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
             return; // Exit the function if validation fails
         }
 
-        await updateEmpDetails(id, formData);
+     const updatedresponse=  await updateEmpDetails(id, formData);
+     console.log("updatedemp",updatedresponse.resmessage);
         setGender(formData.gender)
-        toast.success("Employee details updated successfully!");
+        if(updatedresponse.statusCode === 200)
+        {
+            toast.success("Employee details updated successfully!");
+        }
+        else
+        {
+            toast.error(updatedresponse.resmessage);
+        }
+        
         
         
 
@@ -112,6 +157,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                         minLength={3}
                                         maxLength={8}
                                     />
+                                    {empIdError && <p className="text-red-500 text-sm mt-1">{empIdError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
                                     <label className='font-bold'>Name</label>
@@ -124,6 +170,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                         minLength={3}
                                         maxLength={30}
                                     />
+                                    {nameError && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
                                     <label className='font-bold'>Gender</label>
@@ -145,6 +192,8 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                         value={formData.contact_number}
                                         onChange={handleChange}
                                         className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        minLength={5}
+                                        maxLength={15}
                                     />
                                 </div>
                                 <div className='flex flex-col'>
@@ -184,6 +233,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                         onChange={handleChange}
                                         className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
                                     />
+                                    {dateError && <p className="text-red-500 text-sm mt-1">{dateError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
                                     <label className='font-bold'>Work Location</label>

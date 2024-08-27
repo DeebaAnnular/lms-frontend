@@ -119,18 +119,20 @@ export const postLeave_req = async (leaveData) => {
             },
             body: JSON.stringify(leaveData),
         });
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
+        const statusCode = response.status;
+        // if (!response.ok) {
+        //     // throw new Error('Network response was not ok ' + response.statusText);
+        //     throw new Error('leave date already exist');
+        // }
         const data = await response.json();
-        return data; // Return the fetched data
+        return {data,statusCode}; // Return the fetched data
     } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
-        return null; // Return null or handle error as needed
+        console.error('There has been a problem with your fetch operation:', error.message);
+        return error.message; // Return null or handle error as needed
     }
 }; 
 
-export const updateEmpDetails = async (id, data) => {
+export const updateEmpDetails = async (id, updatedData) => {
     try {
        const response = await fetch(`${API}/auth/update_user/${id}`, {
         // const response = await fetch(http://localhost:3000/api/auth/update_user/8,{
@@ -138,18 +140,22 @@ export const updateEmpDetails = async (id, data) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(updatedData),
       });
+      const statusCode = response.status;
+      const data = await response.json();
+      const resmessage=data.message;
+        return {resmessage, statusCode};
  
-      if (!response.ok) {
-        throw new Error("Network response was not ok: " + response.statusText);
-      }
+    //   if (!response.ok) {
+    //     throw new Error("Network response was not ok: " + response.statusText);
+    //   }
   
-      const responseData = await response.json();
-      return responseData; // Return the fetched data
+    //   const responseData = await response.json();
+    //   return responseData; // Return the fetched data
     } catch (error) {
       console.error("There has been a problem with your fetch operation:", error);
-      throw error; // Re-throw the error for the caller to handle
+      return error; // Re-throw the error for the caller to handle
     }
   };
 

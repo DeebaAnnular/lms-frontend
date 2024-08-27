@@ -25,19 +25,20 @@ const leaveSchema = z
     leave_type: z.string().nonempty({ message: "Type of leave is required" }),
     session: z.string().nonempty({ message: "Leave duration is required" }),
     total_days: z.string().nonempty({ message: "Total days is required" }),
-    from_date: z.string().refine(
-      (date) => {
-        const selectedDate = new Date(date);
-        const currentDate = new Date();
-        const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        return selectedDate >= firstDayOfMonth && selectedDate <= lastDayOfMonth;
-      },
-      {
-        message: "Start date must be within the current month",
-      }
-    ),
-    to_date: z.string(),
+    from_date: z.string().nonempty({ message: "Start date is required" })  // Ensure start date is required
+      .refine(
+        (date) => {
+          const selectedDate = new Date(date);
+          const currentDate = new Date();
+          const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+          const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+          return selectedDate >= firstDayOfMonth && selectedDate <= lastDayOfMonth;
+        },
+        {
+          message: "Start date must be within the current month",
+        }
+      ),
+    to_date: z.string().nonempty({ message: "End date is required" }),  // Ensure end date is required
     reason: z
       .string()
       .max(200, { message: "Reason cannot exceed 200 characters" })
@@ -104,8 +105,9 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
   const [appliedOptionalHolidays, setAppliedOptionalHolidays] = useState([]);
   const [backendError, setBackendError] = useState(null);
   const [leaveMessage, setLeaveMessage] = useState(null);
-  const [dateError, setDateError] = useState(null);
-
+  const [dateError, setDateError] = useState(null); 
+  const [startDateError, setStartDateError] = useState(null);
+const [endDateError, setEndDateError] = useState(null);
   useEffect(() => {
     const fetchLeaveBalence = async () => {
       const resData = await getEmp_leave_balence(user.user_id || null);
@@ -153,11 +155,23 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
   };
 
   useEffect(() => {
+    if (leave_type) {
+      setTotalDays(0);
+      setValue("total_days", "0");
+      setValue("from_date", "");
+      setValue("to_date", "");
+      setValue("session", "full_day");
+      clearErrors();
+    }
+  }, [leave_type, setValue, clearErrors]);
+
+  useEffect(() => {
     if (session === "FN" || session === "AN") {
       setValue("to_date", from_date);
       setTotalDays(0.5);
       setValue("total_days", "0.5");
-    } else if (leave_type === "optional_leave" && optional_date) {
+    } 
+    else if (leave_type === "optional_leave" && optional_date) {
       setValue("from_date", optional_date);
       setValue("to_date", optional_date);
       setTotalDays(1);
@@ -244,7 +258,48 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
     const startDate = new Date(data.from_date);
     const endDate = new Date(data.to_date);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set time to midnight for comparison
+    today.setHours(0, 0, 0, 0); // Set time to midnight for comparison 
+
+    clearErrors("from_date");
+    clearErrors("to_date");
+  
+    // Check if start date is filled
+    if (!data.from_date) {
+      setError("from_date", {
+        type: "manual",
+        message: "Please enter the start date",
+      });
+    }
+  
+    // Check if end date is filled (except for optional leave and half-day sessions)
+    if (
+      data.leave_type !== "optional_leave" &&
+      data.session !== "FN" &&
+      data.session !== "AN" &&
+      !data.to_date
+    ) {
+      setError("to_date", {
+        type: "manual",
+        message: "Please enter the end date",
+      });
+    }
+  
+    // If there are any errors, stop the form submission
+    const hasErrors = Object.keys(errors).length > 0;
+    if (hasErrors) {
+      return;
+    }
+
+  //   if (!data.from_date) {
+  //     setStartDateError("Please enter the start date");
+  //     return;
+  // }
+
+  // // Check if end date is filled (except for optional leave and half-day sessions)
+  // if (data.leave_type !== "optional_leave" && data.session !== "FN" && data.session !== "AN" && !data.to_date) {
+  //     setEndDateError("Please enter the end date");
+  //     return;
+  // }
 
     // Set start date to midnight for comparison
     startDate.setHours(0, 0, 0, 0); 
@@ -276,7 +331,9 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
             return;
         }
     }
-
+    if (data.leave_type === "optional_leave") {
+      data.reason = "optional leave";
+    }
     // Check if session is FN or AN and start date is not today
     if ((data.session === "FN" || data.session === "AN") && startDate.getTime() !== today.getTime()) {
         setLeaveMessage("Leave can only be applied today for FN or AN sessions.");
@@ -333,13 +390,16 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
 
     data.total_days = totalDaysRequested;
     data.user_id = user.user_id || null;
-    data.emp_name = user.user_id || null;
+    // data.emp_name = user.user_id || null;
     // data.reason=data.reason;
     console.log("data-reason",data)
 
     const result = await postLeave_req(data);
+   ;
 
-    if (result) {
+
+    if (result.statusCode === 201 ) {
+      
       reset();
       setTotalDays(0);
       toast.success("Leave Applied successfully.");
@@ -348,7 +408,8 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
       setLeaveMessage(null);
     } else {
       setBackendError(
-        "There was an error submitting the form. Please check your leave balance."
+        result.data.message
+        // "There was an error submitting the form. Please check your leave balance."
       );
       console.error("There was an error submitting the form");
     }
@@ -375,6 +436,15 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                         // Clear any existing leave message when leave type changes
                         setLeaveMessage(null);
                         setTotalDays(0);
+                        // setErrorMessage(null); // Clear all error messages
+                        setBackendError(null); // Clear backend errors
+                        setDateError(null); // Clear date-related errors
+                        setStartDateError(null); // Clear start date errors
+                        setEndDateError(null); // Clear end date errors
+                        setValue("from_date", ""); // Clear start date
+                        setValue("to_date", ""); // Clear end date
+                        setValue("total_days", "0");
+                        setValue("session", "full_day");
                     }
                 })}
                 className="px-2 rounded-md py-2 border w-[90%]"
@@ -443,29 +513,35 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                             Start Date
                           </label>
                           <input
-  type="date"
-  id="from_date"
-  {...register("from_date")}
-  className="block w-full rounded-md border p-2"
-  max={new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]}
-  onChange={(e) => {
-    const dateValue = e.target.value;
-    const year = dateValue.split("-")[0]; // Extract the year from the date string
+                                type="date"
+                                id="from_date"
+                                {...register("from_date")}
+                                className={`block w-full rounded-md border p-2 ${
+                                  errors.from_date ? "border-red-500" : ""
+                                }`}
+                                // max={new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]}
+                                onChange={(e) => {
+                                  setStartDateError(null);
+                                  const dateValue = e.target.value;
+                                  const year = dateValue.split("-")[0]; // Extract the year from the date string
 
-    if (year.length > 4) {
-      const formattedDate = `${dateValue.split("-")[2]}-${dateValue.split("-")[1]}-${dateValue.split("-")[0]}`; // Format to DD-MM-YYYY
-      setDateError(`Year Out of range: ${formattedDate}`); // Set error message if year exceeds 4 digits
-      setValue("from_date", ""); // Clear the input
-    } else {
-      setDateError(null); // Clear error if valid
-      setValue("from_date", dateValue);
-      if (session === "FN" || session === "AN") {
-        setValue("to_date", dateValue);
-      }
-    }
-  }}
-/>
-                        </div>
+                                  if (year.length > 4) {
+                                    const formattedDate = `${dateValue.split("-")[2]}-${dateValue.split("-")[1]}-${dateValue.split("-")[0]}`; // Format to DD-MM-YYYY
+                                    setDateError(`Year Out of range: ${formattedDate}`); // Set error message if year exceeds 4 digits
+                                    setValue("from_date", ""); // Clear the input
+                                  } else {
+                                    setDateError(null); // Clear error if valid
+                                    setValue("from_date", dateValue);
+                                    if (session === "FN" || session === "AN") {
+                                      setValue("to_date", dateValue);
+                                    }
+                                  }
+                                }}
+                              />
+                              {/* {errors.from_date && (
+    <p className="text-red-500 text-sm mt-1">{errors.from_date.message}</p>
+  )} */}
+                                                      </div>
                         <div className="w-[90%] flex flex-col gap-4 ">
                           <label
                             htmlFor="to_date"
@@ -479,6 +555,7 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                             {...register("to_date")}
                             className="block w-full rounded-md border p-2"
                             onChange={(e) => {
+                              setEndDateError(null);
                               const dateValue = e.target.value;
                               const year = dateValue.split("-")[0]; // Extract the year from the date string
 
@@ -492,6 +569,9 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
                               }
                             }}
                           />
+                          {/* {errors.to_date && (
+    <p className="text-red-500 text-sm mt-1">{errors.to_date.message}</p>
+  )} */}
                         </div>
                         <div className="w-full flex flex-col gap-4">
                           <label
@@ -589,7 +669,10 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
 
           {(backendError || leaveMessage) && (
             <p className="text-red-500 mt-4">{backendError || leaveMessage}</p>
-          )}
+          )} 
+
+          {startDateError && <p className="text-red-500 mt-2">{startDateError}</p>}
+          {endDateError && <p className="text-red-500 mt-2">{endDateError}</p>}
 
           {dateError && <p className="text-red-500">{dateError}</p>}
 

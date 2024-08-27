@@ -12,11 +12,32 @@ const Page = () => {
 
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [startDateError, setStartDateError] = useState('');
+    const [endDateError, setEndDateError] = useState('');
 
     const [tasks, setTasks] = useState([]);
 
     const getData = async () => {
-        if (startDate && endDate) {
+        let valid = true;
+
+        // Reset error messages
+        setStartDateError('');
+        setEndDateError('');
+
+        // Validate start date
+        if (!startDate) {
+            setStartDateError('Start date is required.');
+            valid = false;
+        }
+
+        // Validate end date
+        if (!endDate) {
+            setEndDateError('End date is required.');
+            valid = false;
+        }
+
+        // If both dates are valid, fetch data
+        if (valid) {
             const data = await getAllTaskById(user.user_id, startDate, endDate);
             setTasks(data.tasks);
         }
@@ -30,8 +51,10 @@ const Page = () => {
         if (regex.test(date) && year.length === 4) { // Check if year is 4 digits
             if (type === 'start') {
                 setStartDate(date);
+                setStartDateError(''); // Clear error when a valid date is selected
             } else if (type === 'end') {
                 setEndDate(date);
+                setEndDateError(''); // Clear error when a valid date is selected
             }
         }
     };
@@ -41,8 +64,8 @@ const Page = () => {
             <ToastContainer />
             <div className='bg-white p-3 rounded-none'>
                 <div className='mt-4'>
-                    <div className="flex justify-between items-center">
-                        <div className='flex gap-2'>
+                    <div className="flex justify-between items-start gap-4">
+                        <div className='flex flex-col gap-2'>
                             <div className="active:border-none flex items-center gap-2">
                                 <p className='text-[15px] font-medium'>Start Date:</p>
                                 <input
@@ -52,6 +75,10 @@ const Page = () => {
                                     onChange={(e) => handleDateChange(e, 'start')}
                                 />
                             </div>
+                            {startDateError && <p className="text-red-500 text-sm">{startDateError}</p>} {/* Error message for start date */}
+                        </div>
+
+                        <div className='flex flex-col gap-2'>
                             <div className="flex items-center gap-2">
                                 <p className='text-[15px] font-medium'>To Date:</p>
                                 <input
@@ -61,9 +88,10 @@ const Page = () => {
                                     onChange={(e) => handleDateChange(e, 'end')}
                                 />
                             </div>
+                            {endDateError && <p className="text-red-500 text-sm">{endDateError}</p>} {/* Error message for end date */}
                         </div>
 
-                        <div className="setDate-button">
+                        <div className="setDate-button mt-6">
                             <Button
                                 onClick={getData}
                                 className="text-white bg-[#134572] font-bolder font-sans text-[15px] py-2 px-6"
