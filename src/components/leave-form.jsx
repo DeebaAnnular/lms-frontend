@@ -140,7 +140,11 @@ const [endDateError, setEndDateError] = useState(null);
       setAppliedOptionalHolidays(appliedOptionalLeaves);
     };
 
-    fetchLeaveBalence();
+    if(Object.keys(leaveBalance).length > 0)
+    { 
+      fetchLeaveBalence();
+    }
+  
     fetchOptionHoliday();
     fetchCompulsaryHoliday();
     fetchAllLeaveRequest();
