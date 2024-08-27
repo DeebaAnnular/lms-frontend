@@ -108,11 +108,11 @@ const LeaveForm = ({ fetchLeaveBalanceById }) => {
   const [dateError, setDateError] = useState(null); 
   const [startDateError, setStartDateError] = useState(null);
 const [endDateError, setEndDateError] = useState(null);
+const fetchLeaveBalence = async () => {
+  const resData = await getEmp_leave_balence(user.user_id || null);
+  setLeaveBalance(resData);
+};
   useEffect(() => {
-    const fetchLeaveBalence = async () => {
-      const resData = await getEmp_leave_balence(user.user_id || null);
-      setLeaveBalance(resData);
-    };
 
     const fetchOptionHoliday = async () => {
       const resData = await getAllOptionalHolidays();
@@ -140,15 +140,12 @@ const [endDateError, setEndDateError] = useState(null);
       setAppliedOptionalHolidays(appliedOptionalLeaves);
     };
 
-    if(Object.keys(leaveBalance).length > 0)
-    { 
       fetchLeaveBalence();
-    }
-  
+    
     fetchOptionHoliday();
     fetchCompulsaryHoliday();
     fetchAllLeaveRequest();
-  }, [user.user_id,leaveBalance]);
+  }, [user.user_id]);
 
   const formatDateForBackend = (dateString) => {
     const date = new Date(dateString);
@@ -406,6 +403,7 @@ const [endDateError, setEndDateError] = useState(null);
       
       reset();
       setTotalDays(0);
+      fetchLeaveBalence();
       toast.success("Leave Applied successfully.");
       fetchLeaveBalanceById();
       setBackendError(null);
