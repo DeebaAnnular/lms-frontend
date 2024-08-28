@@ -19,6 +19,7 @@ import { capitalizeWords, replaceUnderscore } from '../../../utils';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
+import { IoIosSearch } from "react-icons/io";
 
 const Page = () => {
     const [leavedata, setLeaveData] = useState([]); // State to store leave requests
@@ -26,15 +27,26 @@ const Page = () => {
     const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
     const [rejectionReason, setRejectionReason] = useState(''); // State for rejection reason
     const [currentLeaveId, setCurrentLeaveId] = useState(null); // State to store current leave ID for rejection
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredLeaveData, setFilteredLeaveData] = useState([]); // State to store filtered leave requests
 
     const fetchLeaveData = async () => {
         const data = await getAll_leave_req();
         setLeaveData(data);
+        setFilteredLeaveData(data);
     };
 
     useEffect(() => {
         fetchLeaveData();
-    }, []);
+    }, []); 
+
+    useEffect(() => {
+        // Filter leave data based on search query
+        const filteredData = leavedata.filter((data) =>
+            data.emp_name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredLeaveData(filteredData);
+    }, [searchQuery, leavedata]);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -125,7 +137,20 @@ const Page = () => {
             )}
             <ToastContainer />
             <div className='min-w-[400px]  '>
-                <h1 className='text-[22px] text-md font-bold'>Leave Requests</h1>
+            <div className='bg-white h-[62px] flex items-center justify-between px-7'>
+                <p className='text-[25px] font-inter'>
+                    Leave Request
+                </p>
+                <div className="flex border border-[#DCDCDC] items-center w-[300px] h-[34px]">
+                    <IoIosSearch className='text-[#B1A8A8] text-[30px] ml-2' />
+                    <input
+                            placeholder="Search by employee name"
+                            className="searchbar text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                </div>
+            </div>
                 <div className='min-w-[350px] rounded-lg p-3'>
                     <div className="bg-white mt-2  p-5 overflow-clip">
                         <div className="overflow-x-auto">
@@ -143,30 +168,30 @@ const Page = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody className='text-[#667085]'>
-                                {leavedata.length > 0 ? (
-        leavedata.map((data, index) => (
-            <TableRow key={index}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell>{capitalizeWords(data.emp_name)}</TableCell>
-                <TableCell>{capitalizeWords(data.leave_type === 'optional_leave' ? 'optional holiday' : replaceUnderscore(data.leave_type))}</TableCell>
-                <TableCell>{formatDate(data.from_date)}</TableCell>
-                <TableCell>{formatDate(data.to_date)}</TableCell>
-                <TableCell>{data.total_days}</TableCell>
-                <TableCell className='flex gap-5'>
-                    <p className='text-red-500 cursor-pointer' onClick={() => handleRejectClick(data.leave_request_id)}>Reject</p>
-                    <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
-                        Approve
-                    </p>
-                </TableCell>
-            </TableRow>
-        ))
-    ) : (
-        <TableRow>
-            <TableCell colSpan={7} className="text-center py-4">
-                No records found
-            </TableCell>
-        </TableRow>
-    )}
+                                {filteredLeaveData.length > 0 ? (
+                                        filteredLeaveData.map((data, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell className="font-medium">{index + 1}</TableCell>
+                                                <TableCell>{capitalizeWords(data.emp_name)}</TableCell>
+                                                <TableCell>{capitalizeWords(data.leave_type === 'optional_leave' ? 'optional holiday' : replaceUnderscore(data.leave_type))}</TableCell>
+                                                <TableCell>{formatDate(data.from_date)}</TableCell>
+                                                <TableCell>{formatDate(data.to_date)}</TableCell>
+                                                <TableCell>{data.total_days}</TableCell>
+                                                <TableCell className='flex gap-5'>
+                                                    <p className='text-red-500 cursor-pointer' onClick={() => handleRejectClick(data.leave_request_id)}>Reject</p>
+                                                    <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
+                                                        Approve
+                                                    </p>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={7} className="text-center py-4">
+                                                No records found
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
 
                             </Table>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { addDays, format, subDays } from "date-fns";
 import { cn } from "../lib/utils";
 
 import { Button } from "./ui/button";
@@ -25,20 +25,8 @@ const leaveSchema = z
     leave_type: z.string().nonempty({ message: "Type of leave is required" }),
     session: z.string().nonempty({ message: "Leave duration is required" }),
     total_days: z.string().nonempty({ message: "Total days is required" }),
-    from_date: z.string().nonempty({ message: "Start date is required" })  // Ensure start date is required
-      .refine(
-        (date) => {
-          const selectedDate = new Date(date);
-          const currentDate = new Date();
-          const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-          const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-          return selectedDate >= firstDayOfMonth && selectedDate <= lastDayOfMonth;
-        },
-        {
-          message: "Start date must be within the current month",
-        }
-      ),
-    to_date: z.string().nonempty({ message: "End date is required" }),  // Ensure end date is required
+    from_date: z.string().nonempty({ message: "Start date is required" }),
+    to_date: z.string().optional(),
     reason: z
       .string()
       .max(200, { message: "Reason cannot exceed 200 characters" })
@@ -48,23 +36,51 @@ const leaveSchema = z
     const from_date = new Date(data.from_date);
     const to_date = new Date(data.to_date);
 
-    if (to_date < from_date) {
+    if (data.leave_type === "maternity_leave") {
+      // No date restrictions for maternity leave
+      return;
+    }
+
+    // Date range validation for non-maternity leave
+    const currentDate = new Date();
+    const minDate = subDays(currentDate, 30);
+    const maxDate = addDays(currentDate, 90);
+
+    if (from_date < minDate || from_date > maxDate) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "End date must be the same as or after the start date",
-        path: ["to_date"],
+        message: "Start date must be within 30 days in the past or 90 days in the future from today",
+        path: ["from_date"],
       });
     }
 
-    if (
-      (data.session === "FN" || data.session === "AN") &&
-      from_date.getTime() !== to_date.getTime()
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "For half-day leave, start date and end date must be the same",
-        path: ["to_date"],
-      });
+    if (data.to_date) {
+      if (to_date < from_date) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "End date must be the same as or after the start date",
+          path: ["to_date"],
+        });
+      }
+
+      if (to_date < minDate || to_date > maxDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "End date must be within 30 days in the past or 90 days in the future from today",
+          path: ["to_date"],
+        });
+      }
+
+      if (
+        (data.session === "FN" || data.session === "AN") &&
+        from_date.getTime() !== to_date.getTime()
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "For half-day leave, start date and end date must be the same",
+          path: ["to_date"],
+        });
+      }
     }
 
     if (data.leave_type !== "optional_leave" && !data.reason) {
@@ -112,6 +128,28 @@ const fetchLeaveBalence = async () => {
   const resData = await getEmp_leave_balence(user.user_id || null);
   setLeaveBalance(resData);
 };
+
+const fetchAllLeaveRequest = async () => {
+  const resData = await getLeave_history_by_id(user.user_id); 
+if(resData.length <= 0)
+{
+  return ;
+}
+  const appliedOptionalLeaves = resData.data
+    .filter((item) => item.user_id === user.user_id) // Filter for current user
+    .filter((item) => item.leave_type === "optional_leave")
+    .filter((item) => item.status === "pending" || item.status === "approved")
+    .map((item) => new Date(item.from_date).toLocaleDateString("en-CA"));
+  setAppliedOptionalHolidays(appliedOptionalLeaves);
+};
+useEffect(() => {
+  if (from_date) {
+    clearErrors("from_date");
+  }
+  if (to_date) {
+    clearErrors("to_date");
+  }
+}, [from_date, to_date, clearErrors]);
   useEffect(() => {
 
     const fetchOptionHoliday = async () => {
@@ -126,25 +164,12 @@ const fetchLeaveBalence = async () => {
       setCompulsaryHolidays(holidays);
     };
 
-    const fetchAllLeaveRequest = async () => {
-      const resData = await getLeave_history_by_id(user.user_id); 
-    if(resData.length <= 0)
-    {
-      return ;
-    }
-      const appliedOptionalLeaves = resData.data
-        .filter((item) => item.user_id === user.user_id) // Filter for current user
-        .filter((item) => item.leave_type === "optional_leave")
-        .filter((item) => item.status === "pending" || item.status === "approved")
-        .map((item) => new Date(item.from_date).toLocaleDateString("en-CA"));
-      setAppliedOptionalHolidays(appliedOptionalLeaves);
-    };
+    
 
       fetchLeaveBalence();
     
     fetchOptionHoliday();
     fetchCompulsaryHoliday();
-    fetchAllLeaveRequest();
   }, [user.user_id]);
 
   const formatDateForBackend = (dateString) => {
@@ -243,11 +268,10 @@ const fetchLeaveBalence = async () => {
         if ((leaveType === "sick_leave" || leaveType === "earned_leave" || leaveType === "loss_of_pay") && (day !== 0 && day !== 6)) {
             count++;
         }
-        // Count all days for work from home
-        else if (leaveType === "work_from_home") {
-            count++;
-        }
-
+        // Count all days for work from home but exclude weekends
+    else if (leaveType === "work_from_home" && (day !== 0 && day !== 6)) {
+      count++;
+    }
         start.setDate(start.getDate() + 1); // Move to the next day
     }
 
@@ -259,7 +283,13 @@ const fetchLeaveBalence = async () => {
     const startDate = new Date(data.from_date);
     const endDate = new Date(data.to_date);
     const today = new Date();
+    const minDate=subDays(today,30);
+    const maxDate=addDays(today,90);
+
+    startDate.setHours(0,0,0,0);
     today.setHours(0, 0, 0, 0); // Set time to midnight for comparison 
+
+
 
     clearErrors("from_date");
     clearErrors("to_date");
@@ -308,20 +338,40 @@ const fetchLeaveBalence = async () => {
     const currentYear = today.getFullYear(); 
 
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+    lastDayOfMonth.setHours(23,59,59,999);
 
-  if (startDate.getMonth() !== currentMonth || startDate.getFullYear() !== currentYear || startDate > lastDayOfMonth) {
-    setDateError("Leave can only be applied for the current month.");
-    setTimeout(() => setDateError(null), 5000);
-    return;
-  }
-
+    if (data.leave_type !== "maternity_leave") {
+      if (startDate < minDate || startDate > maxDate) {
+        setError("from_date", {
+          type: "manual",
+          message: "Start date must be within 30 days in the past and 90 days in the future from today",
+        });
+        return;
+      }
+      if (endDate < minDate || endDate > maxDate) {
+        setError("to_date", {
+          type: "manual",
+          message: "End date must be within 30 days in the past and 90 days in the future from today",
+        });
+        return;
+      }
+    } 
+    //  if(data.leaveType === "work_from_home") 
+    //   {
+    //     if (startDate.getDay() === 0 || startDate.getDay() === 6) {
+    //       setLeaveMessage("work from home can't be applied on Saturday or Sunday.");
+    //       return;
+    //   }
+       
+    // } 
    
     // Weekend check for Loss of Pay
-    if (data.leave_type === "loss_of_pay") {
+    if (data.leave_type === "loss_of_pay" ||data.leave_type === "work_from_home") {
         if (startDate.getDay() === 0 || startDate.getDay() === 6) {
-            setLeaveMessage("Loss of Pay can't be applied on Saturday or Sunday.");
+            setLeaveMessage("can't be applied on Saturday or Sunday.");
             return;
-        }
+        }  
+       
 
         const sickLeaveBalance = leaveBalance.sick_leave || 0;
         const earnedLeaveBalance = leaveBalance.earned_leave || 0;
@@ -339,20 +389,35 @@ const fetchLeaveBalence = async () => {
     if ((data.session === "FN" || data.session === "AN") && startDate.getTime() !== today.getTime()) {
         setLeaveMessage("Leave can only be applied today for FN or AN sessions.");
         return;
-    }
+    }  
+    // if(data.leaveType === "work_from_home") 
+    //   {
+    //     if (startDate.getDay() === 0 || startDate.getDay() === 6) {
+    //       setLeaveMessage("work from home can't be applied on Saturday or Sunday.");
+    //       return;
+    //   }
+       
+    // } 
+    
 
-    // Weekend check for all leave types except Work From Home
-    if (data.leave_type !== "work_from_home" && (startDate.getDay() === 0 || startDate.getDay() === 6)) {
-        setLeaveMessage("Can't apply leave on Saturday or Sunday.");
-        return;
-    }
+    // // Weekend check for all leave types except Work From Home
+    // if (data.leave_type === "work_from_home") {
+    //   if (startDate.getDay() === 0 || startDate.getDay() === 6 || endDate.getDay() === 0 || endDate.getDay() === 6) {
+    //     setError('WFH leave can only be applied on weekdays (Monday to Friday).');
+    //     return;
+    //   }
+    // }
     
     // Allow Work From Home without checking leave balance
     if (data.leave_type === "work_from_home") {
-        // No checks for leave balance or any other conditions
-    } else {
+      if (startDate.getDay() === 0 || startDate.getDay() === 6 || endDate.getDay() === 0 || endDate.getDay() === 6) {
+        setError('WFH leave can only be applied on weekdays (Monday to Friday).');
+        return;
+      }
+    }
+    else {
         // Check if leave type is not optional or maternity and if end date is a weekend
-        if ((data.leave_type !== "optional_leave" && data.leave_type !== "maternity_leave") && 
+        if ((data.leave_type !== "optional_leave" && data.leave_type !== "maternity_leave" && data.leave_type !== "work_from_home") && 
             (endDate.getDay() === 0 || endDate.getDay() === 6)) {
             setLeaveMessage("Can't apply leave on Saturday or Sunday.");
             return;
@@ -404,6 +469,7 @@ const fetchLeaveBalence = async () => {
       reset();
       setTotalDays(0);
       fetchLeaveBalence();
+      fetchAllLeaveRequest();
       toast.success("Leave Applied successfully.");
       fetchLeaveBalanceById();
       setBackendError(null);
@@ -521,9 +587,14 @@ const fetchLeaveBalence = async () => {
                                 className={`block w-full rounded-md border p-2 ${
                                   errors.from_date ? "border-red-500" : ""
                                 }`}
+                            // min={subDays(new Date(), 30).toISOString().split('T')[0]}
+                            // max={addDays(new Date(), 90).toISOString().split('T')[0]}
+
                                 // max={new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]}
                                 onChange={(e) => {
                                   setStartDateError(null);
+                                  setError("from_date","")
+                                  
                                   const dateValue = e.target.value;
                                   const year = dateValue.split("-")[0]; // Extract the year from the date string
 
@@ -540,9 +611,9 @@ const fetchLeaveBalence = async () => {
                                   }
                                 }}
                               />
-                              {/* {errors.from_date && (
+                              {errors.from_date && (
     <p className="text-red-500 text-sm mt-1">{errors.from_date.message}</p>
-  )} */}
+  )}
                                                       </div>
                         <div className="w-[90%] flex flex-col gap-4 ">
                           <label
@@ -556,8 +627,11 @@ const fetchLeaveBalence = async () => {
                             id="to_date"
                             {...register("to_date")}
                             className="block w-full rounded-md border p-2"
+                            // min={subDays(new Date(), 30).toISOString().split('T')[0]}
+                            // max={addDays(new Date(), 90).toISOString().split('T')[0]}
                             onChange={(e) => {
                               setEndDateError(null);
+                              setError("to_date","")
                               const dateValue = e.target.value;
                               const year = dateValue.split("-")[0]; // Extract the year from the date string
 
@@ -571,9 +645,9 @@ const fetchLeaveBalence = async () => {
                               }
                             }}
                           />
-                          {/* {errors.to_date && (
+                          {errors.to_date && (
     <p className="text-red-500 text-sm mt-1">{errors.to_date.message}</p>
-  )} */}
+  )}
                         </div>
                         <div className="w-full flex flex-col gap-4">
                           <label
@@ -659,12 +733,12 @@ const fetchLeaveBalence = async () => {
           {errors.session && (
             <p className="text-red-500">{errors.session.message}</p>
           )}
-          {errors.from_date && (
+          {/* {errors.from_date && (
             <p className="text-red-500">{errors.from_date.message}</p>
           )}
           {errors.to_date && (
             <p className="text-red-500">{errors.to_date.message}</p>
-          )}
+          )} */}
           {errors.reason && (
             <p className="text-red-500">{errors.reason.message}</p>
           )}

@@ -173,6 +173,15 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
         if (/[^a-zA-Z0-9]/.test(formData.emp_id)) {
             toast.error("Employee ID should not contain special characters");
             return;
+        } 
+        let formattedContactNumber = formData.contact_number.trim();
+
+        // If the contact number starts with the country code, make sure there's a space after the country code
+        if (formattedContactNumber.startsWith(countryCode)) {
+            formattedContactNumber = `${countryCode} ${formattedContactNumber.slice(countryCode.length).trim()}`;
+        } else {
+            // If it doesn't start with the country code, prepend the country code with a space
+            formattedContactNumber = `${countryCode} ${formattedContactNumber}`;
         }
 
         const dataToSend = {
@@ -180,6 +189,7 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
             emp_name: `${formData.emp_name} ${formData.last_name}`, // Combine first and last name
             date_of_joining: formatDate(formData.date_of_joining),
             active_status: formData.active_status === "true", // Convert to boolean
+            contact_number: formattedContactNumber,
         };
 
         try {

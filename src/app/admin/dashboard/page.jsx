@@ -23,6 +23,7 @@ console.log("emplist",emp_list);
             <ToastContainer />
             <p className='text-[20px] font-bold'>Employee Details</p>
             <div>
+                {console.log("columns",columns)}
                 <DataTable columns={columns} setEmp_list={setEmp_list} data={emp_list}/>
             </div>
         </div>

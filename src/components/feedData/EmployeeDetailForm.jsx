@@ -15,6 +15,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
     const [dateError, setDateError] = useState('');
     const [empIdError, setEmpIdError] = useState('');
     const [nameError,setnameError]=useState('');
+    const [phoneError, setPhoneError] = useState('');
 
     const [formData, setFormData] = useState({
         user_id: id,
@@ -51,7 +52,31 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
     }, [resData]); // Fetch details when id changes
 
     const handleChange = (e) => {
-        let { name, value } = e.target; 
+        let { name, value } = e.target;  
+
+        if (name === 'contact_number') {
+            // Split the country code and the phone number
+            const [countryCode, currentPhoneNumber] = formData.contact_number.split(' ');
+            
+            // Only allow editing of the part after the space
+            if (value.startsWith(countryCode + ' ')) {
+                const newPhoneNumber = value.slice(countryCode.length + 1);
+                
+                // Validate the new phone number
+                const phoneRegex = /^[0-9]{0,15}$/; // Allow only digits, with a max length of 15
+                if (phoneRegex.test(newPhoneNumber)) {
+                    value = `${countryCode} ${newPhoneNumber}`;
+                    setPhoneError('');
+                } else {
+                    // If invalid, keep the old value
+                    value = formData.contact_number;
+                    setPhoneError("Phone number must only contain digits and be up to 15 digits long.");
+                }
+            } else {
+                // If the country code was altered, revert to the old value
+                value = formData.contact_number;
+            }
+        }
 
         if (name === 'emp_id') {
             const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
@@ -147,7 +172,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
 
                             <div className='flex w-full flex-col gap-4'>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>Employee Id</label>
+                                    <label className=''>Employee ID</label>
                                     <input
                                         type="text"
                                         name="emp_id"
@@ -160,7 +185,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                     {empIdError && <p className="text-red-500 text-sm mt-1">{empIdError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>Name</label>
+                                    <label className=''>Name</label>
                                     <input
                                         type="text"
                                         name="emp_name"
@@ -173,7 +198,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                     {nameError && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>Gender</label>
+                                    <label className=''>Gender</label>
                                     <select
                                         name="gender"
                                         value={formData.gender}
@@ -185,7 +210,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                     </select>
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>Contact Number</label>
+                                    <label className=''>Contact Number</label>
                                     <input
                                         type="text"
                                         name="contact_number"
@@ -197,7 +222,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>User Role</label>
+                                    <label className=''>User Role</label>
                                     <select
                                         name="role"
                                         value={formData.role}
@@ -213,7 +238,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
 
                             <div className='flex flex-col gap-4 w-full'>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>Designation</label>
+                                    <label className=''>Designation</label>
                                     <input
                                         type="text"
                                         name="designation"
@@ -225,7 +250,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>Date of Joining</label>
+                                    <label className=''>Date of Joining</label>
                                     <input
                                         type="date" // Input type is set to 'date'
                                         name="date_of_joining"
@@ -236,7 +261,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                     {dateError && <p className="text-red-500 text-sm mt-1">{dateError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>Work Location</label>
+                                    <label className=''>Work Location</label>
                                     <input
                                         type="text"
                                         name="work_location"
@@ -248,7 +273,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='font-bold'>Status</label>
+                                    <label className=''>Status</label>
                                     <select
                                         name="active_status"
                                         value={formData.active_status}

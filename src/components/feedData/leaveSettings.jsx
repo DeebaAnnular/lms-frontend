@@ -22,12 +22,20 @@ const LeaveSettings = ({ id, gender }) => {
     const [tempSickLeave, setTempSickLeave] = useState(null);
     const [tempOptionalLeave, setTempOptionalLeave] = useState(null);
     const [tempMaternityLeave, setTempMaternityLeave] = useState(null);
+    const[submitname,setsubmitname]=useState("");
 
     useEffect(() => {
         const fetchLeaveBalances = async () => {
             const res = await fetch(`${API}/leave/leave-balance/${id}`);
             const data = await res.json();
-
+            
+            if(data.sick_leave || data.earned_leave || data.optional_leave)
+                {
+                    setsubmitname("Update Leave");
+                }
+                else{
+                    setsubmitname("Add Leave");
+                }
             if (data) {
                 setEarnedLeave(data.earned_leave !== undefined ? data.earned_leave : null);
                 setSickLeave(data.sick_leave !== undefined ? data.sick_leave : null);
@@ -35,7 +43,8 @@ const LeaveSettings = ({ id, gender }) => {
                 setMaternityLeave(data.maternity_leave !== undefined ? data.maternity_leave : null);
             }
         };
-        fetchLeaveBalances();
+        fetchLeaveBalances(); 
+        
     }, []);
 
     const handleAddLeave = () => {
@@ -73,10 +82,11 @@ const LeaveSettings = ({ id, gender }) => {
 
             if(data.sick_leave || data.earned_leave || data.optional_leave)
             {
-                toast.success("Leave balance updated succesffully");
+                toast.success("Leave balance updated successfully");
             }
             else
             {
+                setsubmitname("Update Leave");
                 toast.success("Leave allocated successfully")
             }
         }
@@ -181,7 +191,7 @@ const LeaveSettings = ({ id, gender }) => {
             <div className="bg-white relative flex flex-col items-end">
                 <div className='mt-3 ml-3'>
                     <button className='bg-[#134572] w-[213px] h-[45px] mt-7 px-[20px] py-[10px] text-white text-[16px] font-bold rounded-[5px] border-none cursor-pointer' onClick={handleAddLeave}>
-                        Add Leave
+                        {submitname}
                     </button>
                 </div>
             </div>

@@ -26,6 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Page = () => {
   const [date, setDate] = useState(null);
+  const [dateError, setDateError] = useState("");
   const [leaveType, setLeaveType] = useState("");
   const [description, setDescription] = useState("");
   const [holidays, setHolidays] = useState([]);
@@ -70,12 +71,23 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!date) {
+      setDateError("Please select a date");
+      return;
+    } 
+    
+    const formattedDate = date instanceof Date && !isNaN(date) ? format(date, "yyyy-MM-dd") : null;
+    
+    if (!formattedDate) {
+      setDateError("Invalid date selected");
+      return;
+    }
+    
     const data = {
-      date: format(date, "yyyy-MM-dd"),
+      date: formattedDate,
       holiday_type: leaveType,
       description,
     };
-
     try {
       console.log("data", data);
       const response = await fetch("https://lms-api.annularprojects.com:3001/api/holiday/create_holiday", {
@@ -86,22 +98,29 @@ const Page = () => {
         body: JSON.stringify(data),
       });
 
+      // Check if the response status indicates an error
       if (!response.ok) {
-        throw new Error("Failed to add holiday");
+        const errorData = await response.json(); // Parse the response to get error details
+        throw new Error(errorData.message || "Failed to add holiday"); // Use error message from the response or a default message
       }
 
-      // alert("Holiday added successfully");
-      toast.success("Holiday added successfully")
+      // Display success toast notification
+      toast.success("Holiday added successfully");
 
+      // Reset form fields
       setDate(null);
       setLeaveType("");
       setDescription("");
+      
+      // Fetch updated holidays list
       fetchHolidays();
     } catch (error) {
       console.error("Error adding holiday:", error.message);
-      alert("Failed to add holiday. Please try again later.");
+      // Display error toast notification with the message from the backend or a default message
+      toast.error(error.message);
     }
   };
+
 
   const handleDelete = async (id) => {
     // const confirmDelete = confirm("Are you sure you want to delete this holiday?");
@@ -116,7 +135,7 @@ const Page = () => {
       }
 
       // alert("Holiday deleted successfully");
-     toast.success("Holiday Deleted Succesfully")
+     toast.success("Holiday Deleted successfully")
       fetchHolidays();
     } catch (error) {
       console.error("Error deleting holiday:", error.message);
@@ -146,6 +165,7 @@ const Page = () => {
                   <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
                 </PopoverContent>
               </Popover>
+              {dateError && <p className="text-red-500 text-sm mt-1">{dateError}</p>} 
             </div>
 
             <div className="flex flex-1 items-center">

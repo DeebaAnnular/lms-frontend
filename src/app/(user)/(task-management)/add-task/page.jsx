@@ -485,7 +485,7 @@ const Calendar = () => {
                             <h2 className="text-xl font-bold text-center mt-4">Add Task</h2>
                             <div className="flex flex-row gap-3">
                                 <div className="w-full">
-                                    <label className="block">Task:</label>
+                                    <label className="block">Task</label>
                                     <input
                                         type="text"
                                         className="w-full p-2 border rounded"
@@ -493,11 +493,12 @@ const Calendar = () => {
                                         minLength={5}
                                         maxLength={50}
                                         onChange={(e) => setTask(e.target.value)}
+                                        placeholder="Enter task name"
                                     />
                                 </div>
 
                                 <div className="w-full">
-                                    <label className="block">Time:</label>
+                                    <label className="block">Time</label>
                                     <input
                                         type="text"
                                         className="w-full p-2 border rounded"
@@ -554,6 +555,7 @@ const Calendar = () => {
                                                             value={editedTask.task_name}
                                                             onChange={handleInputChange}
                                                             className="border px-2 py-1 w-[80%] border-1"
+                                                            placeholder="Enter task name"
                                                         />
                                                     ) : (
                                                         task.task_name
@@ -567,6 +569,7 @@ const Calendar = () => {
                                                             value={formatTime(editedTask.task_time)}
                                                             onChange={handleInputChange}
                                                             className=" px-2 py-1 w-[80%] border-1"
+                                                            placeholder="hh:mm"
 
                                                         />
                                                     ) : (
