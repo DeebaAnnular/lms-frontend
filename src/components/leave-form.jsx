@@ -363,12 +363,18 @@ useEffect(() => {
     //       return;
     //   }
        
-    // } 
+    // }  
+    if (data.leave_type === "work_from_home") {
+      if (startDate.getDay() === 0 || startDate.getDay() === 6 || endDate.getDay() === 0 || endDate.getDay() === 6) {
+        setLeaveMessage("Work from home can't be applied on Saturday or Sunday.");
+        return;
+      }
+    }
    
     // Weekend check for Loss of Pay
-    if (data.leave_type === "loss_of_pay" ||data.leave_type === "work_from_home") {
+    if (data.leave_type === "loss_of_pay") {
         if (startDate.getDay() === 0 || startDate.getDay() === 6) {
-            setLeaveMessage("can't be applied on Saturday or Sunday.");
+            setLeaveMessage("Loss of pay can't be applied on Saturday or Sunday.");
             return;
         }  
        
@@ -477,8 +483,10 @@ useEffect(() => {
     } else {
       setBackendError(
         result.data.message
+        
         // "There was an error submitting the form. Please check your leave balance."
       );
+      console.log("backenderror",result.data.message);
       console.error("There was an error submitting the form");
     }
   };
@@ -593,7 +601,8 @@ useEffect(() => {
                                 // max={new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]}
                                 onChange={(e) => {
                                   setStartDateError(null);
-                                  setError("from_date","")
+                                  setError("from_date","");
+                                  setBackendError(null);
                                   
                                   const dateValue = e.target.value;
                                   const year = dateValue.split("-")[0]; // Extract the year from the date string
@@ -631,7 +640,8 @@ useEffect(() => {
                             // max={addDays(new Date(), 90).toISOString().split('T')[0]}
                             onChange={(e) => {
                               setEndDateError(null);
-                              setError("to_date","")
+                              setError("to_date","");
+                              setBackendError(null);
                               const dateValue = e.target.value;
                               const year = dateValue.split("-")[0]; // Extract the year from the date string
 
