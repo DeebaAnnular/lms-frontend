@@ -37,7 +37,7 @@ export const columns = [
             const url = row.original.user_id
 
             return (
-                <Link className="text-blue-500 " href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_id)}</Link>
+                <Link className="text-blue-500" href={`/admin/emp/${url}`}>{capitalizeWords(row.original.emp_id)}</Link>
             )
         },
         // Add sorting function for emp_id

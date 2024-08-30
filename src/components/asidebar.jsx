@@ -7,11 +7,12 @@ import { cn } from "../lib/utils";
 import Image from "next/image";
 // icons
 import { LuLayoutDashboard } from "react-icons/lu";
-import { FaCalendarAlt, FaTasks, } from "react-icons/fa";
+import { FaCalendarAlt, FaTasks } from "react-icons/fa";
 import { FaComputer } from "react-icons/fa6";
 import { MdHistory } from "react-icons/md";
 import { IoIdCard } from "react-icons/io5";
 import { MdLibraryAdd, MdOutlineAppRegistration, MdExpandMore, MdExpandLess } from "react-icons/md";
+import { GrVmMaintenance } from "react-icons/gr";
 
 export const sidebarLinks = [
   {
@@ -36,11 +37,14 @@ export const sidebarLinks = [
   },
   {
     label: "Assets Management",
-    icon:<FaComputer />,
+    icon: <FaComputer />,
     subLinks: [
       { label: "Assets Registration", route: "/admin/assetsRegistration", icon: <MdOutlineAppRegistration /> },
-      {label:"Assets History",route:"/admin/assetsHistory",icon:<MdHistory />},
-      {label:"Access Card Details",route:"/admin/accessCard",icon:<IoIdCard />}
+      { label: "Assets Details", route: "/admin/assetsHistory", icon: <MdHistory /> },
+      { label: "Access Card Details", route: "/admin/accessCard", icon: <IoIdCard /> },
+      { label: "Access Card History", route: "/admin/accessCardHistory", icon: <MdHistory /> },
+      { label: "Assets Maintenance", route: "/admin/assetsMaintenance", icon: <GrVmMaintenance /> },
+      { label: "Assets Maintenance Details", route: "/admin/assetsMaintenanceHistory", icon: <MdHistory /> },
     ],
   },
 ];
@@ -62,7 +66,7 @@ const Sidebar = () => {
           className="h-[85px] w-full mt-[20px] object-contain"
         />
       </div>
-      <div className="flex mt-8 flex-1 flex-col gap-3">
+      <div className="flex mt-8 flex-1 flex-col gap-1"> {/* Reduced gap */}
         {sidebarLinks.map((link) => {
           const isActive =
             pathname === link.route || pathname.includes(link.route);
@@ -71,7 +75,7 @@ const Sidebar = () => {
             <div key={link.label}>
               <div
                 className={cn(
-                  "flex gap-4 items-center p-4 justify-start text-white hover:bg-white hover:text-black cursor-pointer",
+                  "flex gap-4 items-center p-3 justify-start mb-1 text-white hover:bg-white hover:text-black cursor-pointer", // Adjusted padding
                   { "bg-white text-black": isActive || showAssetsSubLinks }
                 )}
                 onClick={toggleAssetsSubLinks}
@@ -88,7 +92,7 @@ const Sidebar = () => {
                     href={subLink.route}
                     key={subLink.label}
                     className={cn(
-                      "flex gap-4 items-center pl-10 py-2 text-white hover:bg-white hover:text-black",
+                      "flex gap-4 items-center pl-10 py-2 w-[90%] mx-auto mb-1 rounded-full text-white hover:bg-white hover:text-black", // Adjusted width and padding
                       { "bg-white text-black": pathname === subLink.route }
                     )}
                   >
@@ -102,7 +106,7 @@ const Sidebar = () => {
               href={link.route}
               key={link.label}
               className={cn(
-                "flex gap-4 items-center p-4 justify-start text-white hover:bg-white hover:text-black",
+                "flex gap-4 items-center p-3 justify-start text-white hover:bg-white hover:text-black", // Adjusted padding
                 { "bg-white text-black": isActive }
               )}
             >
