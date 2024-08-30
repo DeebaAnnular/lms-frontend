@@ -41,8 +41,8 @@ export const sidebarLinks = [
     subLinks: [
       { label: "Assets Registration", route: "/admin/assetsRegistration", icon: <MdOutlineAppRegistration /> },
       { label: "Assets Details", route: "/admin/assetsHistory", icon: <MdHistory /> },
-      { label: "Access Card Details", route: "/admin/accessCard", icon: <IoIdCard /> },
-      { label: "Access Card History", route: "/admin/accessCardHistory", icon: <MdHistory /> },
+      { label: "Access Card", route: "/admin/accessCard", icon: <IoIdCard /> },
+      { label: "Access Card Details", route: "/admin/accessCardHistory", icon: <MdHistory /> },
       { label: "Assets Maintenance", route: "/admin/assetsMaintenance", icon: <GrVmMaintenance /> },
       { label: "Assets Maintenance Details", route: "/admin/assetsMaintenanceHistory", icon: <MdHistory /> },
     ],

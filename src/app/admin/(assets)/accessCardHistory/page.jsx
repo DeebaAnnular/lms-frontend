@@ -38,7 +38,7 @@ console.log("data: ",filteredDetails)
             <div>
                 <div className='bg-white h-[62px] flex items-center justify-between px-7'>
                     <p className='text-[25px] font-inter'>
-                        Access Card History
+                        Access Card Details
                     </p>
                     <div className="flex border border-[#DCDCDC] items-center w-[300px] h-[34px]">
                         <IoSearchOutline className='text-[#B1A8A8] text-[30px] ml-2' />

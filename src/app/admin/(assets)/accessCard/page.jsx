@@ -120,7 +120,7 @@ const AccessCard = () => {
     <div className="w-full h-full bg-white p-6">
       <ToastContainer />
       <div>
-        <p className="text-[25px] font-inter">Access Card Details</p>
+        <p className="text-[25px] font-inter">Access Card</p>
       </div>
       <div className="mt-8">
         <form onSubmit={handleSubmit}>

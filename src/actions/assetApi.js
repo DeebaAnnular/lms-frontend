@@ -1,6 +1,6 @@
 export const postAssetDetails = async (assetData) => {
     try {
-        const response = await fetch('http://localhost:3000/api/assets/create_asset', {
+        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/create_asset', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export const postAssetDetails = async (assetData) => {
 
 export const getAllAssets = async () => {
     try {
-        const response = await fetch("http://localhost:3000/api/assets/get_all_assets");
+        const response = await fetch("https://lms-api.annularprojects.com:3001/api/assets/get_all_assets");
         if (!response.ok) {
             throw new Error('Network response was not ok: ' + response.statusText);
         }
@@ -37,7 +37,7 @@ export const getAllAssets = async () => {
 
 export const postAccessCardDetails = async (accessCardData) => {
     try {
-        const response = await fetch('http://localhost:3000/api/access_card/create_access_card', {
+        const response = await fetch('https://lms-api.annularprojects.com:3001/api/access_card/create_access_card', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ export const postAccessCardDetails = async (accessCardData) => {
 
 export const getAllAccessCardDetails = async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/access_card/get_all_access_card', {
+        const response = await fetch('https://lms-api.annularprojects.com:3001/api/access_card/get_all_access_card', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export const getAllAccessCardDetails = async () => {
 
 export const postAssetForMaintenance = async (assetData) => {
     try {
-        const response = await fetch('http://localhost:3000/api/assets/create_asset_for_maintenance', {
+        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/create_asset_for_maintenance', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export const postAssetForMaintenance = async (assetData) => {
 
 export const getAllAssetsForMaintenance = async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/assets/get_all_assets_for_maintenance', {
+        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/get_all_assets_for_maintenance', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ export const getAllAssetsForMaintenance = async () => {
 
 export const postmapAssetWithEmployee = async (assetData) => {
     try {
-        const response = await fetch('http://localhost:3000/api/assets/map_asset_with_employee', {
+        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/map_asset_with_employee', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ export const postmapAssetWithEmployee = async (assetData) => {
 
 export const returnAssetToAdmin = async (assetData) => {
     try {
-        const response = await fetch('http://localhost:3000/api/assets/return_asset_to_admin', {
+        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/return_asset_to_admin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
