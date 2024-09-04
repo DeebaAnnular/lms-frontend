@@ -1,24 +1,46 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
-import { Input } from "../../../../components/ui/input";
-import { Button } from "../../../../components/ui/button";
-import { MdEdit, MdDelete, MdSave, MdCancel } from "react-icons/md";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Button } from "../../../../components/ui/button";
+import { MdEdit, MdDelete, MdSave, MdCancel } from "react-icons/md";
+import { Input } from "../../../../components/ui/input";
 import { deleteAsset, updateAssetDetails } from '../../../../actions/assetApi';
+import  AssetModal  from '../../../../components/ui/assetModal'
 
 export function DataTable({ data, column }) {
-    const [tableData, setTableData] = useState(data || []);
+    // console.log("data",data);
+    const [tableData, setTableData] = useState([]);
+    console.log("tabledata",tableData);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedAsset, setSelectedAsset] = useState(null);
     const [editingRow, setEditingRow] = useState(null);
     const [editedData, setEditedData] = useState({});
 
     useEffect(() => {
-        if (data) {
+        if (data && data.length > 0) {
             setTableData(data);
         }
-    }, [data]);
+    }, [data]);  
+
+    useEffect(()=>{
+        
+    })
+
+    const handleAssetIdClick = (asset) => {
+        setSelectedAsset({
+            asset_id: asset.asset_id,
+            asset_no: asset.asset_no,
+            asset_type: asset.asset_type,
+            asset_status: asset.asset_status,
+        });
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedAsset(null);
+    };
 
     const handleEditClick = (row) => {
         setEditingRow(row.asset_id);
@@ -39,9 +61,6 @@ export function DataTable({ data, column }) {
 
     const handleSaveClick = async () => {
         try {
-            console.log("editedData",editedData);
-            console.log("editedData",editingRow);
-            console.log("edited",editedData);
             const response = await updateAssetDetails(editingRow, editedData);
             if (response.statusCode === 200) {
                 setTableData(prevData =>
@@ -99,7 +118,11 @@ export function DataTable({ data, column }) {
                                         {rowIndex + 1}
                                     </TableCell>
                                     {column.map((col, colIndex) => (
-                                        <TableCell key={colIndex} className="p-2 pl-4">
+                                        <TableCell 
+                                            key={colIndex} 
+                                            className={`p-2 pl-4 ${col.accessorKey === 'asset_no' ? 'cursor-pointer text-blue-500' : ''}`}
+                                            onClick={col.accessorKey === 'asset_no' ? () => handleAssetIdClick(row) : undefined}
+                                        >
                                             {editingRow === row.asset_id ? (
                                                 <Input
                                                     value={editedData[col.accessorKey] || ''}
@@ -146,6 +169,16 @@ export function DataTable({ data, column }) {
                     </TableBody>
                 </Table>
             </div>
+
+            {isModalOpen && selectedAsset && (
+                <AssetModal
+                    assetId={selectedAsset.asset_id}
+                    assetNo={selectedAsset.asset_no} 
+                    assetType={selectedAsset.asset_type} 
+                    assetStatus={selectedAsset.asset_status}
+                    onClose={closeModal} 
+                />
+            )}
         </div>
     );
 }
