@@ -144,6 +144,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
             return; // Exit the function if validation fails
         }
 
+        console.log("updated",formData)
      const updatedresponse=  await updateEmpDetails(id, formData);
      console.log("updatedemp",updatedresponse.resmessage);
         setGender(formData.gender)
@@ -292,7 +293,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                         <div className='mt-3 ml-3'>
                             <button
                                 type="submit"
-                                className='bg-[#134572] w-[213px] h-[45px] my-7 px-[20px] py-[10px] text-white text-[16px] font-bold rounded-[5px] border-none cursor-pointer  '>
+                                className='bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572] w-[213px] h-[45px] my-7 px-[20px] py-[10px] text-white text-[16px] font-bold rounded-[5px] border-none cursor-pointer  '>
                                 Update
                             </button>
                         </div>

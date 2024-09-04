@@ -11,7 +11,7 @@ export const column = [
     },
     {
         accessorKey: "asset_no",
-        header: "Asset NO",
+        header: "Asset No",
     },
     {
         accessorKey: "brand_name",
@@ -45,7 +45,7 @@ export const column = [
         header: "operational status",
     },
     {
-        accessorKey: "command",
-        header: "Command",
+        accessorKey: "comments",
+        header: "Comments",
     },
 ]

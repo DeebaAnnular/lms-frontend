@@ -1,3 +1,4 @@
+export const api="https://lms-api.annularprojects.com:3001"
 export const postAssetDetails = async (assetData) => {
     try {
         const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/create_asset', {
@@ -33,7 +34,31 @@ export const getAllAssets = async () => {
         console.error('There has been a problem with your fetch operation:', error);
         return []; // Return an empty array on error
     }
-}; 
+};  
+
+export const updateAssetDetails = async (id, assetData) => {
+    try {
+        console.log("assetdata",assetData)
+        const response = await fetch(`${api}/api/assets/update_asset/${id}`, { // Use backticks for template literals
+            method: 'PUT', // Use PUT or PATCH depending on your API design
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(assetData),
+        });
+
+        const data = await response.json(); // Await the JSON parsing of the response
+        const statusCode = response.status;
+        const resmessage = data.message;
+        return { statusCode, resmessage }; // Return status code and message
+
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error.message);
+        return { error: error.message }; // Return the error message
+    }
+};
+
+
 
 export const postAccessCardDetails = async (accessCardData) => {
     try {
@@ -164,7 +189,29 @@ export const returnAssetToAdmin = async (assetData) => {
         console.error('There has been a problem with your fetch operation:', error.message);
         return { error: error.message }; // Return the error message
     }
-};
+};  
+
+export const deleteAsset = async (assetId) => {
+    try {
+      const response = await fetch(`https://lms-api.annularprojects.com:3001/api/assets/delete_asset/${assetId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Asset deleted successfully:", result.message);
+        // Optionally show a success message or update the UI
+      } else {
+        console.error("Failed to delete asset:", response.error);
+        // Optionally handle the error
+      }
+    } catch (error) {
+      console.error("Error deleting asset:", error);
+    }
+  };
 
 
 

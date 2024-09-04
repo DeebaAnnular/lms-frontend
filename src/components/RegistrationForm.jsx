@@ -8,7 +8,7 @@ const RegistrationForm = ({ setIsShow }) => {
     emp_name: "",
     gender: "",
     date_of_joining: "",
-    contact_number: "",
+    contact_number: "+91",
     work_email: "",
     active_status: "", // This will be boolean
     designation: "",
@@ -16,11 +16,24 @@ const RegistrationForm = ({ setIsShow }) => {
     password: "",
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e) => { 
+
+    if (id === "contact_number") {
+      const countryCode = getCountryCode(formData.contact_number); // Extract country code
+      if (!value.startsWith(countryCode)) {
+        return; // Prevent modification of the country code
+      }
+    }
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
+  }; 
+
+  const getCountryCode = (number) => {
+    // Here, we are assuming the country code is everything before the first non-numeric character
+    const match = number.match(/^\+?\d+/);
+    return match ? match[0] : "";
   };
 
   const formatDate = (date) => {
@@ -64,7 +77,7 @@ const RegistrationForm = ({ setIsShow }) => {
           emp_name: "",
           gender: "",
           date_of_joining: "",
-          contact_number: "",
+          contact_number: "+91",
           work_email: "",
           active_status: "",
           designation: "",

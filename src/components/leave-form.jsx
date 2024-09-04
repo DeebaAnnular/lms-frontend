@@ -46,6 +46,14 @@ const leaveSchema = z
     const minDate = subDays(currentDate, 30);
     const maxDate = addDays(currentDate, 90);
 
+    if (data.leave_type === "optional_leave" && from_date > maxDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Optional Holiday can be applied only within 90 days from today",
+        path: ["from_date"],
+      });
+    }
+
     if (from_date < minDate || from_date > maxDate) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -90,6 +98,7 @@ const leaveSchema = z
         path: ["reason"],
       });
     }
+    
   });
 
 
@@ -131,6 +140,7 @@ const fetchLeaveBalence = async () => {
 
 const fetchAllLeaveRequest = async () => {
   const resData = await getLeave_history_by_id(user.user_id); 
+  console.log("resdata-opt",resData)
 if(resData.length <= 0)
 {
   return ;
@@ -141,7 +151,18 @@ if(resData.length <= 0)
     .filter((item) => item.status === "pending" || item.status === "approved")
     .map((item) => new Date(item.from_date).toLocaleDateString("en-CA"));
   setAppliedOptionalHolidays(appliedOptionalLeaves);
-};
+}; 
+useEffect(() => {
+  console.log("triggered");
+  if (optional_date) {
+    setBackendError(null);
+  }
+}, [optional_date]); 
+
+useEffect(() => {
+  fetchAllLeaveRequest ();
+},[]);
+
 useEffect(() => {
   if (from_date) {
     clearErrors("from_date");
@@ -178,8 +199,9 @@ useEffect(() => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
-  };
+  }; 
 
+ 
   useEffect(() => {
     if (leave_type) {
       setTotalDays(0);
@@ -279,6 +301,7 @@ useEffect(() => {
   };
 
   const onSubmit = async (data) => {
+    console.log("optdata",data);
     // Check if start date is a weekend (Saturday or Sunday)
     const startDate = new Date(data.from_date);
     const endDate = new Date(data.to_date);
@@ -435,12 +458,10 @@ useEffect(() => {
             const totalDaysRequested = totalDays;
 
             if (totalDaysRequested > availableBalance) {
-                setLeaveMessage(
-                    `Requested leave exceeds available balance. You have ${availableBalance} days left for ${data.leave_type.replace(
-                        "_",
-                        " "
-                    )}.`
-                );
+              const leaveTypeDisplay = data.leave_type === "optional_leave" ? "optional holiday" : data.leave_type.replace("_", " ");
+              setLeaveMessage(
+                  `Requested leave exceeds available balance. You have ${availableBalance} days left for ${leaveTypeDisplay}.`
+              );
                 return;
             }
         }
@@ -464,10 +485,9 @@ useEffect(() => {
     data.user_id = user.user_id || null;
     // data.emp_name = user.user_id || null;
     // data.reason=data.reason;
-    console.log("data-reason",data)
+    console.log("data-optional",data)
 
     const result = await postLeave_req(data);
-   ;
 
 
     if (result.statusCode === 201 ) {
@@ -489,7 +509,7 @@ useEffect(() => {
       console.log("backenderror",result.data.message);
       console.error("There was an error submitting the form");
     }
-  };
+  }; 
 
   const currentDate = new Date().toLocaleDateString("en-CA");
 
@@ -521,6 +541,8 @@ useEffect(() => {
                         setValue("to_date", ""); // Clear end date
                         setValue("total_days", "0");
                         setValue("session", "full_day");
+                        setValue("optional_date", ""); 
+
                     }
                 })}
                 className="px-2 rounded-md py-2 border w-[90%]"
@@ -719,6 +741,9 @@ useEffect(() => {
                             );
                           })}
                       </select>
+                      {errors.from_date && (
+    <p className="text-red-500 text-sm mt-1">{errors.from_date.message}</p>
+  )}
                     </div>
                   </div>
                 )}
@@ -766,7 +791,7 @@ useEffect(() => {
           (leave_type === "maternity_leave" &&
             leaveBalance.maternity_leave > 0) ? (
             <div className="flex w-[90%] justify-end">
-              <Button type="submit" className="mt-4 text-white bg-[#134572]">
+              <Button type="submit" className="mt-4 text-white  hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572]">
                 Submit
               </Button>
             </div>
@@ -782,4 +807,3 @@ useEffect(() => {
 };
 
 export default LeaveForm;
-

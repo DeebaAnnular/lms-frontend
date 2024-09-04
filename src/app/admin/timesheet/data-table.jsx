@@ -133,7 +133,7 @@ export function DataTable({ allData }) {
                         placeholder="Search by Name"
                         value={userNameFilter}
                         onChange={ handleUserNameFilterChange }
-                        className="searchbar max-w-sm text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
+                        className="searchbar max-w-sm text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
                     />
                 </div>
             </div>

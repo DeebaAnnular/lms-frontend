@@ -34,7 +34,7 @@ const Page = () => {
                     <IoSearchOutline className='text-[#B1A8A8] text-[30px] ml-2' />
                     <input
                         placeholder="Search"
-                        className="searchbar text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
+                        className="searchbar text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
                     />
                 </div>
             </div>

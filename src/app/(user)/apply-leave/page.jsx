@@ -33,12 +33,10 @@ const Page = () => {
         {leaveBalance ? (
           <LeaveDetails leaveBalance={leaveBalance} />
         ) : (
-          <div className="flex items-center py-4">
-             {/* <CgDanger className="mr-2" /> */}
-            <h3>Leave not Allocated.&nbsp;</h3>
-            <br/>
-            <h3>Please contact Admin</h3>
-          </div>
+          <div className="flex items-center py-4 w-[38%]">
+          <h3 className="text-sm mr-1">Leave not Allocated.</h3>
+          <h3 className="text-sm">Please Contact Admin</h3>
+        </div>
         )}
 
     </div>

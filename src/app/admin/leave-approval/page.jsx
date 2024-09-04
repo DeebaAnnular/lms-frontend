@@ -120,13 +120,13 @@ const Page = () => {
                         />
                         <div className="flex justify-end">
                             <button 
-                                className="bg-black text-white rounded-md px-4 py-2 mr-2"
+                                className="bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572]  text-white rounded-md px-4 py-2 mr-2"
                                 onClick={handleSubmitRejection}
                             >
                                 Submit
                             </button>
                             <button 
-                                className="bg-gray-300 text-black rounded-md px-4 py-2"
+                                className=" text-white bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572]  rounded-md px-4 py-2"
                                 onClick={() => setIsModalOpen(false)}
                             >
                                 Cancel
@@ -141,11 +141,12 @@ const Page = () => {
                 <p className='text-[25px] font-inter'>
                     Leave Request
                 </p>
-                <div className="flex border border-[#DCDCDC] items-center w-[300px] h-[34px]">
+                <div className="flex border border-[#DCDCDC] items-center w-[40%] ">
+              
                     <IoIosSearch className='text-[#B1A8A8] text-[30px] ml-2' />
                     <input
-                            placeholder="Search by employee name"
-                            className="searchbar text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
+                            placeholder="Search by Employee Name"
+                            className="searchbar text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />

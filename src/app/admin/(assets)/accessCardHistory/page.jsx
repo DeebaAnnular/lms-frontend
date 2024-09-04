@@ -44,7 +44,7 @@ console.log("data: ",filteredDetails)
                         <IoSearchOutline className='text-[#B1A8A8] text-[30px] ml-2' />
                         <input
                             placeholder="Search by Name or Employee ID"
-                            className="searchbar text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
+                            className="searchbar text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />

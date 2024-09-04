@@ -332,7 +332,7 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
 
 {table.getRowModel().rows?.length > 0 && (
                 <div className="flex justify-end mt-2 p-1 mr-4 mb-0">
-                    <Button onClick={handleSubmit} className="bg-black text-white rounded-none px-10">
+                    <Button onClick={handleSubmit} className=" bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572]  text-white rounded-none px-10">
                         Submit
                     </Button>
                 </div>

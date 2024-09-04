@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../../../../components/ui/button';
 import { DataTable } from './data-table';
 import { getAllTaskById } from '../../../../actions';
@@ -10,12 +10,25 @@ import 'react-toastify/dist/ReactToastify.css';
 const Page = () => {
     const user = useSelector(state => state.user.userDetails);
 
+    const getCurrentMonthDates = () => {
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        return {
+            start: firstDay.toISOString().split('T')[0],
+            end: lastDay.toISOString().split('T')[0]
+        };
+    };
+
+    const currentMonthDates = getCurrentMonthDates();
+
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [startDateError, setStartDateError] = useState('');
     const [endDateError, setEndDateError] = useState('');
-
     const [tasks, setTasks] = useState([]);
+    const [effectiveStartDate, setEffectiveStartDate] = useState('');
+    const [effectiveEndDate, setEffectiveEndDate] = useState('');
 
     const getData = async () => {
         let valid = true;
@@ -24,22 +37,28 @@ const Page = () => {
         setStartDateError('');
         setEndDateError('');
 
-        // Validate start date
-        if (!startDate) {
-            setStartDateError('Start date is required.');
-            valid = false;
-        }
+        // If startDate or endDate is empty, use current month's dates
+        const start = startDate || currentMonthDates.start;
+        const end = endDate || currentMonthDates.end;
 
-        // Validate end date
-        if (!endDate) {
-            setEndDateError('End date is required.');
-            valid = false;
-        }
+        setEffectiveStartDate(start);
+        setEffectiveEndDate(end);
 
-        // If both dates are valid, fetch data
+        // Fetch data
         if (valid) {
-            const data = await getAllTaskById(user.user_id, startDate, endDate);
-            setTasks(data.tasks);
+            try {
+                const data = await getAllTaskById(user.user_id, start, end);
+                if (data && data.tasks.length > 0) {
+                    setTasks(data.tasks);
+                } else {
+                    setTasks([]);
+                    toast.info("No tasks found for the selected date range.");
+                }
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+                toast.error("Failed to fetch tasks. Please try again.");
+                setTasks([]);
+            }
         }
     };
 
@@ -75,7 +94,7 @@ const Page = () => {
                                     onChange={(e) => handleDateChange(e, 'start')}
                                 />
                             </div>
-                            {startDateError && <p className="text-red-500 text-sm">{startDateError}</p>} {/* Error message for start date */}
+                            {startDateError && <p className="text-red-500 text-sm">{startDateError}</p>}
                         </div>
 
                         <div className='flex flex-col gap-2'>
@@ -88,13 +107,13 @@ const Page = () => {
                                     onChange={(e) => handleDateChange(e, 'end')}
                                 />
                             </div>
-                            {endDateError && <p className="text-red-500 text-sm">{endDateError}</p>} {/* Error message for end date */}
+                            {endDateError && <p className="text-red-500 text-sm">{endDateError}</p>}
                         </div>
 
                         <div className="setDate-button mt-6">
                             <Button
                                 onClick={getData}
-                                className="text-white bg-[#134572] font-bolder font-sans text-[15px] py-2 px-6"
+                                className="text-white hover:text-[#A6C4F0] hover:bg-[#134572] bg-[#134572] font-bolder font-sans text-[15px] py-2 px-6"
                             >
                                 Get Timesheet
                             </Button>
@@ -103,7 +122,14 @@ const Page = () => {
 
                     <div className="mx-auto py-5 px-0">
                         {tasks.length > 0 ? (
-                            <DataTable allData={tasks} userId={user.user_id} startDate={startDate} setEndDate={setEndDate} setStartDate={setStartDate} endDate={endDate} />
+                            <DataTable 
+                                allData={tasks} 
+                                userId={user.user_id} 
+                                startDate={effectiveStartDate} 
+                                endDate={effectiveEndDate}
+                                setStartDate={setStartDate}
+                                setEndDate={setEndDate}
+                            />
                         ) : (
                             <p className="text-center text-gray-500">No records found</p>
                         )}

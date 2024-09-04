@@ -1,6 +1,10 @@
 "use client";
 import { IoIosClose, IoIosSearch } from "react-icons/io";
 import RegistrationForm from "../../../components/feedData/RegistrationForm";
+import { MdDelete } from "react-icons/md";
+import { deleteTask } from "../../../actions";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
     ColumnDef,
@@ -29,26 +33,36 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-export function DataTable({ columns, setEmp_list,data}) {
-
+export function DataTable({ columns, setEmp_list, data }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
-    const [globalFilter, setGlobalFilter] = useState(""); // state for the search input
-     
+    const [globalFilter, setGlobalFilter] = useState("");
+    const [isShow, setIsShow] = useState(false);
+
+    const handleDelete = async (userId) => {
+        console.log("userid", userId);
+        try {
+            await deleteTask(userId);
+            setEmp_list(prevList => prevList.filter(emp => emp.user_id !== userId));
+            toast.success("Employee deleted successfully");
+        } catch (error) {
+            console.error("Error deleting employee:", error);
+            toast.error("Failed to delete employee");
+        }
+    };
+
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        // getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-         
         state: {
             sorting,
             columnFilters,
-            globalFilter, 
+            globalFilter,
         },
         globalFilterFn: (row, columnId, value) => {
             return (
@@ -58,36 +72,30 @@ export function DataTable({ columns, setEmp_list,data}) {
         },
     });
 
-    const [isShow, setIsShow] = useState(false); // initially set to false
-
     return (
         <div className="w-full">
-            <div className=" bg-white mb-2 p-2 py-4 flex items-center justify-between">
-
-                <div className="flex border border-[#DCDCDC] items-center px-3 h-full  ">
+            <div className="bg-white mb-2 p-2 py-4 flex items-center justify-between">
+                <div className="flex border border-[#DCDCDC] items-center w-[26%] h-full">
                     <IoIosSearch className='text-[#B1A8A8] text-[30px]' />
                     <Input
                         placeholder="Search by Emp Name or ID"
                         value={globalFilter}
-                        onChange={(event) =>
-                            setGlobalFilter(event.target.value)
-                        }
-                        className="searchbar max-w-sm text-[#B1A8A8] placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
+                        onChange={(event) => setGlobalFilter(event.target.value)}
+                        className="searchbar max-w-sm text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
                     />
                 </div>
 
                 <div
-                    className="w-fit  bg-[#134572] rounded-sm h-fit p-2 text-white cursor-pointer hover:text-[#A6C4F0] hover:bg-[#134572]"
-                    onClick={() => setIsShow(true)} // show the registration form on click
+                    className="w-fit bg-[#134572] rounded-sm h-fit p-2 text-white cursor-pointer hover:text-[#A6C4F0] hover:bg-[#134572]"
+                    onClick={() => setIsShow(true)}
                 >
                     Add Employee
                 </div>
-
             </div>
 
-            <div className="p-2 py-4   relative overflow-clip ">
+            <div className="p-2 py-4 relative overflow-clip">
                 <Table>
-                    <TableHeader className="bg-[#f7f7f7]  h-[60px] text-[#333843]">
+                    <TableHeader className="bg-[#f7f7f7] h-[60px] text-[#333843]">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
@@ -112,19 +120,32 @@ export function DataTable({ columns, setEmp_list,data}) {
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}  style={{ paddingLeft: cell.column.id === 'emp_id' || cell.column.id === 'emp_name' ? '38px' : '30px' }}  >
+                                        <TableCell 
+                                            key={cell.id} 
+                                            style={{
+                                                paddingLeft: cell.column.id === 'emp_id' || cell.column.id === 'emp_name' ? '38px' : '30px',
+                                                width: cell.column.id === 'contact_number' ? '200px' : '',
+                                                ...(cell.column.id === 'contact_number' && {
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                })
+                                            }}
+                                            title={cell.column.id === 'contact_number' ? cell.getValue() : undefined}
+                                        >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
                                             )}
                                         </TableCell>
                                     ))}
+                                  
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No records found
+                                    No records found
                                 </TableCell>
                             </TableRow>
                         )}
@@ -132,49 +153,18 @@ export function DataTable({ columns, setEmp_list,data}) {
                 </Table>
             </div>
 
-            {/* Pagination Controls */}
-            {/* <div className="flex justify-between items-center p-4">
-
-                <span > 
-                    <p>
-                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                    </p>
-                </span>
-             
-                <div className='flex gap-3 items-center font-medium text-[18px]'>
-
-                    <div className=' flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]' onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-                        <div className=" w-[12px] h-[12px]    relative   object-contain"  >
-
-                            <Image src='/imgs/left-arrow.svg' alt='logo' layout="fill" objectFit="contain" className=" h-[24px] pw-[24px] object-contian" />
-
-                        </div>
-                    </div>
- 
-                    <div className=' flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]' onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-                        <div className="logo h-[12px] relative w-[12px]  object-contain"   >
-
-                            <Image src='/imgs/right-arrow.svg' alt='logo' layout="fill" objectFit="contain" className=" h-[24px] w-[24px] object-contian" />
-
-                        </div>
-                    </div>
-
-                </div>
-
-            </div> */}
-
             {isShow && (
-                <div className="fixed inset-0 flex items-center  justify-center z-20 bg-gray-800 bg-opacity-75">
+                <div className="fixed inset-0 flex items-center justify-center z-20 bg-gray-800 bg-opacity-75">
                     <div className="relative bg-white w-fit p-10 rounded shadow-lg">
                         <div className="absolute top-0 right-[20px] z-10 cursor-pointer flex justify-end" onClick={() => { setIsShow(false) }}>
                             <button
                                 onClick={() => setIsShow(false)}
-                                className="mt-[23px] border-2 rounded-[50%] border-red-600 "
+                                className="mt-[23px] border-2 rounded-[50%] border-red-600"
                             >
-                                <IoIosClose className=' text-red-600 text-xl' />
+                                <IoIosClose className='text-red-600 text-xl' />
                             </button>
                         </div>
-                        <h1 className='text-2xl sticky font-semibold cursor-default flex justify-center min-w-[400px] '>Employee Registration </h1>
+                        <h1 className='text-2xl sticky font-semibold cursor-default flex justify-center min-w-[400px]'>Employee Registration</h1>
                         <div className="max-h-[500px] mt-[20px] Z-20">
                             <RegistrationForm setIsShow={setIsShow} setEmp_list={setEmp_list} />
                         </div>

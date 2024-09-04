@@ -63,7 +63,7 @@ export const getEmp_leave_balence = async (id) => {
         console.error('There has been a problem with your fetch operation:', error);
         return []; // Return an empty array or handle error as needed
     }
-}
+} 
 
 export const getAllOptionalHolidays = async () => {
     try {
@@ -130,7 +130,46 @@ export const postLeave_req = async (leaveData) => {
         console.error('There has been a problem with your fetch operation:', error.message);
         return error.message; // Return null or handle error as needed
     }
+};  
+
+export const deleteUser = async (userId) => {
+    try {
+        const response = await fetch(`https://lms-api.annularprojects.com:3001/api/auth/delete_user/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                // Include any additional headers if needed, such as authentication tokens
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete user');
+        }
+
+        const result = await response.json();
+        console.log('User deleted successfully:', result);
+        // Handle success (e.g., update UI, show a message)
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        // Handle error (e.g., show an error message)
+    }
 }; 
+
+export const getRejectedAndApprovedLeaveList = async () => {
+    try {
+        const response = await fetch('https://lms-api.annularprojects.com:3001/api/leave/get_all_rejected_and_approved_list');
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json(); 
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+        return []; // Return an empty array or handle error as needed
+    }
+};
+
+
 
 export const updateEmpDetails = async (id, updatedData) => {
     try {

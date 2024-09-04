@@ -22,7 +22,9 @@ const AccessCard = () => {
   });
 
   const [employeeData, setEmployeeData] = useState([]);
-
+  const [isIssueDateDisabled, setIsIssueDateDisabled] = useState(false);
+  const [isReturnDateDisabled, setIsReturnDateDisabled] = useState(false);
+  
   useEffect(() => {
     const fetchEmployees = async () => {
       const employees = await getallemp();
@@ -32,7 +34,18 @@ const AccessCard = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target; 
+    if (name === 'issue_date' && value) {
+      setIsReturnDateDisabled(true);
+    } else if (name === 'return_date' && value) {
+      setIsIssueDateDisabled(true);
+    }
+
+    if (name === 'issue_date' && !value) {
+      setIsReturnDateDisabled(false);
+    } else if (name === 'return_date' && !value) {
+      setIsIssueDateDisabled(false);
+    }
     
     // Check if the card_type dropdown is being changed
     if (name === 'card_type') {
@@ -59,7 +72,9 @@ const AccessCard = () => {
   };
 
   const formatDate = (date) => {
-    return new Date(date).toISOString().split('T')[0];
+    if (!date) return ''; // Return an empty string if the date is not provided
+    const parsedDate = new Date(date);
+    return isNaN(parsedDate) ? '' : parsedDate.toISOString().split('T')[0]; // Return formatted date if valid
   };
 
   const handleSubmit = async (e) => {
@@ -264,6 +279,7 @@ const AccessCard = () => {
                       type="date"
                       value={formData.issue_date}
                       onChange={handleChange}
+                      disabled={isIssueDateDisabled}
                     />
                   </div>
                   <div className="flex flex-col w-1/2">
@@ -274,6 +290,7 @@ const AccessCard = () => {
                       type="date"
                       value={formData.return_date}
                       onChange={handleChange}
+                      disabled={isReturnDateDisabled}
                     />
                   </div>
                 </div>
@@ -297,7 +314,7 @@ const AccessCard = () => {
           <div className="flex mt-4 w-full items-end justify-end ">
             <button
               type="submit"
-              className="px-10 ml-16 w-[200px] h-[35px] rounded-xs bg-[#134572] text-white text-lg"
+              className="px-10 ml-16 w-[200px] h-[35px]  hover:text-[#A6C4F0] hover:bg-[#134572]  rounded-xs bg-[#134572] text-white text-lg"
             >
               Submit
             </button>

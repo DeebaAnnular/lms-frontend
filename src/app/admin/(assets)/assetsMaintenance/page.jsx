@@ -163,7 +163,7 @@ const AssetsMaintenance = () => {
           <div className="flex mt-14 w-full justify-end items-end">
             <button
               type="submit"
-              className="px-10 w-[200px] h-[35px] mr-14 rounded-xs bg-[#134572] text-white text-lg"
+              className="px-10 w-[200px] bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572]  h-[35px] mr-14 rounded-xs bg-[#134572] text-white text-lg"
             >
               Submit
             </button>

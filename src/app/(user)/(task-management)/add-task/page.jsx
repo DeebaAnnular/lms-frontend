@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import { IoIosClose } from "react-icons/io";
 import { FaRegCircle } from "react-icons/fa";
 import {
+    getallemp,
     postTask,
     getAllTask,
     getWeeklyStatus,
     editTask,
     getAllTaskById,
     deleteTask,
+    getAll_leave_req
 } from "../../../../actions";
 import { useSelector } from "react-redux";
 import Image from "next/image";
@@ -30,7 +32,78 @@ const Calendar = () => {
     const [tasksForSelectedDate, setTasksForSelectedDate] = useState([]);
     const [currYear, setCurrYear] = useState();
     const [weeklyStatuses, setWeeklyStatuses] = useState();
-    const [currDayStatus, setCurrDayStatus] = useState()
+    const [currDayStatus, setCurrDayStatus] = useState();
+    const [dateOfJoining, setDateOfJoining] = useState(""); 
+    const [leaveDates, setLeaveDates] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const employeeData = await getallemp();
+                const userId = parseInt(localStorage.getItem("user_id"));
+    
+                if (userId) {
+                    const userEmployee = employeeData.find(emp => emp.user_id === userId);
+                    
+                    if (userEmployee) {
+                        const dateOfJoiningRaw = new Date(userEmployee.date_of_joining);
+                        const formattedDate = dateOfJoiningRaw.toISOString().split('T')[0];
+                        setDateOfJoining(formattedDate);
+    
+                        // Fetch leave requests
+                        const leaveRequests = await getAll_leave_req();
+                        const userLeaveDates = [];
+    
+                        leaveRequests.forEach(request => {
+                            if (request.user_id === userId && (request.status === 'pending' || request.status === 'approved')) {
+                                const fromDate = new Date(request.from_date);
+                                const toDate = new Date(request.to_date);
+    
+                                for (let date = new Date(fromDate); date <= toDate; date.setDate(date.getDate() + 1)) {
+                                    userLeaveDates.push(date.toISOString().split('T')[0]);
+                                }
+                            }
+                        });
+                        setLeaveDates([...new Set(userLeaveDates)]); // Remove duplicates
+                    } else {
+                        console.log("Employee not found");
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+    
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        // Fetch employee data when the component mounts
+        const fetchEmployeeData = async () => {
+            try {
+                const employeeData = await getallemp(); // Fetch employee data
+                const userId = parseInt(localStorage.getItem("user_id")); // Get user ID from local storage and parse as integer
+
+                if (userId) {
+                    // Find the employee with the matching user ID
+                    const userEmployee = employeeData.find(emp => emp.user_id === userId);
+                    
+                    if (userEmployee) {
+                        // Extract and format the date of joining
+                        const dateOfJoiningRaw = new Date(userEmployee.date_of_joining);
+                        const formattedDate = dateOfJoiningRaw.toISOString().split('T')[0];
+                        setDateOfJoining(formattedDate);
+                    } else {
+                        console.log("Employee not found");
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching employee data:", error);
+            }
+        };
+
+        fetchEmployeeData(); // Call the function to fetch data
+    }, []); // Empty dependency array means this effect runs once on component mount
 
 
     useEffect(() => {
@@ -131,6 +204,26 @@ const Calendar = () => {
         const thirtyDaysAfter = new Date(today);
         thirtyDaysAfter.setDate(today.getDate() + 30);
     
+        // Manually format the selected date to YYYY-MM-DD
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const date = String(selectedDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${date}`;
+        console.log('Selected Date:', formattedDate); 
+
+        if (formattedDate < dateOfJoining) {
+            // console.error('The selected date is before the date of joining.');
+            toast.error("The selected date is before the date of joining.")
+            return; // Exit the function early if the date is before the date of joining
+          }  
+        
+          if (leaveDates.some((data) => data === formattedDate)) {
+            toast.error("Leave has been applied on this Date");
+            setShow(false);
+            return;
+          }
+        
+    
         if (selectedDate >= thirtyDaysBefore && selectedDate <= thirtyDaysAfter) {
             setShow(true);
             setDay(day);
@@ -150,12 +243,10 @@ const Calendar = () => {
     
             setTasksForSelectedDate(tasksForDate);
         } else {
-            // alert('You can only add tasks for dates within 30 days from today.');
             toast.error('You can only add tasks for dates within 30 days from today.');
         }
     };
     
-
     const fetch = async (data) => {
         const response = await postTask(data);
         return response;
@@ -189,7 +280,7 @@ const Calendar = () => {
         e.preventDefault();
         const timeFormat = /^([01]\d|2[0-3]):([0-5]\d)$/;
         if (task.trim() === "" || task.length < 5 || task.length > 50) {
-            alert('Task name must be between 5 and 50 characters.');
+            toast.error(`Task name must be between 5 and 50 characters`)
             return;
         }
 
@@ -197,7 +288,7 @@ const Calendar = () => {
         const formattedTime = handleTimeChange({ target: { value: time } });
 
         if (!formattedTime.match(timeFormat)) {
-            alert('Time must be in the format "hh:mm:".');
+            toast.error(`Time must be in the format hh:mm`)
             return;
         } 
         
@@ -511,7 +602,7 @@ const Calendar = () => {
                             <div className="flex justify-end">
                                 <button
                                     type="submit"
-                                    className="text-white bg-[#134572] px-4 py-2 rounded"
+                                    className="text-white bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572] px-4 py-2 rounded"
                                 >
                                     Add
                                 </button>
@@ -519,6 +610,7 @@ const Calendar = () => {
                         </form>)} 
                         <ul>
                             <div className="max-h-[200px] mt-2 w-full overflow-y-auto">
+                                {tasksForSelectedDate.length > 0 &&
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50 sticky top-0 z-10">
                                         <tr>
@@ -622,8 +714,11 @@ const Calendar = () => {
                                             </tr>
                                         ))}
                                     </tbody>
+                                
                                 </table>
+}
                             </div>
+                                    
 
                         </ul>
                     </div>

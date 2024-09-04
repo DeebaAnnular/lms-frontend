@@ -16,7 +16,6 @@ const AssetsRegistration = () => {
         processor: '',
         ostype: '',
         ms_office_installed: '',
-        os_installed: '',
         purchase_date: '',
         purchase_cost: '',
         admin_configuration: '',
@@ -40,9 +39,10 @@ const AssetsRegistration = () => {
             
             if (key === 'asset_status') {
                 value = value === 'Assigned' ? 1 : value === 'UnAssigned' ? 0 : null;
-            } else if (['ms_office_installed', 'os_installed', 'admin_configuration'].includes(key)) {
-                value = value === 'Yes' ? 1 : 0;
-            } else if (key === 'purchase_date') {
+            } else if (['ms_office_installed','admin_configuration'].includes(key)) {
+                value = value === 'Yes' ? 1 : value === 'No' ? 0 : null;
+            }
+            else if (key === 'purchase_date') {
                 value = new Date(value).toISOString().split('T')[0];
             } else if (key === 'purchase_cost') {
                 value = parseFloat(value);
@@ -67,7 +67,6 @@ const AssetsRegistration = () => {
                     processor: '',
                     ostype: '',
                     ms_office_installed: '',
-                    os_installed: '',
                     purchase_date: '',
                     purchase_cost: '',
                     admin_configuration: '',
@@ -161,6 +160,7 @@ const AssetsRegistration = () => {
                                 >
                                     <option value="">Select</option>
                                     <option value="8GB">8GB</option>
+                                    <option value="12GB">12GB</option>
                                     <option value="16GB">16GB</option>
                                     <option value="32GB">32GB</option>
                                     <option value="64GB">64GB</option>
@@ -229,23 +229,9 @@ const AssetsRegistration = () => {
                                 <label className='text-[16px] text-black'>MS office installed?</label>
                                 <select 
                                     name="ms_office_installed"
-                                    className='mt-1 p-2 border rounded w-[170px] h-[38px] text-[#667085]'
+                                    className='mt-1 p-2 border rounded w-[400px] h-[38px] text-[#667085]'
                                     disabled={formData.asset_type !== 'Laptop'}
                                     value={formData.ms_office_installed}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                            <div className='flex flex-col'>
-                                <label className='text-[16px] text-black'>OS installed</label>
-                                <select 
-                                    name="os_installed"
-                                    className='mt-1 p-2 border rounded w-[170px] h-[38px] text-[#667085]'
-                                    disabled={formData.asset_type !== 'Laptop'}
-                                    value={formData.os_installed}
                                     onChange={handleChange}
                                 >
                                     <option value="">Select</option>
@@ -276,6 +262,7 @@ const AssetsRegistration = () => {
                         <div className='flex flex-col mt-3'>
                             <label className='text-[16px] text-black'>Admin Configuration?</label>
                             <select 
+                            disabled={formData.asset_type !== 'Laptop'}
                                 name="admin_configuration"
                                 className='mt-1 p-2 border rounded min-w-[356px] w-[400px] h-[38px] text-[#667085]'
                                 value={formData.admin_configuration}
@@ -311,7 +298,7 @@ const AssetsRegistration = () => {
                     </div>
                 </div>
                 <div className="flex mt-5 w-full justify-end items-end">
-                <button className="px-10 w-[249px] h-[35px] rounded-xs bg-[#134572] text-white text-lg">
+                <button className="px-10 w-[249px] h-[35px] rounded-xs hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572] text-white text-lg">
                         Submit
                     </button>
                     </div>

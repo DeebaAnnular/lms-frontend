@@ -121,8 +121,12 @@ const LeaveSettings = ({ id }) => {
                 </div>
             </div>
 
-            <div className='flex justify-end w-full'>
-                <p onClick={() => handleAddLeave()} className='p-2 w-[200px] mt-[20px] rounded-sm text-center float right-0 bg-blue-300 cursor-pointer'>Add Leaves</p>
+            <div className="bg-white relative flex flex-col items-end">
+                <div className='mt-3 ml-3'>
+                    <button className='bg-[#134572] w-[213px] h-[45px] mt-7 px-[20px] py-[10px] text-white text-[16px] font-bold rounded-[5px] border-none cursor-pointer' onClick={handleAddLeave}>
+                        {submitname}
+                    </button>
+                </div>
             </div>
         </div>
     )

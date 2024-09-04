@@ -26,6 +26,11 @@ export const sidebarLinks = [
     icon: <FaCalendarAlt />,
   },
   {
+    label:"Leave History",
+    route:"/admin/leaveHistory",
+    icon:<MdHistory/> ,
+  },
+  {
     label: "Timesheet",
     route: "/admin/timesheet",
     icon: <FaTasks />,
