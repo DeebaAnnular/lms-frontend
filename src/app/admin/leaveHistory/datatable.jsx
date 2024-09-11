@@ -90,13 +90,13 @@ export function DataTable({ data, column }) {
                     {/* Table Header */}
                     <TableHeader className="bg-[#f7f7f7] h-[60px] text-[#333843] border-b border-[#ddd]">
                         <TableRow>
-                            <TableHead className="text-[16px] font-bold text-[#333843] whitespace-nowrap pl-6 py-3">
+                            <TableHead className="text-[13px] font-bold text-[#333843] whitespace-nowrap pl-6 py-3">
                                 S.No
                             </TableHead>
                             {column.map((col, index) => (
                                 <TableHead
                                     key={index}
-                                    className="text-[16px] font-bold text-[#333843] whitespace-nowrap pl-6 py-3 cursor-pointer"
+                                    className="text-[13px] font-bold text-[#333843] whitespace-nowrap pl-6 py-3 cursor-pointer"
                                     onClick={() => handleSort(col.accessorKey)}
                                 >
                                     {col.header}
@@ -112,14 +112,14 @@ export function DataTable({ data, column }) {
                             sortedData.map((row, rowIndex) => (
                                 <TableRow key={rowIndex} className="border-b border-[#ddd]">
                                     {/* Serial Number Column */}
-                                    <TableCell className="p-4 pl-7">
+                                    <TableCell className="p-1 pl-7">
                                         {rowIndex + 1}
                                     </TableCell>
                                     
                                     {column.map((col, colIndex) => (
                                         <TableCell
                                             key={colIndex}
-                                            className="p-4 pl-7"
+                                            className="p-2.5 pl-7 text-[12px]"
                                         >
                                             {/* Conditional rendering for leave type */}
                                             {col.accessorKey === 'leave_type'

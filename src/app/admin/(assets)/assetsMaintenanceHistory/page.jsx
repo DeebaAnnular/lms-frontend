@@ -27,14 +27,11 @@ const Page = () => {
     return (
         <div>
             <div className='bg-white h-[62px] flex items-center justify-between px-7'>
-                <p className='text-[25px] font-inter'>
-                    Assets Maintenance Details
-                </p>
-                <div className="flex border border-[#DCDCDC] items-center w-[300px] h-[34px]">
-                    <IoSearchOutline className='text-[#B1A8A8] text-[30px] ml-2' />
+                <div className="flex border ml-auto border-[#DCDCDC] items-center w-[300px] h-[34px]">
+                    <IoSearchOutline className='text-[#B1A8A8] text-[20px] ml-2' />
                     <input
                         placeholder="Search"
-                        className="searchbar text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
+                        className="searchbar text-black placeholder:text-[#B1A8A8] text-[13px] border-none outline-none pl-2 pr-2"
                     />
                 </div>
             </div>

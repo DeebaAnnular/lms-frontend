@@ -7,9 +7,9 @@ import { postmapAssetWithEmployee, returnAssetToAdmin } from '../../actions/asse
 import { cn } from '../../lib/utils'
 import { toast } from 'react-toastify';
 
-const AssetModal = ({ assetNo, assetId, assetType, assetStatus, onClose }) => {
+const AssetModal = ({ assetNo, assetId, assetType, assetStatus, onClose,refreshData }) => {
     console.log("popup", assetId, assetNo, assetStatus, assetType);
-    const AssetStatus = assetStatus === 0 ? 'Unassigned' : 'Assigned';
+    const AssetStatus = assetStatus === "0" || assetStatus === 0 ? 'UnAssigned' : 'Assigned';
     const [formData, setFormData] = useState({
         assetNo: assetNo || '',
         assetName: assetType || '',
@@ -49,8 +49,9 @@ const AssetModal = ({ assetNo, assetId, assetType, assetStatus, onClose }) => {
                 emp_name: emp_name.trim(),
                 emp_id: emp_id.replace(')', ''),
                 return_date: formData.returnDate,
-                asset_status: formData.assetStatus === 'Unassigned' ? 0 : 1,
+                asset_status: formData.assetStatus === 'Assigned' ? 1 : 0,
             };
+            console.log("returndata",returnData);
 
             const response = await returnAssetToAdmin(returnData);
 
@@ -84,6 +85,7 @@ const AssetModal = ({ assetNo, assetId, assetType, assetStatus, onClose }) => {
 
             if (response.statusCode === 200) {
                 toast.success("Asset successfully allocated");
+                refreshData();
                 console.log('Asset successfully allocated to employee:', assetData);
             } else {
                 console.error('Error allocating asset:', response.resmessage);
@@ -100,35 +102,35 @@ const AssetModal = ({ assetNo, assetId, assetType, assetStatus, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/30 z-40" aria-hidden="true" onClick={onClose}></div>
-            <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-lg z-50">
+            <div className="fixed inset-0  bg-black/30 z-40" aria-hidden="true" onClick={onClose}></div>
+            <div className="relative bg-white p-6  rounded-lg shadow-lg w-full max-w-md  z-50">
                 <button
                     onClick={onClose}
-                    className="absolute top-2 right-2 text-red-500 text-xl border border-red-500 rounded-full"
+                    className="absolute top-2 right-2 text-red-500 text-lg border border-red-500 rounded-full"
                 >
                     <IoIosClose />
                 </button>
 
-                <h2 className="text-xl font-semibold mb-4">Asset Details</h2>
+                <h2 className="font-semibold mb-4 text-sm">Asset Details</h2>
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Asset No</label>
-                        <Input name="assetId" value={formData.assetNo} onChange={handleChange} readOnly />
+                        <label className="block text-xs font-medium text-gray-700">Asset No</label>
+                        <Input name="assetId"  className="h-7 text-xs" value={formData.assetNo} onChange={handleChange} readOnly />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Asset Name</label>
-                        <Input name="assetName" value={formData.assetName} onChange={handleChange} readOnly />
+                        <label className="block text-xs font-medium text-gray-700">Asset Name</label>
+                        <Input name="assetName" className="h-7 text-xs" value={formData.assetName} onChange={handleChange} readOnly />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Employee Details</label>
+                        <label className="block text-xs font-medium text-gray-700">Employee Details</label>
                         <select
                             name="empDetails"
                             value={formData.empDetails}
                             onChange={handleChange}
-                            className="block w-full mt-1 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            className="block w-full mt-1 border border-gray-300 h-8 text-xs rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         >
                             <option value="">Select</option>
                             {employees.map((employee) => (
@@ -143,44 +145,48 @@ const AssetModal = ({ assetNo, assetId, assetType, assetStatus, onClose }) => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Asset Status</label>
+                        <label className="block text-xs font-medium text-gray-700">Asset Status</label>
                         <select
                             name="assetStatus"
                             value={formData.assetStatus}
                             onChange={handleChange}
-                            className="block w-full mt-1 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        >
-                            <option>{formData.assetStatus}</option>
-                            <option value="Assigned">Assigned</option>
-                            <option value="Unassigned">Unassigned</option>
+                            className="block w-full text-xs h-7 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        >                           
+                        <option>{formData.assetStatus}</option>
+                        {console.log("formddd",formData.assetStatus)}
+                        {formData.assetStatus === "Assigned" ? <option value="unAssigned">unAssigned</option> :  <option value="Assigned">Assigned</option> }
+                           
+                           
                         </select>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Issue Date</label>
+                        <label className="block text-xs font-medium text-gray-700">Issue Date</label>
                         <Input
                             name="issueDate"
                             type="date"
                             value={formData.issueDate}
                             onChange={handleChange}
                             disabled={isIssueDateDisabled}
+                            className="h-7 text-xs"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Return Date</label>
+                        <label className="block text-xs font-medium text-gray-700">Return Date</label>
                         <Input
                             name="returnDate"
                             type="date"
                             value={formData.returnDate}
                             onChange={handleChange}
                             disabled={isReturnDateDisabled}
+                            className="h-7 text-xs"
                         />
                     </div>
 
                     <div className="flex justify-end space-x-4 mt-4">
-                        <Button className="bg-[#134572] text-white" onClick={handleReturn} variant="secondary">Return</Button>
-                        <Button className="bg-[#134572]" onClick={handleAllocate}>Allocate</Button>
+                        <Button className="bg-[#134572] px-4  h-8  text-white text-xs" onClick={handleReturn} variant="secondary">Return</Button>
+                        <Button className="bg-[#134572] text-xs px-3 h-8  " onClick={handleAllocate}>Allocate</Button>
                     </div>
                 </div>
             </div>

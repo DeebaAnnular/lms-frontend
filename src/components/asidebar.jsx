@@ -44,12 +44,12 @@ export const sidebarLinks = [
     label: "Assets Management",
     icon: <FaComputer />,
     subLinks: [
-      { label: "Assets Registration", route: "/admin/assetsRegistration", icon: <MdOutlineAppRegistration /> },
-      { label: "Assets Details", route: "/admin/assetsHistory", icon: <MdHistory /> },
+      { label: "Assets", route: "/admin/assetsRegistration", icon: <MdOutlineAppRegistration /> },
+      // { label: "Assets Details", route: "/admin/assetsHistory", icon: <MdHistory /> },
       { label: "Access Card", route: "/admin/accessCard", icon: <IoIdCard /> },
-      { label: "Access Card Details", route: "/admin/accessCardHistory", icon: <MdHistory /> },
-      { label: "Assets Maintenance", route: "/admin/assetsMaintenance", icon: <GrVmMaintenance /> },
-      { label: "Assets Maintenance Details", route: "/admin/assetsMaintenanceHistory", icon: <MdHistory /> },
+      // { label: "Access Card Details", route: "/admin/accessCardHistory", icon: <MdHistory /> },
+      { label: "Maintenance", route: "/admin/assetsMaintenance", icon: <GrVmMaintenance /> },
+      // { label: "Assets Maintenance Details", route: "/admin/assetsMaintenanceHistory", icon: <MdHistory /> },
     ],
   },
 ];
@@ -68,7 +68,7 @@ const Sidebar = () => {
           alt="logo"
           layout="fill"
           objectFit="contain"
-          className="h-[85px] w-full mt-[20px] object-contain"
+          className="h-[75px] w-full mt-[20px] object-contain"
         />
       </div>
       <div className="flex mt-8 flex-1 flex-col gap-1"> {/* Reduced gap */}
@@ -86,7 +86,7 @@ const Sidebar = () => {
                 onClick={toggleAssetsSubLinks}
               >
                 <div>{link.icon}</div>
-                <p className="text-[16px]">{link.label}</p>
+                <p className="text-[14px]">{link.label}</p>
                 <div className="ml-auto">
                   {showAssetsSubLinks ? <MdExpandLess /> : <MdExpandMore />}
                 </div>
@@ -102,7 +102,7 @@ const Sidebar = () => {
                     )}
                   >
                     <div>{subLink.icon}</div>
-                    <p className="text-[14px]">{subLink.label}</p>
+                    <p className="text-[13px]">{subLink.label}</p>
                   </Link>
                 ))}
             </div>
@@ -116,7 +116,7 @@ const Sidebar = () => {
               )}
             >
               <div>{link.icon}</div>
-              <p className="text-[16px]">{link.label}</p>
+              <p className="text-[13px]">{link.label}</p>
             </Link>
           );
         })}

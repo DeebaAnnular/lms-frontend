@@ -181,7 +181,7 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
                 return (
                     <Button
                         variant="ghost"
-                        className="text-[16px] font-bold"
+                        className="text-[13px] font-bold"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
                         Status 
@@ -248,7 +248,7 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id} isHeader>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black p-3 border-none h-[60px] font-bold text-[16px]">
+                                    <TableHead key={header.id} className="text-black p-1 border-none h-[60px] font-bold text-[13px]">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -263,7 +263,7 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
                             table.getRowModel().rows.map((row) => (
                                 <TableRow className="text-[#667085]" key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className="pl-4">
+                                        <TableCell key={cell.id} className="pl-4 text-[12px]">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
@@ -347,14 +347,14 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
                                 // setAllData(response) 
                                 setShow(false)
                             }}
-                            className="absolute top-2 right-2 text-red-500 text-xl border border-red-500 rounded-full"
+                            className="absolute top-2 right-2 text-red-500 text-lg border border-red-500 rounded-full"
                         >
                             <IoIosClose />
                         </button>
 
 
 
-                        <h1 className="text-2xl font-bold text-center my-4">Tasks </h1>
+                        <h1 className="text-xl font-bold text-center my-4">Tasks </h1>
                         <ul>
                             <div className="max-h-[200px] w-full overflow-y-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
@@ -378,10 +378,10 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
                                     <tbody className="bg-white">
                                         {taskForDate?.map((task) => (
                                             <tr key={task.task_id}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                                     {task.task_id}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
                                                     {editingTaskId === task.task_id ? (
                                                         <input
                                                             type="text"
@@ -394,7 +394,7 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
                                                         task.task_name
                                                     )}
                                                 </td>
-                                                <td className="px-4 py-4  whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-4 py-4  whitespace-nowrap text-xs text-gray-500">
                                                     {editingTaskId === task.task_id ? (
                                                         <input
                                                             type="text"
@@ -408,7 +408,7 @@ export function DataTable({ allData, userId, startDate, endDate,setStartDate,set
                                                         formatTime(task.task_time)
                                                     )}
                                                 </td>
-                                                {currDayStatus !== 'approved' && (<td className="px- py-4 whitespace-nowrap text-sm text-gray-500 ">
+                                                {currDayStatus !== 'approved' && (<td className="px- py-4 whitespace-nowrap text-xs text-gray-500 ">
                                                     {editingTaskId === task.task_id ? (
                                                         <>
                                                             <button

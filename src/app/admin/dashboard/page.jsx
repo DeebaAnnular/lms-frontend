@@ -21,7 +21,7 @@ console.log("emplist",emp_list);
     return (
         <div className='w-full h-full'>
             <ToastContainer />
-            <p className='text-[20px] font-bold'>Employee Details</p>
+            <p className='text-[16px] font-bold'>Employee Details</p>
             <div>
                 {console.log("columns",columns)}
                 <DataTable columns={columns} setEmp_list={setEmp_list} data={emp_list}/>

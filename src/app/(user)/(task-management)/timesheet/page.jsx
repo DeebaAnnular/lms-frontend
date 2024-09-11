@@ -86,10 +86,10 @@ const Page = () => {
                     <div className="flex justify-between items-start gap-4">
                         <div className='flex flex-col gap-2'>
                             <div className="active:border-none flex items-center gap-2">
-                                <p className='text-[15px] font-medium'>Start Date:</p>
+                                <p className='text-[13px] font-medium'>Start Date:</p>
                                 <input
                                     type="date"
-                                    className='w-[180px] text-[#99A0B0] px-4 py-2 border'
+                                    className='w-[180px] text-[#99A0B0] text-xs px-4 py-2 border'
                                     value={startDate}
                                     onChange={(e) => handleDateChange(e, 'start')}
                                 />
@@ -99,10 +99,10 @@ const Page = () => {
 
                         <div className='flex flex-col gap-2'>
                             <div className="flex items-center gap-2">
-                                <p className='text-[15px] font-medium'>To Date:</p>
+                                <p className='text-[13px]  font-medium'>To Date:</p>
                                 <input
                                     type="date"
-                                    className='w-[180px] border text-[#99A0B0] text-date_color px-4 py-2'
+                                    className='w-[180px] border text-xs text-[#99A0B0] text-date_color px-4 py-2'
                                     value={endDate}
                                     onChange={(e) => handleDateChange(e, 'end')}
                                 />
@@ -113,7 +113,7 @@ const Page = () => {
                         <div className="setDate-button mt-6">
                             <Button
                                 onClick={getData}
-                                className="text-white hover:text-[#A6C4F0] hover:bg-[#134572] bg-[#134572] font-bolder font-sans text-[15px] py-2 px-6"
+                                className="text-white hover:text-[#A6C4F0] hover:bg-[#134572] bg-[#134572] font-bolder font-sans text-[12px] py-1 px-3"
                             >
                                 Get Timesheet
                             </Button>
@@ -131,7 +131,7 @@ const Page = () => {
                                 setEndDate={setEndDate}
                             />
                         ) : (
-                            <p className="text-center text-gray-500">No records found</p>
+                            <p className="text-center text-sm text-gray-500">No records found</p>
                         )}
                     </div>
                 </div>

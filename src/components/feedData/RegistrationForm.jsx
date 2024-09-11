@@ -235,7 +235,7 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
     };
 
     const getInputClassName = (field) => {
-        return `border ${errors[field] ? 'border-red-500' : 'border-[#B6B6B6]'} text-[16px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]`;
+        return `border ${errors[field] ? 'border-red-500' : 'border-[#B6B6B6]'} text-[14px] placeholder:text-[16px] rounded-md p-1 min-h-[40px]`;
     };
 
     const getTooltip = (field) => {
@@ -244,19 +244,19 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
 
     return (
         <div className="cursor-default">
-            <div className="box md:max-h-[700px] relative top-1 flex flex-col items-center">
-                <div className="mt-6 min-w-[500px]">
+            <div className="box md:max-h-[500px] relative top-1 flex flex-col items-center">
+                <div className="mt-6 w-full max-w-[600px]">
                     <form onSubmit={handleSubmit} autoComplete="off">
                         <div className="flex gap-20 flex-row">
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="emp_name" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="emp_name" className="text-[11px] font-regular text-[#373857]">
                                         First Name<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="emp_name"
                                         value={capitalizeWords(formData.emp_name)}
-                                        className={getInputClassName('emp_name')}
+                                        className={`${getInputClassName('emp_name')}  w-[220px] min-h-[20px] `}
                                         type="text"
                                         required
                                         onChange={handleInputChangeEvent}
@@ -266,13 +266,13 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="last_name" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="last_name" className="text-[11px]  font-regular text-[#373857]">
                                         Last Name<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="last_name"
                                         value={capitalizeWords(formData.last_name)}
-                                        className={getInputClassName('last_name')}
+                                        className={`${getInputClassName('last_name')} w-[220px] min-h-[20px] `}
                                         type="text"
                                         required
                                         onChange={handleInputChangeEvent}
@@ -282,14 +282,14 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="gender" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="gender" className="font-regular text-[11px] text-[#373857]">
                                         Gender<span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         id="gender"
                                         required
                                         value={formData.gender}
-                                        className={getInputClassName('gender')}
+                                        className={`${getInputClassName('gender')} w-[220px] min-h-[20px] `}
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('gender')}
                                     >
@@ -299,14 +299,14 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                     </select>
                                 </div>
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="date_of_joining" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="date_of_joining" className="text-[11px] min-h-[10px] font-regular text-[#373857]">
                                         Date of Joining<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="date_of_joining"
                                         required
                                         value={formData.date_of_joining}
-                                        className={getInputClassName('date_of_joining')}
+                                        className={`${getInputClassName('date_of_joining')} w-[220px] min-h-[20px] `}
                                         onChange={handleDateChange}
                                         type="date"
                                         title={getTooltip('date_of_joining')}
@@ -314,14 +314,14 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="work_email" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="work_email" className="text-[11px]  font-regular text-[#373857]">
                                         Work Email<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="work_email"
                                         type="email"
                                         value={formData.work_email}
-                                        className={getInputClassName('work_email')}
+                                        className={`${getInputClassName('work_email')} w-[220px] min-h-[20px] `}
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('work_email')}
@@ -330,14 +330,14 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="password" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="password" className="text-[11px] min-h-[10px] font-regular text-[#373857]">
                                         Password<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="password"
                                         type="password"
                                         value={formData.password}
-                                        className={getInputClassName('password')}
+                                        className={`${getInputClassName('password')} w-[220px] min-h-[20px] `}
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('password')}
@@ -350,14 +350,14 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                             </div>
                             <div className="min-w-[275px]">
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="emp_id" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="emp_id" className="text-[11px] min-h-[10px] font-regular text-[#373857]">
                                         Employee Id<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="emp_id"
                                         required
                                         value={formData.emp_id}
-                                        className={getInputClassName('emp_id')}
+                                        className={`${getInputClassName('emp_id')} w-[220px] min-h-[20px] `}
                                         onChange={handleInputChangeEvent}
                                         onInput={handleInput}
                                         title={getTooltip('emp_id')}
@@ -366,7 +366,7 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="contact_number" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="contact_number" className="text-[11px] min-h-[10px] font-regular text-[#373857]">
                                         Contact No<span className="text-red-500">*</span>
                                     </label>
                                     <PhoneInput
@@ -375,33 +375,33 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                         required
                                         limitMaxLength={17}
                                         value={formData.contact_number} // Use the phone number only
-                                        className={getInputClassName('contact_number')}
+                                        className={`${getInputClassName('contact_number')} w-[220px] min-h-[20px] `}
                                         onChange={handleContactNumberChange} // Use the updated handler
                                         title={getTooltip('contact_number')}
                                         international // This prop shows the country code next to the flag
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="designation" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="designation" className="text-[11px] min-h-[10px] font-regular text-[#373857]">
                                         Designation<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="designation"
                                         value={formData.designation}
-                                        className={getInputClassName('designation')}
+                                        className={`${getInputClassName('designation')} w-[220px] min-h-[20px] `}
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('designation')}
                                     />
                                 </div> 
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="work_location" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="work_location" className="text-[11px] min-h-[10px] font-regular text-[#373857]">
                                         Location<span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="work_location"
                                         value={formData.work_location}
-                                        className={getInputClassName('work_location')}
+                                        className={`${getInputClassName('work_location')} w-[220px] min-h-[20px] `}
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('work_location')} 
@@ -411,13 +411,13 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                 </div>
                                 
                                 <div className='flex flex-col mb-3'>
-                                    <label htmlFor="active_status" className="text-[14px] font-regular text-[#373857]">
+                                    <label htmlFor="active_status" className="text-[11px] min-h-[10px] font-regular text-[#373857]">
                                         Employee Status<span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         id="active_status"
                                         value={formData.active_status}
-                                        className={getInputClassName('active_status')}
+                                        className={`${getInputClassName('active_status')} w-[220px] min-h-[20px] `}
                                         required
                                         onChange={handleInputChangeEvent}
                                         title={getTooltip('active_status')}
@@ -430,9 +430,9 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex mt-3 w-full items-center justify-end">
+                        <div className="flex w-full items-center justify-end">
                             <button
-                                className="mr-2 py-1 px-2 w-[150px] rounded-sm h-fit text-white bg-[#134572] font-normal"
+                                className="mr-2 py-1 px-2 w-[150px] text-sm rounded-sm h-fit text-white bg-[#134572] font-normal"
                                 type="submit"
                             >
                                 Register

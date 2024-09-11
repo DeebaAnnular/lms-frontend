@@ -128,12 +128,12 @@ export function DataTable({ allData }) {
             <div className="mb-4 flex space-x-4 items-center justify-end">    
 
                 <div className="flex border mt-2 bg-white border-[#DCDCDC] items-center px-3 h-full  ">
-                    <IoIosSearch className='text-[#B1A8A8] text-[30px]' />
+                    <IoIosSearch className='text-[#B1A8A8] text-[20px]' />
                     <Input
                         placeholder="Search by Name"
                         value={userNameFilter}
                         onChange={ handleUserNameFilterChange }
-                        className="searchbar max-w-sm text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
+                        className="searchbar max-w-sm text-black placeholder:text-[#B1A8A8] text-[14px] border-none outline-none"
                     />
                 </div>
             </div>
@@ -144,7 +144,7 @@ export function DataTable({ allData }) {
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className='text-[16px] font-bold text-[#333843]' >
+                                    <TableHead key={header.id} className='text-[13px] font-bold text-[#333843]' >
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -157,9 +157,9 @@ export function DataTable({ allData }) {
                     <TableBody className='text-[#667085]'>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className=''>
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} className="text-[12px] p-3 pl-6">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}

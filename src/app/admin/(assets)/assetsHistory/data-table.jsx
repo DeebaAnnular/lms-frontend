@@ -1,19 +1,18 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button } from "../../../../components/ui/button";
 import { MdEdit, MdDelete, MdSave, MdCancel } from "react-icons/md";
 import { Input } from "../../../../components/ui/input";
-import { deleteAsset, updateAssetDetails } from '../../../../actions/assetApi';
-import  AssetModal  from '../../../../components/ui/assetModal'
+
+import { deleteAsset, updateAssetDetails, getAllAssets } from '../../../../actions/assetApi';
+import AssetModal from '../../../../components/ui/assetModal';
 
 export function DataTable({ data, column }) {
-    // console.log("data",data);
     const [tableData, setTableData] = useState([]);
-    console.log("tabledata",tableData);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedAsset, setSelectedAsset] = useState(null);
+    const [selectedAsset, setselectedAsset] = useState(null);
     const [editingRow, setEditingRow] = useState(null);
     const [editedData, setEditedData] = useState({});
 
@@ -21,14 +20,19 @@ export function DataTable({ data, column }) {
         if (data && data.length > 0) {
             setTableData(data);
         }
-    }, [data]);  
+    }, [data]);
 
-    useEffect(()=>{
-        
-    })
+    const handleRefreshData = async () => {
+        try {
+            const refreshedData = await getAllAssets();
+            setTableData(refreshedData);
+        } catch (error) {
+            console.log("Error refreshing data:", error);
+        }
+    };
 
     const handleAssetIdClick = (asset) => {
-        setSelectedAsset({
+        setselectedAsset({
             asset_id: asset.asset_id,
             asset_no: asset.asset_no,
             asset_type: asset.asset_type,
@@ -38,8 +42,10 @@ export function DataTable({ data, column }) {
     };
 
     const closeModal = () => {
+        console.log("close triggered");
         setIsModalOpen(false);
-        setSelectedAsset(null);
+        setselectedAsset(null);
+        handleRefreshData();
     };
 
     const handleEditClick = (row) => {
@@ -53,11 +59,20 @@ export function DataTable({ data, column }) {
     };
 
     const handleInputChange = (e, accessorKey) => {
-        setEditedData({
-            ...editedData,
-            [accessorKey]: e.target.value
+        const newValue = e.target.value;
+        setEditedData(prevData => {
+            const updatedData = { ...prevData, [accessorKey]: newValue };
+    
+            // Resetting 'ram' and 'rom' if asset_type is not 'Laptop'
+            if (accessorKey === 'asset_type' && newValue !== 'Laptop') {
+                updatedData.ram = '';
+                updatedData.rom = '';
+            }
+    
+            return updatedData;
         });
     };
+    
 
     const handleSaveClick = async () => {
         try {
@@ -89,6 +104,98 @@ export function DataTable({ data, column }) {
         }
     };
 
+    const renderEditField = (col, row) => {
+        const isLaptop = editedData.asset_type === 'Laptop';
+        switch (col.accessorKey) {
+            case 'asset_type':
+                return (
+                    <select
+                        value={editedData[col.accessorKey] || ''}
+                        onChange={(e) => handleInputChange(e, col.accessorKey)}
+                    >
+                        <option value="">select</option>
+                        <option value="Laptop">Laptop</option>
+                        <option value="Mouse">Mouse</option>
+                        <option value="Printer">Printer</option>
+                        <option value="Keyboard">Keyboard</option>
+                    </select>
+                );
+            case 'asset_status':
+                return (
+                    <select
+                        value={editedData[col.accessorKey] || ''}
+                        onChange={(e) => handleInputChange(e, col.accessorKey)}
+                    >
+                        <option value="select">select</option>
+                        <option value="1">Assigned</option>
+                        <option value="0">UnAssigned</option>
+                    </select>
+                );
+                case 'ram':
+                    return isLaptop ? (
+                        <select
+                            value={editedData[col.accessorKey] || ''}
+                            onChange={(e) => handleInputChange(e, col.accessorKey)}
+                        >
+                            <option value="">Select</option>
+                            <option value="8GB">8GB</option>
+                            <option value="12GB">12GB</option>
+                            <option value="16GB">16GB</option>
+                            <option value="32GB">32GB</option>
+                            <option value="64GB">64GB</option>
+                        </select>
+                    ) : (
+                        <Input
+                            value={editedData[col.accessorKey] || ''}
+                            disabled
+                            className="w-full"
+                        />
+                    );
+                    case 'rom':
+                        return isLaptop ? (
+                            <select
+                                value={editedData[col.accessorKey] || ''}
+                                onChange={(e) => handleInputChange(e, col.accessorKey)}
+                            >
+                                <option value="">Select</option>
+                                <option value="128GB (SSD)">128GB (SSD)</option>
+                                <option value="256GB (SSD)">256GB (SSD)</option>
+                                <option value="516GB (SSD)">516GB (SSD)</option>
+                                <option value="1TB (SSD)">  1TB (SSD)</option>
+                                <option value="128GB (HDD)">128GB (HDD)</option>
+                                <option value="256GB (HDD)">256GB (HDD)</option>
+                                <option value="516GB (HDD)">516GB (HDD)</option>
+                                <option value="1TB (HDD)">  1TB (HDD)</option>
+                            </select>
+                        ) : (
+                            <Input
+                                value={editedData[col.accessorKey] || ''}
+                                disabled
+                                className="w-full"
+                            />
+                        );
+            case 'operational_status':
+                return (
+                    <select
+                        value={editedData[col.accessorKey] || ''}
+                        onChange={(e) => handleInputChange(e, col.accessorKey)}
+                    >
+                        <option value="">select</option>
+                        <option value="In use">In use</option>
+                        <option value="Damage">Damage</option>
+                    </select>
+                );
+            default:
+                return (
+                    <Input
+                        value={editedData[col.accessorKey] || ''}
+                        onChange={(e) => handleInputChange(e, col.accessorKey)}
+                        className="w-full"
+                    />
+                );
+        }
+    };
+
     return (
         <div className="w-full">
             <ToastContainer />
@@ -96,15 +203,15 @@ export function DataTable({ data, column }) {
                 <Table className="w-full ml-4">
                     <TableHeader className="bg-[#f7f7f7] h-[60px] text-[#333843]">
                         <TableRow>
-                            <TableHead className="text-[16px] font-bold text-[#333843] whitespace-nowrap pl-4">
+                            <TableHead className="text-[13px] font-bold text-[#333843] whitespace-nowrap pl-4">
                                 S.No
                             </TableHead>
                             {column.map((col, index) => (
-                                <TableHead key={index} className="text-[16px] font-bold text-[#333843] whitespace-nowrap pl-4">
+                                <TableHead key={index} className="text-[13px] font-bold text-[#333843] whitespace-nowrap pl-4">
                                     {col.header}
                                 </TableHead>
                             ))}
-                            <TableHead className="text-[16px] font-bold text-[#333843] whitespace-nowrap pl-4">
+                            <TableHead className="text-[13px] font-bold text-[#333843] whitespace-nowrap pl-4">
                                 Actions
                             </TableHead>
                         </TableRow>
@@ -120,18 +227,14 @@ export function DataTable({ data, column }) {
                                     {column.map((col, colIndex) => (
                                         <TableCell 
                                             key={colIndex} 
-                                            className={`p-2 pl-4 ${col.accessorKey === 'asset_no' ? 'cursor-pointer text-blue-500' : ''}`}
-                                            onClick={col.accessorKey === 'asset_no' ? () => handleAssetIdClick(row) : undefined}
+                                            className={`p-2 pl-4 text-[12px] ${col.accessorKey === 'asset_no' && editingRow !== row.asset_id ? 'cursor-pointer text-blue-500' : ''}`}
+                                            onClick={col.accessorKey === 'asset_no' && editingRow !== row.asset_id ? () => handleAssetIdClick(row) : undefined}
                                         >
                                             {editingRow === row.asset_id ? (
-                                                <Input
-                                                    value={editedData[col.accessorKey] || ''}
-                                                    onChange={(e) => handleInputChange(e, col.accessorKey)}
-                                                    className="w-full"
-                                                />
+                                                renderEditField(col, row)
                                             ) : (
                                                 col.accessorKey === 'asset_status' 
-                                                    ? (row[col.accessorKey] === 1 ? 'Assigned' : 'Unassigned')
+                                                    ? (row[col.accessorKey] === 1 ? 'Assigned' : 'UnAssigned')
                                                     : (row[col.accessorKey] || '-')
                                             )}
                                         </TableCell>
@@ -139,19 +242,19 @@ export function DataTable({ data, column }) {
                                     <TableCell className="flex items-center">
                                         {editingRow === row.asset_id ? (
                                             <>
-                                                <Button onClick={handleSaveClick} className="mr-2 bg-[#134572] text-white">
+                                                <Button onClick={handleSaveClick} className="mr-2 px-2 py-2 text-xs bg-[#134572] text-white">
                                                     <MdSave className="mr-1" /> Save
                                                 </Button>
-                                                <Button onClick={handleCancelEdit} variant="outline" className="bg-[#134572] text-white">
+                                                <Button onClick={handleCancelEdit} variant="outline" className="bg-[#134572] px-2 py-2 text-xs text-white">
                                                     <MdCancel className="mr-1" /> Cancel
                                                 </Button>
                                             </>
                                         ) : (
                                             <>
-                                                <Button onClick={() => handleEditClick(row)} className="mr-2 bg-[#134572] text-white">
-                                                    <MdEdit className="mr-1" /> Edit
+                                                <Button onClick={() => handleEditClick(row)} className="mr-2 border px-2 py-1 text-xs   bg-[#134572] text-white">
+                                                    <MdEdit className="mr-1 " /> Edit
                                                 </Button>
-                                                <Button onClick={() => handleDeleteClick(row.asset_id)} className="bg-[#134572] text-white">
+                                                <Button onClick={() => handleDeleteClick(row.asset_id)} className="bg-[#134572] px-2 py-2 text-xs text-white">
                                                     <MdDelete className="mr-1" /> Delete
                                                 </Button>
                                             </>
@@ -177,6 +280,7 @@ export function DataTable({ data, column }) {
                     assetType={selectedAsset.asset_type} 
                     assetStatus={selectedAsset.asset_status}
                     onClose={closeModal} 
+                    refreshData={handleRefreshData}
                 />
             )}
         </div>

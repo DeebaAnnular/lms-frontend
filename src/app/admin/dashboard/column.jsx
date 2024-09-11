@@ -26,7 +26,7 @@ export const columns = [
         header: ({ column }) => (
             <Button
                 variant="ghost"
-                className='text-[16px] font-bold text-[#333843]'
+                className='text-[12px] font-bold text-[#333843]'
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
                 Emp ID
@@ -52,7 +52,7 @@ export const columns = [
         header: ({ column }) => (
             <Button
                 variant="ghost"
-                className='text-[16px] font-bold text-[#333843]'
+                className='text-[12px] font-bold text-[#333843]'
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
                 Emp Name
@@ -94,7 +94,7 @@ export const columns = [
             return (
                 <Button
                     variant="ghost"
-                    className='text-[16px] font-bold text-[#333843]'
+                    className='text-[12px] font-bold text-[#333843]'
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Status

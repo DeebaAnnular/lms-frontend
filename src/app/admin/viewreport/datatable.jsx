@@ -195,13 +195,13 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             {status === "pending" ? (
               <>
                 <Button
-                  className="px-1 py-0 bg-green-400 rounded-md mr-3 text-xs"
+                  className="px-1  bg-green-400 rounded-md mr-3 text-xs h-6"
                   onClick={() => handleApprove(row.original.task_id)}
                 >
                   Approve
                 </Button>
                 <Button
-                  className="px-1 py-0 bg-red-600 rounded-md text-xs"
+                  className="px-1 py-0 bg-red-600 rounded-md text-xs h-6"
                   onClick={() =>
                     handleReject(
                       row.original.task_id,
@@ -265,7 +265,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-black border-none h-[60px] font-bold text-[16px] px-4"
+                    className="text-black border-none h-[60px] font-bold text-[13px] px-4"
                   >
                     {header.isPlaceholder
                       ? null
@@ -288,7 +288,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="text-[12px] p-2 pl-5">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -313,23 +313,23 @@ export function DataTable({ allData, userId, startDate, endDate }) {
 
       {show && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded h-fit min-w-[300px] w-[600px] max-h-[500px] shadow-lg relative">
+          <div className="bg-white p-6 rounded h-fit border  min-w-[200px] w-[500px] max-h-[500px] shadow-lg relative">
             <button
               onClick={() => setShow(false)}
               className="absolute top-2 right-2 text-red-500 text-xl border border-red-500 rounded-full"
             >
               <IoIosClose />
             </button>
-            <h1 className="text-2xl font-bold text-center mb-4">
+            <h1 className="font-bold text-center mb-4 text-lg">
               {selectedDate} Tasks
             </h1>
             <Table>
               <TableHeader>
                 <TableRow className="bg-[#F7F7F7]">
-                  <TableHead className="p-0 px-3 text-[#333843]">
+                  <TableHead className="p-0 px-3 text-[13px] text-[#333843]">
                     Task ID
                   </TableHead>
-                  <TableHead className="p-0 px-3 pl-5 text-[#333843]">
+                  <TableHead className="p-0 px-3 pl-5 text-[13px] text-[#333843]">
                     Task
                   </TableHead>
                   {/* <TableHead>Time</TableHead> */}
@@ -337,7 +337,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableCell className="p-0 w-[50%]">
+                  <TableCell className="p-0 w-[50%] text-[12px]">
                     {taskIds &&
                       taskIds.map((id, index) => (
                         <p
@@ -348,7 +348,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                         </p>
                       ))}
                   </TableCell>
-                  <TableCell className="p-0 w-[50%]">
+                  <TableCell className="p-0 w-[50%] text-[12px]">
                     {taskDetails &&
                       taskDetails.map((task, index) => (
                         <p
@@ -369,22 +369,22 @@ export function DataTable({ allData, userId, startDate, endDate }) {
       {isModalOpen && (
         <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="modal-content bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-lg font-bold mb-4">Enter Reason for Rejection</h2>
+            <h2 className="text-sm font-bold mb-4">Enter Reason for Rejection</h2>
             <textarea 
-                className="w-full h-24 border border-gray-300 rounded-md p-2 mb-4 resize-none"
+                className="w-full h-20 border border-gray-300 rounded-md p-2 mb-4 resize-none"
                 value={rejectionReason} 
                 onChange={(e) => setRejectionReason(e.target.value)} 
                 placeholder="Type your reason here..."
             />
             <div className="flex justify-end">
                 <button 
-                    className="bg-black text-white rounded-md px-4 py-2 mr-2"
+                    className="bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572] text-sm  text-white  rounded-md px-3 py-1 mr-2"
                     onClick={handleSubmitRejection}
                 >
                     Submit
                 </button>
                 <button 
-                    className="bg-gray-300 text-black rounded-md px-4 py-2"
+                    className="bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572] text-sm  text-white  rounded-md px-3 py-1"
                     onClick={() => setIsModalOpen(false)}
                 >
                     Cancel

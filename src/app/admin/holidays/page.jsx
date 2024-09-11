@@ -40,7 +40,12 @@ const Page = () => {
       return isAsc ? a.holiday_type.localeCompare(b.holiday_type) : b.holiday_type.localeCompare(a.holiday_type);
     }
     return 0;
-  });
+  }); 
+
+  const handleDateSelect = (selectedDate) => {
+    setDate(selectedDate);
+    setDateError(""); // Clear the error when a date is selected
+  };
 
   const requestSort = (key) => {
     let direction = 'ascending';
@@ -147,30 +152,30 @@ const Page = () => {
     <>
       <div className="w-full border bg-white overflow-hidden ">
         <ToastContainer />
-        <h1 className="text-2xl font-bold ml-4 my-2 mb-4">Add Holidays</h1>
+        <h1 className="text-xl font-bold ml-4 my-2 mb-4">Add Holidays</h1>
         <div className=" ">
-          <form className="px-1 flex gap-2 flex-row items-center justify-between mb-4 outline-none" onSubmit={handleSubmit}>
-            <div className="flex-1 flex items-center">
+          <form className="px-1 flex gap-2 flex-row  items-center justify-between mb-4 outline-none" onSubmit={handleSubmit}>
+            <div className="flex-1 flex flex-col items-center w-[100px]">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant={"outline"}
-                    className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
+                    className={cn("border w-full rounded-md text-xs h-8 p-2", !date && "text-muted-foreground")}
                   >
-                    <CalendarIcon className="h-4 w-4 mr-2" />
+                    <CalendarIcon className="h-3 w-4 mr-2" />
                     {date ? format(date, "dd-MM-yyyy") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                  <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
                 </PopoverContent>
               </Popover>
-              {dateError && <p className="text-red-500 text-sm mt-1">{dateError}</p>} 
+              {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>} 
             </div>
 
             <div className="flex flex-1 items-center">
               <select
-                className="border w-full rounded-md text-sm h-10 p-2"
+                className="border w-full rounded-md text-xs h-8 p-2 "
                 value={leaveType}
                 onChange={(e) => setLeaveType(e.target.value)}
               >
@@ -182,7 +187,7 @@ const Page = () => {
 
             <div className="flex flex-1 items-center ">
               <input
-                className="border rounded-md text-sm w-full h-10 p-2"
+                className="border rounded-md text-xs w-full h-8 p-2"
                 placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -190,7 +195,7 @@ const Page = () => {
             </div>
 
             <div className=" ">
-              <Button className="px-5 py-2 text-white hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572] rounded-md ">Add</Button>
+              <Button className="px-4 py-1 h-8 text-white hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572] rounded-md ">Add</Button>
             </div>
           </form>
         </div>
@@ -199,15 +204,15 @@ const Page = () => {
         <Table>
           <TableHeader className="bg-[#f7f7f7] h-[60px] text-[#333843]">
             <TableRow>
-              <TableHead className="text-[16px] font-bold text-[#333843] p-3">S.No</TableHead>
-              <TableHead className="text-[16px] font-bold text-[#333843] cursor-pointer" onClick={() => requestSort('date')}>
-                Date <ArrowUpDown className="inline" />
+              <TableHead className="text-[13px] font-bold text-[#333843] p-3">S.No</TableHead>
+              <TableHead className="text-[13px] font-bold text-[#333843] cursor-pointer" onClick={() => requestSort('date')}>
+                Date <ArrowUpDown className="inline w-4 h-4" />
               </TableHead>
-              <TableHead className="text-[16px] font-bold text-[#333843] cursor-pointer" onClick={() => requestSort('leaveType')}>
-                Leave Type <ArrowUpDown className="inline" />
+              <TableHead className="text-[13px] font-bold text-[#333843] cursor-pointer" onClick={() => requestSort('leaveType')}>
+                Leave Type <ArrowUpDown className="inline w-4 h-4" />
               </TableHead>
-              <TableHead className="text-[16px] font-bold text-[#333843]">Description</TableHead>
-              <TableHead className="text-[16px] font-bold text-[#333843] p-2">Action</TableHead>
+              <TableHead className="text-[13px] font-bold text-[#333843]">Description</TableHead>
+              <TableHead className="text-[13px] font-bold text-[#333843] p-2">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-[#667085]">
@@ -217,7 +222,7 @@ const Page = () => {
               </TableRow>
             ) : (
               sortedHolidays.map((holiday, index) => (
-                <TableRow key={index}>
+                <TableRow key={index} className="text-[12px]">
                   <TableCell className="">{index + 1}</TableCell>
                   <TableCell className="font-medium">{format(new Date(holiday.date), "dd-MM-yyyy")}</TableCell>
                   <TableCell>{holiday.holiday_type === "optional_holidays" ? "Optional Holiday" : "Mandatory Holiday"}</TableCell>

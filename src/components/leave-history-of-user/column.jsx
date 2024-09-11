@@ -65,7 +65,7 @@ export const columns = [
             return (
                 <Button
                     variant="ghost"
-                    className='text-[16px] font-bold'
+                    className='text-[13px] font-bold'
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Status

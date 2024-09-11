@@ -122,7 +122,7 @@ export function DataTable({ allData }) {
                                 {headerGroup.headers.map((header) => (
                                     <TableHead 
                                         key={header.id} 
-                                        className="text-black text-[16px] font-bold p-6 border-none"
+                                        className="text-black text-[13px] font-bold p-3 border-none"
                                     >
                                         {header.isPlaceholder
                                             ? null
@@ -138,7 +138,7 @@ export function DataTable({ allData }) {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell className="p-6 text-[#667085]" key={cell.id}>
+                                        <TableCell className="p-3 text-[#667085] text-[12px]" key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}

@@ -49,38 +49,38 @@ const Page = () => {
             {/* personal details or employee details */}
             <div className="w-full flex items-center justify-between bg-white p-[24px]">
 
-                <div className="flex items-center gap-4">
-                    <div className="initial_box h-[62px] w-[62px] flex items-center justify-center bg-[#D4FFDE] text-[#00B229] font-semibold text-[22px] rounded-md">
+                <div className="flex items-center gap-4 text-[12px]">
+                    <div className="initial_box h-[50px] w-[50px] flex items-center justify-center bg-[#D4FFDE] text-[#00B229] font-semibold text-[20px] rounded-md">
                         {getInitials(resData.emp_name)}
                     </div>
                     <div>
-                        <p className="pb-[10px] text-[#4B5563] font-semibold">
+                        <p className="pb-[10px] text-[#4B5563]  font-semibold">
                             {capitalizeWords(resData.emp_name)} 
                         </p>
-                        <p className="pb-[10px] text-[#4B5563]">
-                            <span className="text-[#6B7280] text-[14px] font-medium">Emp ID : </span> {resData.emp_id}
+                        <p className="pb-[10px] text-[#4B5563] text-[13px]">
+                            <span className="text-[#6B7280] text-[12px] font-medium">Emp ID : </span> {resData.emp_id}
                         </p>
                     </div>
                 </div>
 
                 <div>
-                    <p className="pb-[10px] text-[#4B5563]">
-                        <span className="text-[#6B7280] text-[14px] font-medium">Designation : </span>
+                    <p className="pb-[10px] text-[#4B5563] text-[13px]">
+                        <span className="text-[#6B7280] text-[12px] font-medium">Designation : </span>
                         {capitalizeWords(resData.designation)}
                     </p>
-                    <p className="pb-[10px] text-[#4B5563]">
-                        <span className="text-[#6B7280] text-[14px] font-medium">DOJ : </span>
+                    <p className="pb-[10px] text-[#4B5563] text-[13px]">
+                        <span className="text-[#6B7280] text-[12px] font-medium">DOJ : </span>
                         {formatDate(resData.date_of_joining)}
                     </p>
                 </div>
 
                 <div>
-                    <p className="pb-[10px] text-[#4B5563]">
-                        <span className="text-[#6B7280] text-[14px] font-medium">Work Location : </span>
+                    <p className="pb-[10px] text-[#4B5563] text-[13px]">
+                        <span className="text-[#6B7280] text-[12px] font-medium">Work Location : </span>
                         {capitalizeWords(resData.work_location)}
                     </p>
-                    <p className="pb-[10px] text-[#4B5563]">
-                        <span className="text-[#6B7280] text-[14px] font-medium">Contact Number : </span>
+                    <p className="pb-[10px] text-[#4B5563] text-[13px]">
+                        <span className="text-[#6B7280] text-[12px] font-medium">Contact Number : </span>
                         {resData.contact_number}
                     </p>
                 </div>    

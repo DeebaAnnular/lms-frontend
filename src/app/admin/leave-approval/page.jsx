@@ -109,24 +109,24 @@ const Page = () => {
         <main className='overflow-hidden mx-auto '>
             {/* Modal for rejection reason */}
             {isModalOpen && (
-                <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="modal fixed inset-0 flex items-center justify-center  bg-black bg-opacity-50 z-50">
                     <div className="modal-content bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                        <h2 className="text-lg font-bold mb-4">Enter Reason for Rejection</h2>
+                        <h2 className="text-[15px] font-bold mb-4">Enter Reason for Rejection</h2>
                         <textarea 
-                            className="w-full h-24 border border-gray-300 rounded-md p-2 mb-4 resize-none"
+                            className="w-full h-20 border border-gray-300 rounded-md p-2 mb-4 resize-none"
                             value={rejectionReason} 
                             onChange={(e) => setRejectionReason(e.target.value)} 
                             placeholder="Type your reason here..."
                         />
                         <div className="flex justify-end">
                             <button 
-                                className="bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572]  text-white rounded-md px-4 py-2 mr-2"
+                                className="bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572] text-sm text-white rounded-md px-3 py-1 mr-2"
                                 onClick={handleSubmitRejection}
                             >
                                 Submit
                             </button>
                             <button 
-                                className=" text-white bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572]  rounded-md px-4 py-2"
+                                className=" text-white bg-[#134572] hover:text-[#A6C4F0] text-sm hover:bg-[#134572]  rounded-md px-3 py-1"
                                 onClick={() => setIsModalOpen(false)}
                             >
                                 Cancel
@@ -138,15 +138,15 @@ const Page = () => {
             <ToastContainer />
             <div className='min-w-[400px]  '>
             <div className='bg-white h-[62px] flex items-center justify-between px-7'>
-                <p className='text-[25px] font-inter'>
+                <p className='text-[20px] font-inter'>
                     Leave Request
                 </p>
                 <div className="flex border border-[#DCDCDC] items-center w-[40%] ">
               
-                    <IoIosSearch className='text-[#B1A8A8] text-[30px] ml-2' />
+                    <IoIosSearch className='text-[#B1A8A8] text-[20px] ml-2' />
                     <input
                             placeholder="Search by Employee Name"
-                            className="searchbar text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
+                            className="searchbar text-black placeholder:text-[#B1A8A8] text-[14px] p-1 border-none outline-none pl-2 pr-2"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -157,28 +157,28 @@ const Page = () => {
                         <div className="overflow-x-auto">
                             <Table className="min-w-[800px] table-fixed">
                                 <TableHeader className='bg-[#F7F7F7] h-[60px]'>
-                                    <TableRow className=' text-[16px] font-bold text-[#333843]'>
-                                        <TableHead className="w-[100px] text-[16px] font-bold text-[#333843]">S.No</TableHead>
-                                        <TableHead className='w-[200px] text-[16px] font-bold text-[#333843]'>Name</TableHead>
-                                        <TableHead className='w-[200px] text-[16px] font-bold text-[#333843]'>Leave Type</TableHead>
-                                        <TableHead className='w-[150px] text-[16px] font-bold text-[#333843]'>From Date</TableHead>
-                                        <TableHead className='w-[150px] text-[16px] font-bold text-[#333843]'>To Date</TableHead>
-                                        <TableHead className='w-[150px] text-[16px] font-bold text-[#333843]'>Total Count</TableHead>
-                                        <TableHead className='w-[200px] text-[16px] font-bold text-[#333843] text-center'>Action</TableHead> 
+                                    <TableRow className=' text-[13px] font-bold text-[#333843]'>
+                                        <TableHead className=" text-[13px] font-bold text-[#333843]">S.No</TableHead>
+                                        <TableHead className=' text-[13px] font-bold text-[#333843]'>Name</TableHead>
+                                        <TableHead className=' text-[13px] font-bold text-[#333843]'>Leave Type</TableHead>
+                                        <TableHead className=' text-[13px] font-bold text-[#333843]'>From Date</TableHead>
+                                        <TableHead className=' text-[13px] font-bold text-[#333843]'>To Date</TableHead>
+                                        <TableHead className=' text-[13px] font-bold text-[#333843]'>Total Count</TableHead>
+                                        <TableHead className=' text-[13px] font-bold text-[#333843] text-center'>Action</TableHead> 
 
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody className='text-[#667085]'>
                                 {filteredLeaveData.length > 0 ? (
                                         filteredLeaveData.map((data, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell className="font-medium">{index + 1}</TableCell>
-                                                <TableCell>{capitalizeWords(data.emp_name)}</TableCell>
-                                                <TableCell>{capitalizeWords(data.leave_type === 'optional_leave' ? 'optional holiday' : replaceUnderscore(data.leave_type))}</TableCell>
-                                                <TableCell>{formatDate(data.from_date)}</TableCell>
-                                                <TableCell>{formatDate(data.to_date)}</TableCell>
-                                                <TableCell>{data.total_days}</TableCell>
-                                                <TableCell className='flex gap-5'>
+                                            <TableRow key={index} className="text-[12px]">
+                                                <TableCell className="font-medium p-1 pl-6">{index + 1}</TableCell>
+                                                <TableCell className="p-2.5 pl-6">{capitalizeWords(data.emp_name)}</TableCell>
+                                                <TableCell className="p-2 pl-6">{capitalizeWords(data.leave_type === 'optional_leave' ? 'optional holiday' : replaceUnderscore(data.leave_type))}</TableCell>
+                                                <TableCell className="p-2.5 pl-6">{formatDate(data.from_date)}</TableCell>
+                                                <TableCell className="p-2.5 pl-6">{formatDate(data.to_date)}</TableCell>
+                                                <TableCell className="p-2.5 pl-8">{data.total_days}</TableCell>
+                                                <TableCell className='flex gap-5 p-2.5'>
                                                     <p className='text-red-500 cursor-pointer' onClick={() => handleRejectClick(data.leave_request_id)}>Reject</p>
                                                     <p onClick={() => handleApproveClick(data.leave_request_id)} className='text-green-500 cursor-pointer'>
                                                         Approve

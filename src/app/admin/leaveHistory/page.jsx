@@ -62,14 +62,14 @@ const LeaveHistory = () => {
   return (
     <div>
       <div className='bg-white h-[62px] flex items-center justify-between px-7'>
-        <p className='text-[25px] font-inter'>
+        <p className='text-[20px] font-inter'>
           Leave History
         </p>
         <div className="flex border border-[#DCDCDC] items-center w-[300px] h-[34px]">
-          <IoIosSearch className='text-[#B1A8A8] text-[25px] ml-2' />
+          <IoIosSearch className='text-[#B1A8A8] text-[20px] ml-2' />
           <input
             placeholder="Search by Employee Name"
-            className="searchbar text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none pl-2 pr-2"
+            className="searchbar text-black placeholder:text-[#B1A8A8] text-[14px] border-none outline-none pl-2 pr-2"
             value={searchQuery}
             onChange={handleSearch}
           />

@@ -74,19 +74,19 @@ export function DataTable({ columns, setEmp_list, data }) {
 
     return (
         <div className="w-full">
-            <div className="bg-white mb-2 p-2 py-4 flex items-center justify-between">
-                <div className="flex border border-[#DCDCDC] items-center w-[26%] h-full">
-                    <IoIosSearch className='text-[#B1A8A8] text-[30px]' />
+            <div className="bg-white mb-2 p-2 py-2  flex items-center justify-between">
+                <div className="flex border border-[#DCDCDC] items-center w-[30%] h-full">
+                    <IoIosSearch className='text-[#B1A8A8] ml-2 text-[20px]' />
                     <Input
                         placeholder="Search by Emp Name or ID"
                         value={globalFilter}
                         onChange={(event) => setGlobalFilter(event.target.value)}
-                        className="searchbar max-w-sm text-black placeholder:text-[#B1A8A8] text-[15px] border-none outline-none"
+                        className="searchbar max-w-sm text-black placeholder:text-[#B1A8A8] text-[13px] border-none outline-none"
                     />
                 </div>
 
                 <div
-                    className="w-fit bg-[#134572] rounded-sm h-fit p-2 text-white cursor-pointer hover:text-[#A6C4F0] hover:bg-[#134572]"
+                    className="w-fit border bg-[#134572] rounded-sm h-fit p-2 text-xs text-white cursor-pointer hover:text-[#A6C4F0] hover:bg-[#134572]"
                     onClick={() => setIsShow(true)}
                 >
                     Add Employee
@@ -95,11 +95,11 @@ export function DataTable({ columns, setEmp_list, data }) {
 
             <div className="p-2 py-4 relative overflow-clip">
                 <Table>
-                    <TableHeader className="bg-[#f7f7f7] h-[60px] text-[#333843]">
+                    <TableHeader className="bg-[#f7f7f7] h-[60px] text-[14px] text-[#333843]">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-[16px] font-bold text-[#333843]">
+                                    <TableHead key={header.id} className="text-[13px] font-bold text-[#333843]">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -121,6 +121,7 @@ export function DataTable({ columns, setEmp_list, data }) {
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell 
+                                        className="text-[12px] p-1.5"  
                                             key={cell.id} 
                                             style={{
                                                 paddingLeft: cell.column.id === 'emp_id' || cell.column.id === 'emp_name' ? '38px' : '30px',
@@ -154,18 +155,18 @@ export function DataTable({ columns, setEmp_list, data }) {
             </div>
 
             {isShow && (
-                <div className="fixed inset-0 flex items-center justify-center z-20 bg-gray-800 bg-opacity-75">
-                    <div className="relative bg-white w-fit p-10 rounded shadow-lg">
+                <div className="fixed inset-0 flex items-center justify-center z-20 bg-gray-800 bg-opacity-75 py-10">
+                    <div className="relative bg-white w-fit p-10 rounded shadow-lg max-h-[calc(100vh-70px)] overflow-y-auto">
                         <div className="absolute top-0 right-[20px] z-10 cursor-pointer flex justify-end" onClick={() => { setIsShow(false) }}>
                             <button
                                 onClick={() => setIsShow(false)}
                                 className="mt-[23px] border-2 rounded-[50%] border-red-600"
                             >
-                                <IoIosClose className='text-red-600 text-xl' />
+                                <IoIosClose className='text-red-600 text-lg' />
                             </button>
                         </div>
-                        <h1 className='text-2xl sticky font-semibold cursor-default flex justify-center min-w-[400px]'>Employee Registration</h1>
-                        <div className="max-h-[500px] mt-[20px] Z-20">
+                        <h1 className='text-xl sticky font-semibold cursor-default flex justify-center min-w-[400px]'>Employee Registration</h1>
+                        <div className="max-h-[500px]   mt-[20px] Z-20">
                             <RegistrationForm setIsShow={setIsShow} setEmp_list={setEmp_list} />
                         </div>
                     </div>

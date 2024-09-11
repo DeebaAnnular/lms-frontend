@@ -173,62 +173,62 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
 
                             <div className='flex w-full flex-col gap-4'>
                                 <div className='flex flex-col'>
-                                    <label className=''>Employee ID</label>
+                                    <label className='text-sm'>Employee ID</label>
                                     <input
                                         type="text"
                                         name="emp_id"
                                         value={formData.emp_id}
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-w-[356px] h-[35px] text-xs text-[#667085]'
                                         minLength={3}
                                         maxLength={8}
                                     />
                                     {empIdError && <p className="text-red-500 text-sm mt-1">{empIdError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className=''>Name</label>
+                                    <label className='text-sm'>Name</label>
                                     <input
                                         type="text"
                                         name="emp_name"
                                         value={capitalizeWords(formData.emp_name)}
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-w-[356px] h-[35px] text-xs text-[#667085]'
                                         minLength={3}
                                         maxLength={30}
                                     />
                                     {nameError && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className=''>Gender</label>
+                                    <label className='text-sm'>Gender</label>
                                     <select
                                         name="gender"
                                         value={formData.gender}
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-w-[356px] h-[35px] text-xs text-[#667085]'
                                     >
                                         <option value="M">Male</option>
                                         <option value="F">Female</option>
                                     </select>
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className=''>Contact Number</label>
+                                    <label className='text-sm'>Contact Number</label>
                                     <input
                                         type="text"
                                         name="contact_number"
                                         value={formData.contact_number}
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-w-[356px] h-[35px] text-xs text-[#667085]'
                                         minLength={5}
                                         maxLength={15}
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className=''>User Role</label>
+                                    <label className='text-sm'>User Role</label>
                                     <select
                                         name="role"
                                         value={formData.role}
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-w-[356px] h-[35px] text-xs text-[#667085]'
                                     >
                                         <option value="admin">Admin</option>
                                         <option value="approver">Approver</option>
@@ -239,47 +239,47 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
 
                             <div className='flex flex-col gap-4 w-full'>
                                 <div className='flex flex-col'>
-                                    <label className=''>Designation</label>
+                                    <label className='text-sm'>Designation</label>
                                     <input
                                         type="text"
                                         name="designation"
                                         value={capitalizeWords(formData.designation)}
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-min-w-[356px] h-[35px] text-xs text-[#667085]'
                                         minLength={2}
                                         maxLength={20}
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className=''>Date of Joining</label>
+                                    <label className='text-sm'>Date of Joining</label>
                                     <input
                                         type="date" // Input type is set to 'date'
                                         name="date_of_joining"
                                         value={formData.date_of_joining} // This value is formatted in YYYY-MM-DD
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-w-[356px] h-[35px] text-xs text-[#667085]'
                                     />
                                     {dateError && <p className="text-red-500 text-sm mt-1">{dateError}</p>}
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className=''>Work Location</label>
+                                    <label className='text-sm'>Work Location</label>
                                     <input
                                         type="text"
                                         name="work_location"
                                         value={capitalizeWords(formData.work_location)}
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-w-[356px] h-[35px] text-xs text-[#667085]'
                                         minLength={2}
                                         maxLength={30}
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className=''>Status</label>
+                                    <label className='text-sm'>Status</label>
                                     <select
                                         name="active_status"
                                         value={formData.active_status}
                                         onChange={handleChange}
-                                        className='mt-1 p-2 border rounded min-w-[356px] h-[45px] text-[#667085]'
+                                        className='mt-1 p-2 border rounded min-w-[356px] h-[35px] text-xs text-[#667085]'
                                     >
                                         <option value={1}>Active</option>
                                         <option value={0}>Inactive</option>
@@ -293,7 +293,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                         <div className='mt-3 ml-3'>
                             <button
                                 type="submit"
-                                className='bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572] w-[213px] h-[45px] my-7 px-[20px] py-[10px] text-white text-[16px] font-bold rounded-[5px] border-none cursor-pointer  '>
+                                className='bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572] w-[200px] h-[40px] my-7 px-[20px] py-[10px] text-white text-[14px] font-bold rounded-[5px] border-none cursor-pointer  '>
                                 Update
                             </button>
                         </div>
@@ -305,7 +305,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                 </div>
             </form>
             <div className="personal-data w-full bg-white rounded-md px-5 py-6 mt-[-10px]">
-                <p className='text-[20px] font-bold mb-2'>Leave Allocation</p>
+                <p className='text-[16px] font-bold mb-2'>Leave Allocation</p>
                 <LeaveSettings id={id} gender={gender} />
             </div>
         </>

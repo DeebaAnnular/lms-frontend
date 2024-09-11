@@ -112,7 +112,7 @@ const Signin = () => {
 
                     <div>
                         <div className="mx-7  flex justify-center bg-white">
-                            <img className='w-40 min-h-30 ' src='/imgs/logo2.png' alt="Annular_logo" />
+                            <img className='w-40' src='/imgs/logo2.png' alt="Annular_logo" />
                         </div>
                         {/* <div className='flex justify-center transform -translate-y-3 mt-8'>
                         <h1 className='text-gray-600 text-2xl font-bold'>Login</h1>
@@ -122,9 +122,9 @@ const Signin = () => {
 
                     <div className='w-[80%] mt-[3rem] flex flex-col gap-5 relative top-2'>
                         <div>
-                            <label htmlFor="" className='ml-3 mb- text-[16px] '>Username</label>
+                            <label htmlFor="" className='ml-3 mb- text-[14px] '>Username</label>
                             <input 
-                                className='outline-none w-full  bg-[#F0F5F9] rounded-md border-gray-500 p-1.5 px-3' 
+                                className='outline-none w-full text-sm  bg-[#F0F5F9] rounded-md border-gray-500 p-1.5 px-3' 
                                 type="text" 
                                 id="email" 
                                 required 
@@ -137,10 +137,10 @@ const Signin = () => {
                         </div>
 
                         <div>
-                            <label htmlFor="" className='ml-3 mb-2 text-[16px] '>Password</label>
+                            <label htmlFor="" className='ml-3 mb-2 text-[14px] '>Password</label>
                              <div className='flex items-center overflow-clip bg-[#F0F5F9] rounded-md pr-2'>
                                 <input 
-                                    className='outline-none  w-full bg-[#f0f5f9] p-1.5 px-3' 
+                                    className='outline-none text-sm w-full bg-[#f0f5f9] p-1.5 px-3' 
                                     required  
                                     type={passwordVisible ? "text" : "password"} 
                                     id="password" 

@@ -99,10 +99,10 @@ const LeaveSettings = ({ id, gender }) => {
             <div className='flex gap-9 overflow-x-auto mb-5 ml-6'>
                 <div className='flex flex-col items-center w-full'>
                     <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                        <p className=' mb-2'>Earned Leave</p>
+                        <p className=' mb-2 text-sm'>Earned Leave</p>
                         <DropdownMenu>
                             <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span>{tempEarnedLeave !== null ? tempEarnedLeave : (earnedLeave !== null ? earnedLeave : "Select")}</span>
+                                <span className="text-sm">{tempEarnedLeave !== null ? tempEarnedLeave : (earnedLeave !== null ? earnedLeave : "Select")}</span>
                                 <RiArrowDropDownLine />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className='w-full'>
@@ -121,10 +121,10 @@ const LeaveSettings = ({ id, gender }) => {
 
                 <div className='flex flex-col items-center w-full'>
                     <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                        <p className=' mb-2'>Sick Leave</p>
+                        <p className=' mb-2 text-sm'>Sick Leave</p>
                         <DropdownMenu>
                             <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span>{tempSickLeave !== null ? tempSickLeave : (sickLeave !== null ? sickLeave : "Select")}</span>
+                                <span className="text-sm">{tempSickLeave !== null ? tempSickLeave : (sickLeave !== null ? sickLeave : "Select")}</span>
                                 <RiArrowDropDownLine />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className='w-full'>
@@ -143,10 +143,10 @@ const LeaveSettings = ({ id, gender }) => {
 
                 <div className='flex flex-col items-center w-full'>
                     <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                        <p className=' mb-2'>Optional Holiday</p>
+                        <p className=' mb-2 text-sm'>Optional Holiday</p>
                         <DropdownMenu>
                             <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span>{tempOptionalLeave !== null ? tempOptionalLeave : (optionalLeave !== null ? optionalLeave : "Select")}</span>
+                                <span className="text-sm">{tempOptionalLeave !== null ? tempOptionalLeave : (optionalLeave !== null ? optionalLeave : "Select")}</span>
                                 <RiArrowDropDownLine />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className='w-full'>
@@ -166,10 +166,10 @@ const LeaveSettings = ({ id, gender }) => {
                 {gender === 'F' && (
                     <div className='flex flex-col items-center w-full'>
                         <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                            <p className='mb-2'>Maternity Leave</p>
+                            <p className='mb-2 text-sm'>Maternity Leave</p>
                             <DropdownMenu>
                                 <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                    <span>{tempMaternityLeave !== null ? tempMaternityLeave : (maternityLeave !== null ? maternityLeave : "Select")}</span>
+                                    <span className="text-sm">{tempMaternityLeave !== null ? tempMaternityLeave : (maternityLeave !== null ? maternityLeave : "Select")}</span>
                                     <RiArrowDropDownLine />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className='w-full'>
@@ -190,7 +190,7 @@ const LeaveSettings = ({ id, gender }) => {
 
             <div className="bg-white relative flex flex-col items-end">
                 <div className='mt-3 ml-3'>
-                    <button className='bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572] w-[213px] h-[45px] mt-7 px-[20px] py-[10px] text-white text-[16px] font-bold rounded-[5px] border-none cursor-pointer' onClick={handleAddLeave}>
+                    <button className='bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572] w-[200px] h-[40px] mt-7 px-[20px] py-[10px] text-white text-[14px] font-bold rounded-[5px] border-none cursor-pointer' onClick={handleAddLeave}>
                         {submitname}
                     </button>
                 </div>

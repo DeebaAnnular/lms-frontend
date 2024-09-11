@@ -415,10 +415,10 @@ useEffect(() => {
       data.reason = "optional leave";
     }
     // Check if session is FN or AN and start date is not today
-    if ((data.session === "FN" || data.session === "AN") && startDate.getTime() !== today.getTime()) {
-        setLeaveMessage("Leave can only be applied today for FN or AN sessions.");
-        return;
-    }  
+    // if ((data.session === "FN" || data.session === "AN") && startDate.getTime() !== today.getTime()) {
+    //     setLeaveMessage("Leave can only be applied today for FN or AN sessions.");
+    //     return;
+    // }  
     // if(data.leaveType === "work_from_home") 
     //   {
     //     if (startDate.getDay() === 0 || startDate.getDay() === 6) {
@@ -521,7 +521,7 @@ useEffect(() => {
       >
         <div className="h-[90%] w-full pl-3 flex flex-col items-start">
           <div className="flex flex-col w-full gap-4">
-            <label htmlFor="leave_type" className="text-[#373857] text-[16px]">
+            <label htmlFor="leave_type" className="text-[#373857] text-[13px]">
               Leave Type
             </label>
             <div className="w-full">
@@ -545,7 +545,7 @@ useEffect(() => {
 
                     }
                 })}
-                className="px-2 rounded-md py-2 border w-[90%]"
+                className="px-2 text-[13px] rounded-md py-2 border w-[90%]"
               >
                 <option value="" className="text-[#99A0B0]">
                   Select
@@ -572,7 +572,7 @@ useEffect(() => {
                       <div className="w-full flex flex-col gap-4">
                         <label
                           htmlFor="session"
-                          className="text-[#373857] text-[16px]"
+                          className="text-[#373857] text-[13px]"
                         >
                           Session
                         </label>
@@ -591,7 +591,7 @@ useEffect(() => {
                                     }
                                 }
                             })}
-                            className="p-2 rounded-md border w-[90%] text-[14px]"
+                            className="p-2 rounded-md border w-[90%] text-[12px]"
                           >
                             <option value="full_day">Full Day</option>
                             <option value="FN">FN</option>
@@ -606,7 +606,7 @@ useEffect(() => {
                         <div className=" flex flex-col gap-4 w-[90%]">
                           <label
                             htmlFor="from_date"
-                            className="text-[#373857] min-w-fit text-[16px]"
+                            className="text-[#373857] min-w-fit text-[13px]"
                           >
                             Start Date
                           </label>
@@ -614,7 +614,7 @@ useEffect(() => {
                                 type="date"
                                 id="from_date"
                                 {...register("from_date")}
-                                className={`block w-full rounded-md border p-2 ${
+                                className={`block w-full text-[12px] rounded-md border p-2 ${
                                   errors.from_date ? "border-red-500" : ""
                                 }`}
                             // min={subDays(new Date(), 30).toISOString().split('T')[0]}
@@ -649,7 +649,7 @@ useEffect(() => {
                         <div className="w-[90%] flex flex-col gap-4 ">
                           <label
                             htmlFor="to_date"
-                            className="text-[#373857] min-w-fit text-[16px]"
+                            className="text-[#373857] min-w-fit text-[13px]"
                           >
                             End Date
                           </label>
@@ -657,7 +657,7 @@ useEffect(() => {
                             type="date"
                             id="to_date"
                             {...register("to_date")}
-                            className="block w-full rounded-md border p-2"
+                            className="block w-full rounded-md text-[12px] border p-2"
                             // min={subDays(new Date(), 30).toISOString().split('T')[0]}
                             // max={addDays(new Date(), 90).toISOString().split('T')[0]}
                             onChange={(e) => {
@@ -684,7 +684,7 @@ useEffect(() => {
                         <div className="w-full flex flex-col gap-4">
                           <label
                             htmlFor="reason"
-                            className="text-[#373857] text-lg min-w-fit text-[16px]"
+                            className="text-[#373857] text-lg min-w-fit text-[13px]"
                           >
                             Reason
                           </label>
@@ -692,7 +692,7 @@ useEffect(() => {
                             type="text"
                             id="reason"
                             {...register("reason")}
-                            className="block w-[90%] rounded-md h-[5rem] p-2 border text-[14px]"
+                            className="block w-[90%] rounded-md h-[5rem] p-2 border text-[12px]"
                             minLength={10}
                             maxLength={200}
                           />
@@ -791,7 +791,7 @@ useEffect(() => {
           (leave_type === "maternity_leave" &&
             leaveBalance.maternity_leave > 0) ? (
             <div className="flex w-[90%] justify-end">
-              <Button type="submit" className="mt-4 text-white  hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572]">
+              <Button type="submit" className="mt-4 text-white text-xs hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572]">
                 Submit
               </Button>
             </div>

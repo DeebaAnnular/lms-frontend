@@ -75,7 +75,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
             header: "Total Hours",
             cell: ({ row }) => {
                 const hours = (parseFloat(row.original.total_hours_per_day)).toFixed(2);
-                return <p>{hours} hours</p>;
+                return <p className="text-xs">{hours} hours</p>;
             },
         },
         {
@@ -84,8 +84,9 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                 return (
                     <Button
                         variant="ghost"
+                        className="text-[13px]"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
+                    >  
                         Status
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
@@ -144,7 +145,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-black">
+                                    <TableHead key={header.id} className="text-black text-[13px] text-xs font-medium  px-3">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -157,9 +158,9 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                <TableRow key={row.id} className="text-xs p-2" data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className="p-6 text-[#667085]">
+                                        <TableCell key={cell.id} className="p-3 text-xs  text-[#667085]">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}

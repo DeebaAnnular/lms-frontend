@@ -59,7 +59,7 @@ const Sidebar = () => {
               >
                 <div className="flex gap-4 items-center">
                   <div>{section.icon}</div>
-                  <p className="text-[16px]">{section.label}</p>
+                  <p className="text-[14px]">{section.label}</p>
                 </div>
                 {isExpanded ? <MdExpandLess /> : <MdExpandMore />}
               </button>
@@ -72,12 +72,12 @@ const Sidebar = () => {
                         href={link.route}
                         key={link.label}
                         className={cn(
-                          "flex gap-4 items-center p-4 justify-start text-white rounded-full mb-1 w-[85%]  hover:bg-white hover:text-black",
+                          "flex gap-4 items-center p-4 pl-10 py-2 justify-start text-white rounded-full mb-1 w-[85%]  hover:bg-white hover:text-black",
                           { "bg-white text-black": isActive }
                         )}
                       >
                         <div>{link.icon}</div>
-                        <p className="text-[16px]">{link.label}</p>
+                        <p className="text-[13px]">{link.label}</p>
                       </Link>
                     );
                   })}

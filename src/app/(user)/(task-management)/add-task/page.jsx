@@ -323,15 +323,15 @@ const Calendar = () => {
     const getStatusElement = (status) => {
         if (status === "approved") {
             return (
-                <div className="w-full h-[70px] flex  rounded-md items-center bg-[#00b44b27]"></div>
+                <div className="w-full h-[50px] flex  rounded-md items-center bg-[#00b44b27]"></div>
             );
         } else if (status === "rejected") {
             return (
-                <div className="w-full h-[70px] flex  rounded-md items-center bg-[#c8030329]"></div>
+                <div className="w-full h-[50px] flex  rounded-md items-center bg-[#c8030329]"></div>
             );
         } else if (status === "pending") {
             return (
-                <div className="w-full h-[70px] flex  rounded-md items-center bg-yellow-100"></div>
+                <div className="w-full h-[50px] flex  rounded-md items-center bg-yellow-100"></div>
             );
         }
     };
@@ -434,9 +434,9 @@ const Calendar = () => {
             <ToastContainer/>
             <header className="flex justify-between items-center mb-4  bg-white">
                 <div className="flex gap-3 items-center font-medium text-[18px]">
-                    <div className=" flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]">
+                    <div className=" flex items-center  justify-center h-[30px] w-[30px] bg-[#D9D9D9] border-2 border-[#EAEBF1]">
                         <div
-                            className=" w-[12px] h-[12px]    relative   object-contain"
+                            className=" w-[12px] h-[12px]     relative   object-contain"
                             onClick={() => changeMonth(-1)}
                         >
                             <Image
@@ -449,11 +449,11 @@ const Calendar = () => {
                         </div>
                     </div>
 
-                    <p className="min-w-[200px] text-center">
+                    <p className="min-w-[200px] text-sm text-center">
                         {currentDate.toLocaleString("default", { month: "long" })},{" "}
                         {currYear}
                     </p>
-                    <div className=" flex items-center justify-center h-[40px] w-[40px] bg-[#D9D9D9] border-2 border-[#EAEBF1]">
+                    <div className=" flex items-center justify-center h-[30px] w-[30px] bg-[#D9D9D9] border-2 border-[#EAEBF1]">
                         <div
                             className="logo h-[12px] relative w-[12px]  object-contain"
                             onClick={() => changeMonth(1)}
@@ -470,22 +470,22 @@ const Calendar = () => {
                 </div>
                 <div className="flex space-x-4">
     <div className="flex items-center space-x-2">
-        <span className=" bg-yellow-200 rounded-full text-yellow-200"><FaRegCircle /></span>
-        <p>Pending</p>
+        <span className=" bg-yellow-200 rounded-full text-yellow-200 text-xs"><FaRegCircle /></span>
+        <p className="text-xs">Pending</p>
     </div>
     <div className="flex items-center space-x-2">
-        <span className="bg-green-300 rounded-full text-green-300"><FaRegCircle /></span>
-        <p>Approved</p>
+        <span className="bg-green-300 rounded-full text-green-300 text-xs"><FaRegCircle /></span>
+        <p className="text-xs">Approved</p>
     </div>
     <div className="flex items-center space-x-2">
-        <span className="bg-red-400 rounded-full text-red-400"><FaRegCircle /></span>
-        <p>Rejected</p>
+        <span className="bg-red-400 rounded-full text-red-400 text-xs"><FaRegCircle /></span>
+        <p className="text-xs">Rejected</p>
     </div>
 </div>
                 <select
                     onChange={changeYear}
                     value={currentDate.getFullYear()}
-                    className="ml-2 font-medium text-[18px] px-4 py-2 border rounded"
+                    className="ml-2 font-medium text-[18px] px-4 py-2 text-sm border rounded"
                 >
                     {yearOptions.map((year) => (
                         <option key={year} value={year} className="focus:outline-none">
@@ -497,26 +497,26 @@ const Calendar = () => {
             </header>
 
             <div className="bg-[#F9F9F9] p-3">
-                <div className="grid grid-cols-7 gap-4 ">
-                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">
+                <div className="grid grid-cols-7 gap-2 ">
+                    <div className="flex justify-center font-semibold text-[#525865] text-[14px]">
                         Sunday
                     </div>
-                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">
+                    <div className="flex justify-center font-semibold text-[#525865] text-[14px]">
                         Monday
                     </div>
-                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">
+                    <div className="flex justify-center font-semibold text-[#525865] text-[14px]">
                         Tuesday
                     </div>
-                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">
+                    <div className="flex justify-center font-semibold text-[#525865] text-[14px]">
                         Wednesday
                     </div>
-                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">
+                    <div className="flex justify-center font-semibold text-[#525865] text-[14px]">
                         Thursday
                     </div>
-                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">
+                    <div className="flex justify-center font-semibold text-[#525865] text-[14px]">
                         Friday
                     </div>
-                    <div className="flex justify-center font-semibold text-[#525865] text-[16px]">
+                    <div className="flex justify-center font-semibold text-[#525865] text-[14px]">
                         Saturday
                     </div>
                     {days.map((day, index) => {
@@ -540,13 +540,13 @@ const Calendar = () => {
                                         }`}
                                     onClick={() => day && handleAddTask(day)}
                                 >
-                                    <p className="text-[14px] text-[#6E6EE1] font-medium">
+                                    <p className="text-xs text-[#6E6EE1] font-medium">
                                         {day && day}
                                     </p>
                                 </div>
 
                                 <div
-                                    className={` px-2 min-h-[80px] max-h-[80px] overflow-clip line-clamp-3 ${day ? "text-center bg-white" : ""
+                                    className={` px-1 min-h-[60px] max-h-[60px] overflow-clip line-clamp-3 ${day ? "text-center bg-white" : ""
                                         }`}
                                 >
                                     {day && (
@@ -573,13 +573,13 @@ const Calendar = () => {
 
 
                         {currDayStatus != 'approved' && (<form onSubmit={submitTask} className="space-y-4">
-                            <h2 className="text-xl font-bold text-center mt-4">Add Task</h2>
+                            <h2 className="text-lg font-bold text-center mt-4">Add Task</h2>
                             <div className="flex flex-row gap-3">
                                 <div className="w-full">
-                                    <label className="block">Task</label>
+                                    <label className="block text-sm">Task</label>
                                     <input
                                         type="text"
-                                        className="w-full p-2 border rounded"
+                                        className="w-full p-2 text-sm border rounded"
                                         value={task}
                                         minLength={5}
                                         maxLength={50}
@@ -589,10 +589,10 @@ const Calendar = () => {
                                 </div>
 
                                 <div className="w-full">
-                                    <label className="block">Time</label>
+                                    <label className="block text-sm">Time</label>
                                     <input
                                         type="text"
-                                        className="w-full p-2 border rounded"
+                                        className="w-full p-2 text-sm border rounded"
                                         value={time}
                                         placeholder="hh:mm"
                                         onChange={handleTimeChange}
@@ -602,9 +602,9 @@ const Calendar = () => {
                             <div className="flex justify-end">
                                 <button
                                     type="submit"
-                                    className="text-white bg-[#134572] hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572] px-4 py-2 rounded"
+                                    className="text-white  hover:text-[#A6C4F0] hover:bg-[#134572]  bg-[#134572] px-2 py-1 rounded"
                                 >
-                                    Add
+                                    <span className="text-sm">Add</span>
                                 </button>
                             </div>
                         </form>)} 
@@ -614,13 +614,13 @@ const Calendar = () => {
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50 sticky top-0 z-10">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3  text-left text-[12px]  font-medium text-gray-500 uppercase tracking-wider">
                                                 Task Id
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3  text-left text-[12px]  font-medium text-gray-500 uppercase tracking-wider">
                                                 Task Name
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3  text-left text-[12px]  font-medium text-gray-500 uppercase tracking-wider">
                                                 Task Time
                                             </th>
 
@@ -636,10 +636,10 @@ const Calendar = () => {
                                     <tbody className="bg-white">
                                         {tasksForSelectedDate.map((task) => (
                                             <tr key={task.task_id}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                                     {task.task_id}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
                                                     {editingTaskId === task.task_id ? (
                                                         <input
                                                             type="text"
@@ -653,7 +653,7 @@ const Calendar = () => {
                                                         task.task_name
                                                     )}
                                                 </td>
-                                                <td className="px-4 py-4  whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-4 py-4  whitespace-nowrap text-xs text-gray-500">
                                                     {editingTaskId === task.task_id ? (
                                                         <input
                                                             type="text"
@@ -668,7 +668,7 @@ const Calendar = () => {
                                                         formatTime(task.task_time)
                                                     )}
                                                 </td>
-                                                {currDayStatus != 'approved' && (<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
+                                                {currDayStatus != 'approved' && (<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500 ">
                                                     {editingTaskId === task.task_id ? (
                                                         <>
                                                             <button

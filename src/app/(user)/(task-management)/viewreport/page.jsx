@@ -37,7 +37,7 @@ const Page = () => {
     return (
         <div className=' pt-2 '>
             <div className="title  mb-2 ">
-                <p className='text-[22px] font-bold'>Timesheet</p>
+                <p className='text-[18px] font-bold'>Timesheet</p>
             </div>
             {/* 
             <div className="date-inputs flex justify-between items-center mt-2">

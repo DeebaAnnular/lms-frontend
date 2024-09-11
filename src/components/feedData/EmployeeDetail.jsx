@@ -29,7 +29,7 @@ const EmployeeDetail = ({ id }) => {
     return (
         <div>
             <div className="personal-data bg-white rounded-none px-5 py-3">
-                <p className='text-[20px] font-bold mb-2'>Edit Employee Details</p>
+                <p className='text-[16px] font-bold mb-2'>Edit Employee Details</p>
                 
                 <EmployeeForm resData={empDetails} id={id} setGender={setGender} gender={gender}/>
                 {/* <div className="personal-data w-full bg-white rounded-md px-5 py-6 mt-[-10px]">
