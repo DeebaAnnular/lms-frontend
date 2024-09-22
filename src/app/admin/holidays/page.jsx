@@ -1,20 +1,12 @@
-"use client";
+"use client"
+import React, { useState, useEffect } from 'react';
 import { Button } from "../../../components/ui/button";
-import { format } from "date-fns";
-import { ArrowUpDown, Calendar as CalendarIcon } from "lucide-react";
-import { useState, useEffect } from "react";
-import { cn } from "../../../lib/utils";
-import { Calendar } from "../../../components/ui/calender";
-import { MdDelete } from "react-icons/md"; 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../../components/ui/popover";
+import { format, isValid, parse } from "date-fns";
+import { ArrowUpDown } from "lucide-react";
+import { MdDelete } from "react-icons/md";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -25,12 +17,16 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Page = () => {
-  const [date, setDate] = useState(null);
-  const [dateError, setDateError] = useState("");
+  const [date, setDate] = useState("");
   const [leaveType, setLeaveType] = useState("");
   const [description, setDescription] = useState("");
   const [holidays, setHolidays] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'ascending' });
+  const [errors, setErrors] = useState({
+    date: '',
+    leaveType: '',
+    description: ''
+  });
 
   const sortedHolidays = [...holidays].sort((a, b) => {
     const isAsc = sortConfig.direction === 'ascending';
@@ -40,11 +36,45 @@ const Page = () => {
       return isAsc ? a.holiday_type.localeCompare(b.holiday_type) : b.holiday_type.localeCompare(a.holiday_type);
     }
     return 0;
-  }); 
+  });
 
-  const handleDateSelect = (selectedDate) => {
-    setDate(selectedDate);
-    setDateError(""); // Clear the error when a date is selected
+  const handleDateSelect = (e) => {
+    const input = e.target.value;
+    
+    // Allow empty input
+    if (input === "") {
+      setDate("");
+      setErrors(prev => ({ ...prev, date: '' }));
+      return;
+    }
+
+    // Validate the input format
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    if (!datePattern.test(input)) {
+      setErrors(prev => ({ ...prev, date: 'Invalid date format' }));
+      return;
+    }
+
+    // Parse the date and check if it's valid
+    const parsedDate = parse(input, 'yyyy-MM-dd', new Date());
+    if (!isValid(parsedDate)) {
+      setErrors(prev => ({ ...prev, date: 'Invalid date' }));
+      return;
+    }
+
+    // If all checks pass, update the state
+    setDate(input);
+    setErrors(prev => ({ ...prev, date: '' }));
+  };
+
+  const handleLeaveTypeChange = (e) => {
+    setLeaveType(e.target.value);
+    setErrors(prev => ({ ...prev, leaveType: '' }));
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+    setErrors(prev => ({ ...prev, description: '' }));
   };
 
   const requestSort = (key) => {
@@ -58,12 +88,10 @@ const Page = () => {
   const fetchHolidays = async () => {
     try {
       const response = await fetch("https://lms-api.annularprojects.com:3001/api/holiday/get_all_holidays");
-
       if (!response.ok) {
         throw new Error("Failed to fetch holidays");
       }
       const data = await response.json();
-      console.log("res", data);
       setHolidays(data);
     } catch (error) {
       console.error("Error fetching holidays:", error.message);
@@ -76,25 +104,36 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let newErrors = {};
+
     if (!date) {
-      setDateError("Please select a date");
-      return;
-    } 
-    
-    const formattedDate = date instanceof Date && !isNaN(date) ? format(date, "yyyy-MM-dd") : null;
-    
-    if (!formattedDate) {
-      setDateError("Invalid date selected");
+      newErrors.date = "Please select a date";
+    } else {
+      const parsedDate = parse(date, 'yyyy-MM-dd', new Date());
+      if (!isValid(parsedDate)) {
+        newErrors.date = "Invalid date";
+      }
+    }
+
+    if (!leaveType) {
+      newErrors.leaveType = "Please select a leave type";
+    }
+
+    if (!description.trim()) {
+      newErrors.description = "Please enter a description";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
     
     const data = {
-      date: formattedDate,
+      date: date,
       holiday_type: leaveType,
       description,
     };
     try {
-      console.log("data", data);
       const response = await fetch("https://lms-api.annularprojects.com:3001/api/holiday/create_holiday", {
         method: "POST",
         headers: {
@@ -103,33 +142,26 @@ const Page = () => {
         body: JSON.stringify(data),
       });
 
-      // Check if the response status indicates an error
       if (!response.ok) {
-        const errorData = await response.json(); // Parse the response to get error details
-        throw new Error(errorData.message || "Failed to add holiday"); // Use error message from the response or a default message
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add holiday");
       }
 
-      // Display success toast notification
       toast.success("Holiday added successfully");
 
-      // Reset form fields
-      setDate(null);
+      setDate("");
       setLeaveType("");
       setDescription("");
+      setErrors({});
       
-      // Fetch updated holidays list
       fetchHolidays();
     } catch (error) {
       console.error("Error adding holiday:", error.message);
-      // Display error toast notification with the message from the backend or a default message
       toast.error(error.message);
     }
   };
 
-
   const handleDelete = async (id) => {
-    // const confirmDelete = confirm("Are you sure you want to delete this holiday?");
-    // if (!confirmDelete) return;
     try {
       const response = await fetch(`https://lms-api.annularprojects.com:3001/api/holiday/delete_holiday/${id}`, {
         method: "DELETE",
@@ -139,12 +171,11 @@ const Page = () => {
         throw new Error("Failed to delete holiday");
       }
 
-      // alert("Holiday deleted successfully");
-     toast.success("Holiday Deleted successfully")
+      toast.success("Holiday Deleted successfully")
       fetchHolidays();
     } catch (error) {
       console.error("Error deleting holiday:", error.message);
-      // alert("Failed to delete holiday. Please try again later.");
+      toast.error("Failed to delete holiday. Please try again later.");
     }
   };
 
@@ -154,44 +185,45 @@ const Page = () => {
         <ToastContainer />
         <h1 className="text-xl font-bold ml-4 my-2 mb-4">Add Holidays</h1>
         <div className=" ">
-          <form className="px-1 flex gap-2 flex-row  items-center justify-between mb-4 outline-none" onSubmit={handleSubmit}>
+        <form className="px-1 flex gap-2 flex-row items-start justify-between mb-4 outline-none" onSubmit={handleSubmit}>
             <div className="flex-1 flex flex-col items-center w-[100px]">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn("border w-full rounded-md text-xs h-8 p-2", !date && "text-muted-foreground")}
-                  >
-                    <CalendarIcon className="h-3 w-4 mr-2" />
-                    {date ? format(date, "dd-MM-yyyy") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
-                </PopoverContent>
-              </Popover>
-              {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>} 
+              <input
+                type="date"
+                value={date}
+                onChange={handleDateSelect}
+                className="border w-full rounded-md text-xs h-8 p-2"
+                max="9999-12-31"
+              />
+              <div className="h-5 mt-1">
+              {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
+              </div>
             </div>
 
-            <div className="flex flex-1 items-center">
+            <div className="flex flex-1 flex-col items-center">
               <select
-                className="border w-full rounded-md text-xs h-8 p-2 "
+                className="border w-full rounded-md text-xs h-8 p-2"
                 value={leaveType}
-                onChange={(e) => setLeaveType(e.target.value)}
+                onChange={handleLeaveTypeChange}
               >
                 <option value="">Select</option>
                 <option value="optional_holidays">Optional Holiday</option>
                 <option value="compulsory_holidays">Mandatory Holiday</option>
               </select>
+              <div className="h-5 mt-1">
+              {errors.leaveType && <p className="text-red-500 text-xs mt-1">{errors.leaveType}</p>}
+              </div>
             </div>
 
-            <div className="flex flex-1 items-center ">
+            <div className="flex flex-1 flex-col items-center">
               <input
                 className="border rounded-md text-xs w-full h-8 p-2"
                 placeholder="Description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
               />
+              <div className="h-5 mt-1">
+              {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+              </div>
             </div>
 
             <div className=" ">

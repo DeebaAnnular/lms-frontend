@@ -30,6 +30,8 @@ export const column = [
   },
   {
     accessorKey: "comments",
-    header: "Commands",
+    header: "Comments",
   },
 ];
+  
+

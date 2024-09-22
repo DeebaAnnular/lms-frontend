@@ -58,8 +58,6 @@ const AssetsManagement = () => {
         if (!formData.brand_name) newErrors.brand_name = 'Brand Name is required';
         if (!formData.device_serial_number) newErrors.device_serial_number = 'Device S.no is required';
         if (!formData.asset_status) newErrors.asset_status = 'Asset Status is required';
-        if (!formData.purchase_date) newErrors.purchase_date = 'Purchase Date is required';
-        if (!formData.purchase_cost) newErrors.purchase_cost = 'Purchase Cost is required';
         if (!formData.operational_status) newErrors.operational_status = 'Operational Status is required';
 
         setErrors(newErrors);
@@ -93,8 +91,15 @@ const AssetsManagement = () => {
                 }
             }
             else if (key === 'purchase_date') {
-                value = new Date(value).toISOString().split('T')[0];
-            } else if (key === 'purchase_cost') {
+                const dateValue = new Date(value);
+                if (!isNaN(dateValue.getTime())) { // Check if the date is valid
+                  value = dateValue.toISOString().split('T')[0];
+                } else {
+                  // Handle invalid date value, e.g., log an error or set a default value
+                  console.error('Invalid date:', value);
+                  value = ''; // Or set a fallback value if necessary
+                }
+              }else if (key === 'purchase_cost') {
                 value = parseFloat(value);
             }
             formDataObject[key] = value;
@@ -134,7 +139,18 @@ const AssetsManagement = () => {
 
     return (
         <div className='bg-white p-8'>
-            <ToastContainer />
+           <ToastContainer 
+  position="top-right" // You can also try "top-center", "bottom-right", etc.
+  autoClose={5000} // Time in milliseconds before it auto-closes
+  hideProgressBar={false}
+  newestOnTop={true}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
             <div className="flex mb-4 bg-gray-100">
     <button
         className={`mr-4 w-[50%] px-4 py-2 border-b-4 text-sm transition-all duration-200 ${activeTab === 'registration' ? 'border-[#134572] text-[#134572]' : 'border-transparent text-black'}`}
@@ -314,7 +330,7 @@ const AssetsManagement = () => {
                             </div>
                         </div>
                         <div className='flex flex-col mt-3'>
-                            <label className='text-[13px] text-black'>Purchased Date<span className='text-red-500'>*</span></label>
+                            <label className='text-[13px] text-black'>Purchased Date</label>
                             <input 
                                 name="purchase_date"
                                 className='mt-1 p-2 border rounded min-w-[250px] w-[300px] h-[36px] text-xs text-[#667085]'
@@ -325,7 +341,7 @@ const AssetsManagement = () => {
                             {errors.purchase_date && <span className="text-red-500 text-sm mt-1">{errors.purchase_date}</span>}
                         </div>
                         <div className='flex flex-col mt-3'>
-                            <label className='text-[13px] text-black'>Purchased Cost<span className='text-red-500'>*</span></label>
+                            <label className='text-[13px] text-black'>Purchased Cost</label>
                             <input 
                                 name="purchase_cost"
                                 className='mt-1 p-2 border rounded min-w-[250px] w-[300px] h-[36px] text-xs text-[#667085]'

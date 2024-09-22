@@ -174,6 +174,12 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
             toast.error("Employee ID should not contain special characters");
             return;
         } 
+
+        if (!/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{3,7}$/.test(formData.emp_id)) {
+            // newErrors.emp_id = "Employee ID must contain at least one letter and one number, and be 3-7 characters long";
+            toast.error("Employee ID must contain at least one letter and one number, and be 3-7 characters long");
+            return;
+        }
         let formattedContactNumber = formData.contact_number.trim();
 
         // If the contact number starts with the country code, make sure there's a space after the country code
@@ -191,7 +197,6 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
             active_status: formData.active_status === "true", // Convert to boolean
             contact_number: formattedContactNumber,
         };
-
         try {
             const response = await fetch("https://lms-api.annularprojects.com:3001/api/auth/register", {
                 method: "POST",
@@ -296,6 +301,7 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                         <option value="">Select</option>
                                         <option value="M">Male</option>
                                         <option value="F">Female</option>
+                                        <option value="O">Others</option>
                                     </select>
                                 </div>
                                 <div className='flex flex-col mb-3'>
@@ -306,11 +312,12 @@ const RegistrationForm = ({ setIsShow,setEmp_list }) => {
                                         id="date_of_joining"
                                         required
                                         value={formData.date_of_joining}
-                                        className={`${getInputClassName('date_of_joining')} w-[220px] min-h-[20px] `}
+                                        className={`${getInputClassName('date_of_joining')} w-[220px] min-h-[20px] text-black placeholder-gray-400`}
                                         onChange={handleDateChange}
                                         type="date"
                                         title={getTooltip('date_of_joining')}
                                         maxLength={10}
+                                        style={{ color: formData.date_of_joining ? 'inherit' : '#9ca3af' }}
                                     />
                                 </div>
                                 <div className='flex flex-col mb-3'>

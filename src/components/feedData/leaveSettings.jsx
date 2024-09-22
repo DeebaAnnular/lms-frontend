@@ -1,4 +1,5 @@
 "use client";
+import React, { useEffect, useState } from 'react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -7,10 +8,8 @@ import {
     DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
 import { API } from "../../config";
-import React, { useEffect, useState } from 'react';
 import { RiArrowDropDownLine } from "react-icons/ri";
-import { toast,ToastContainer } from "react-toastify";
-
+import { toast } from "react-toastify";
 
 const LeaveSettings = ({ id, gender }) => {
     const [earnedLeave, setEarnedLeave] = useState(null);
@@ -22,37 +21,34 @@ const LeaveSettings = ({ id, gender }) => {
     const [tempSickLeave, setTempSickLeave] = useState(null);
     const [tempOptionalLeave, setTempOptionalLeave] = useState(null);
     const [tempMaternityLeave, setTempMaternityLeave] = useState(null);
-    const[submitname,setsubmitname]=useState("");
+    const [submitname, setsubmitname] = useState("");
 
     useEffect(() => {
         const fetchLeaveBalances = async () => {
             const res = await fetch(`${API}/leave/leave-balance/${id}`);
             const data = await res.json();
             
-            if(data.sick_leave || data.earned_leave || data.optional_leave)
-                {
-                    setsubmitname("Update Leave");
-                }
-                else{
-                    setsubmitname("Add Leave");
-                }
+            if(data.sick_leave || data.earned_leave || data.optional_leave) {
+                setsubmitname("Update Leave");
+            } else {
+                setsubmitname("Add Leave");
+            }
             if (data) {
-                setEarnedLeave(data.earned_leave !== undefined ? data.earned_leave : null);
-                setSickLeave(data.sick_leave !== undefined ? data.sick_leave : null);
-                setOptionalLeave(data.optional_leave !== undefined ? data.optional_leave : null);
-                setMaternityLeave(data.maternity_leave !== undefined ? data.maternity_leave : null);
+                setEarnedLeave(data.earned_leave !== undefined ? parseFloat(data.earned_leave) : null);
+                setSickLeave(data.sick_leave !== undefined ? parseFloat(data.sick_leave) : null);
+                setOptionalLeave(data.optional_leave !== undefined ? parseFloat(data.optional_leave) : null);
+                setMaternityLeave(data.maternity_leave !== undefined ? parseFloat(data.maternity_leave) : null);
             }
         };
         fetchLeaveBalances(); 
-        
     }, []);
 
     const handleAddLeave = () => {
         const newLeaveBalances = {
-            earned_leave: parseInt(tempEarnedLeave !== null ? tempEarnedLeave : earnedLeave),
-            sick_leave: parseInt(tempSickLeave !== null ? tempSickLeave : sickLeave),
-            optional_leave: parseInt(tempOptionalLeave !== null ? tempOptionalLeave : optionalLeave),
-            maternity_leave: parseInt(tempMaternityLeave !== null ? tempMaternityLeave : maternityLeave),
+            earned_leave: parseFloat(tempEarnedLeave !== null ? tempEarnedLeave : earnedLeave),
+            sick_leave: parseFloat(tempSickLeave !== null ? tempSickLeave : sickLeave),
+            optional_leave: parseFloat(tempOptionalLeave !== null ? tempOptionalLeave : optionalLeave),
+            maternity_leave: parseFloat(tempMaternityLeave !== null ? tempMaternityLeave : maternityLeave),
         };
 
         const postData = {
@@ -74,92 +70,67 @@ const LeaveSettings = ({ id, gender }) => {
         setSickLeave(newLeaveBalances.sick_leave);
         setOptionalLeave(newLeaveBalances.optional_leave);
         setMaternityLeave(newLeaveBalances.maternity_leave);
-        // alert("Leave balance updated"); 
 
         const fetchLeaveBalancess = async () => {
             const res = await fetch(`${API}/leave/leave-balance/${id}`);
             const data = await res.json();
 
-            if(data.sick_leave || data.earned_leave || data.optional_leave)
-            {
+            if(data.sick_leave || data.earned_leave || data.optional_leave) {
                 toast.success("Leave balance updated successfully");
-            }
-            else
-            {
+            } else {
                 setsubmitname("Update Leave");
                 toast.success("Leave allocated successfully")
             }
         }
         fetchLeaveBalancess();
-       
     };
+
+    const formatValue = (value) => {
+        return value !== null ? parseFloat(value).toFixed(1) : "Select";
+    };
+
+    const renderDropdown = (value, tempValue, setter, options) => (
+        <DropdownMenu>
+            <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
+                <span className="text-sm">
+                    {formatValue(tempValue !== null ? tempValue : value)}
+                </span>
+                <RiArrowDropDownLine />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='w-full'>
+                <DropdownMenuSeparator />
+                {options.map((optionValue) => (
+                    <DropdownMenuItem key={optionValue} onClick={() => setter(optionValue)}>
+                        <div className='flex justify-between items-center w-full'>
+                            <span>{optionValue.toFixed(1)}</span>
+                        </div>
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
 
     return (
         <div className='w-full'>
             <div className='flex gap-9 overflow-x-auto mb-5 ml-6'>
                 <div className='flex flex-col items-center w-full'>
                     <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                        <p className=' mb-2 text-sm'>Earned Leave</p>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span className="text-sm">{tempEarnedLeave !== null ? tempEarnedLeave : (earnedLeave !== null ? earnedLeave : "Select")}</span>
-                                <RiArrowDropDownLine />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className='w-full'>
-                                <DropdownMenuSeparator />
-                                {[0,1, 2, 3, 4, 5, 6].map((value) => (
-                                    <DropdownMenuItem key={value} onClick={() => setTempEarnedLeave(value)}>
-                                        <div className='flex justify-between items-center w-full'>
-                                            <span>{value}</span>
-                                        </div>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <p className='mb-2 text-sm'>Earned Leave</p>
+                        {renderDropdown(earnedLeave, tempEarnedLeave, setTempEarnedLeave, [0, 1, 2, 3, 4, 5, 6])}
                     </div>
                 </div>
 
                 <div className='flex flex-col items-center w-full'>
                     <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                        <p className=' mb-2 text-sm'>Sick Leave</p>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span className="text-sm">{tempSickLeave !== null ? tempSickLeave : (sickLeave !== null ? sickLeave : "Select")}</span>
-                                <RiArrowDropDownLine />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className='w-full'>
-                                <DropdownMenuSeparator />
-                                {[0,1, 2, 3, 4, 5, 6].map((value) => (
-                                    <DropdownMenuItem key={value} onClick={() => setTempSickLeave(value)}>
-                                        <div className='flex justify-center items-center w-full'>
-                                            <span>{value}</span>
-                                        </div>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <p className='mb-2 text-sm'>Sick Leave</p>
+                        {renderDropdown(sickLeave, tempSickLeave, setTempSickLeave, [0, 1, 2, 3, 4, 5, 6])}
                     </div>
                 </div>
 
                 <div className='flex flex-col items-center w-full'>
                     <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
-                        <p className=' mb-2 text-sm'>Optional Holiday</p>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                <span className="text-sm">{tempOptionalLeave !== null ? tempOptionalLeave : (optionalLeave !== null ? optionalLeave : "Select")}</span>
-                                <RiArrowDropDownLine />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className='w-full'>
-                                <DropdownMenuSeparator />
-                                {[0,1, 2, 3].map((value) => (
-                                    <DropdownMenuItem key={value} onClick={() => setTempOptionalLeave(value)}>
-                                        <div className='flex justify-between items-center w-full'>
-                                            <span>{value}</span>
-                                        </div>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <p className='mb-2 text-sm'>Optional Holiday</p>
+                        {renderDropdown(optionalLeave, tempOptionalLeave, setTempOptionalLeave, [0, 1, 2, 3])}
                     </div>
                 </div>
 
@@ -167,22 +138,7 @@ const LeaveSettings = ({ id, gender }) => {
                     <div className='flex flex-col items-center w-full'>
                         <div className='p-1 border-2 rounded-sm w-full h-[85px] flex flex-col items-center justify-center'>
                             <p className='mb-2 text-sm'>Maternity Leave</p>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className='w-[40] h-full flex items-center justify-between'>
-                                    <span className="text-sm">{tempMaternityLeave !== null ? tempMaternityLeave : (maternityLeave !== null ? maternityLeave : "Select")}</span>
-                                    <RiArrowDropDownLine />
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className='w-full'>
-                                    <DropdownMenuSeparator />
-                                    {[0,180].map((value) => (
-                                        <DropdownMenuItem key={value} onClick={() => setTempMaternityLeave(value)}>
-                                            <div className='flex justify-between items-center w-full'>
-                                                <span>{value}</span>
-                                            </div>
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            {renderDropdown(maternityLeave, tempMaternityLeave, setTempMaternityLeave, [0, 180])}
                         </div>
                     </div>
                 )}

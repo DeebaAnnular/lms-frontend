@@ -33,6 +33,10 @@ export const column = [
         },
     },
     {
+        accessorKey: "emp_name",
+        header: "Assigned Emp",
+    },
+    {
         accessorKey: "ram",
         header: "RAM",
     },

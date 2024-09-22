@@ -5,8 +5,9 @@ import { ColumnDef } from "@tanstack/react-table";
 // Updated columns for the asset maintenance history table
 export const column = [
   {
-    accessorKey: "asset_service_id",
-    header: "Asset Service ID",
+    accessorKey:"emp_name",
+    header:"Name",
+
   },
   {
     accessorKey: "asset_no",

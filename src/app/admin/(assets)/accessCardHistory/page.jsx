@@ -13,6 +13,7 @@ const AccessCardHistory = () => {
     useEffect(() => {
         const fetchAllAccessCardDetails = async () => {
             const data = await getAllAccessCardDetails();
+            console.log("his",data);
             // console.log("historydata",data.data);
             setAccessCardDetails(data.data);
             setFilteredDetails(data.data); // Initialize filtered data with all details

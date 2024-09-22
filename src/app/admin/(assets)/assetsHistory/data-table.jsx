@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Button } from "../../../../components/ui/button";
 import { MdEdit, MdDelete, MdSave, MdCancel } from "react-icons/md";
 import { Input } from "../../../../components/ui/input";
+import { BiSort } from "react-icons/bi";
+import { getAccessCardbyId } from "../../../../actions/assetApi";
 
 import { deleteAsset, updateAssetDetails, getAllAssets } from '../../../../actions/assetApi';
 import AssetModal from '../../../../components/ui/assetModal';
@@ -15,6 +17,7 @@ export function DataTable({ data, column }) {
     const [selectedAsset, setselectedAsset] = useState(null);
     const [editingRow, setEditingRow] = useState(null);
     const [editedData, setEditedData] = useState({});
+    const [sortOrder, setSortOrder] = useState('asc'); 
 
     useEffect(() => {
         if (data && data.length > 0) {
@@ -29,6 +32,18 @@ export function DataTable({ data, column }) {
         } catch (error) {
             console.log("Error refreshing data:", error);
         }
+    }; 
+
+    const handleSort = () => {
+        const sortedData = [...tableData].sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a.asset_status - b.asset_status;
+            } else {
+                return b.asset_status - a.asset_status;
+            }
+        });
+        setTableData(sortedData);
+        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); // Toggle sorting order
     };
 
     const handleAssetIdClick = (asset) => {
@@ -37,9 +52,11 @@ export function DataTable({ data, column }) {
             asset_no: asset.asset_no,
             asset_type: asset.asset_type,
             asset_status: asset.asset_status,
+            emp_name: asset.emp_name,
+            emp_id:asset.emp_id,
         });
         setIsModalOpen(true);
-    };
+    }; 
 
     const closeModal = () => {
         console.log("close triggered");
@@ -122,58 +139,63 @@ export function DataTable({ data, column }) {
                 );
             case 'asset_status':
                 return (
+                    <Input
+                        value={row.asset_status === 1 ? 'Assigned' : 'UnAssigned'}
+                        disabled
+                        className="w-full"
+                    />
+                );
+                case 'emp_name':
+                    return (
+                        <Input
+                            value={editedData[col.accessorKey] || ''}
+                            disabled
+                            className="w-full bg-gray-100"
+                        />
+                    );
+            case 'ram':
+                return isLaptop ? (
                     <select
                         value={editedData[col.accessorKey] || ''}
                         onChange={(e) => handleInputChange(e, col.accessorKey)}
                     >
-                        <option value="select">select</option>
-                        <option value="1">Assigned</option>
-                        <option value="0">UnAssigned</option>
+                        <option value="">Select</option>
+                        <option value="8GB">8GB</option>
+                        <option value="12GB">12GB</option>
+                        <option value="16GB">16GB</option>
+                        <option value="32GB">32GB</option>
+                        <option value="64GB">64GB</option>
                     </select>
+                ) : (
+                    <Input
+                        value={editedData[col.accessorKey] || ''}
+                        disabled
+                        className="w-full"
+                    />
                 );
-                case 'ram':
-                    return isLaptop ? (
-                        <select
-                            value={editedData[col.accessorKey] || ''}
-                            onChange={(e) => handleInputChange(e, col.accessorKey)}
-                        >
-                            <option value="">Select</option>
-                            <option value="8GB">8GB</option>
-                            <option value="12GB">12GB</option>
-                            <option value="16GB">16GB</option>
-                            <option value="32GB">32GB</option>
-                            <option value="64GB">64GB</option>
-                        </select>
-                    ) : (
-                        <Input
-                            value={editedData[col.accessorKey] || ''}
-                            disabled
-                            className="w-full"
-                        />
-                    );
-                    case 'rom':
-                        return isLaptop ? (
-                            <select
-                                value={editedData[col.accessorKey] || ''}
-                                onChange={(e) => handleInputChange(e, col.accessorKey)}
-                            >
-                                <option value="">Select</option>
-                                <option value="128GB (SSD)">128GB (SSD)</option>
-                                <option value="256GB (SSD)">256GB (SSD)</option>
-                                <option value="516GB (SSD)">516GB (SSD)</option>
-                                <option value="1TB (SSD)">  1TB (SSD)</option>
-                                <option value="128GB (HDD)">128GB (HDD)</option>
-                                <option value="256GB (HDD)">256GB (HDD)</option>
-                                <option value="516GB (HDD)">516GB (HDD)</option>
-                                <option value="1TB (HDD)">  1TB (HDD)</option>
-                            </select>
-                        ) : (
-                            <Input
-                                value={editedData[col.accessorKey] || ''}
-                                disabled
-                                className="w-full"
-                            />
-                        );
+            case 'rom':
+                return isLaptop ? (
+                    <select
+                        value={editedData[col.accessorKey] || ''}
+                        onChange={(e) => handleInputChange(e, col.accessorKey)}
+                    >
+                        <option value="">Select</option>
+                        <option value="128GB (SSD)">128GB (SSD)</option>
+                        <option value="256GB (SSD)">256GB (SSD)</option>
+                        <option value="516GB (SSD)">516GB (SSD)</option>
+                        <option value="1TB (SSD)">1TB (SSD)</option>
+                        <option value="128GB (HDD)">128GB (HDD)</option>
+                        <option value="256GB (HDD)">256GB (HDD)</option>
+                        <option value="516GB (HDD)">516GB (HDD)</option>
+                        <option value="1TB (HDD)">1TB (HDD)</option>
+                    </select>
+                ) : (
+                    <Input
+                        value={editedData[col.accessorKey] || ''}
+                        disabled
+                        className="w-full"
+                    />
+                );
             case 'operational_status':
                 return (
                     <select
@@ -195,7 +217,7 @@ export function DataTable({ data, column }) {
                 );
         }
     };
-
+    
     return (
         <div className="w-full">
             <ToastContainer />
@@ -209,6 +231,12 @@ export function DataTable({ data, column }) {
                             {column.map((col, index) => (
                                 <TableHead key={index} className="text-[13px] font-bold text-[#333843] whitespace-nowrap pl-4">
                                     {col.header}
+                                    {col.accessorKey === 'asset_status' && (
+                                        <BiSort
+                                            className="inline ml-2 cursor-pointer"
+                                            onClick={handleSort}
+                                        />
+                                    )}
                                 </TableHead>
                             ))}
                             <TableHead className="text-[13px] font-bold text-[#333843] whitespace-nowrap pl-4">
@@ -226,18 +254,22 @@ export function DataTable({ data, column }) {
                                     </TableCell>
                                     {column.map((col, colIndex) => (
                                         <TableCell 
-                                            key={colIndex} 
-                                            className={`p-2 pl-4 text-[12px] ${col.accessorKey === 'asset_no' && editingRow !== row.asset_id ? 'cursor-pointer text-blue-500' : ''}`}
-                                            onClick={col.accessorKey === 'asset_no' && editingRow !== row.asset_id ? () => handleAssetIdClick(row) : undefined}
-                                        >
-                                            {editingRow === row.asset_id ? (
-                                                renderEditField(col, row)
+                                        key={colIndex} 
+                                        className={`p-2 pl-4 text-[12px] ${col.accessorKey === 'asset_no' && editingRow !== row.asset_id ? 'cursor-pointer text-blue-500' : ''}`}
+                                        onClick={col.accessorKey === 'asset_no' && editingRow !== row.asset_id ? () => handleAssetIdClick(row) : undefined}
+                                    >
+                                        {editingRow === row.asset_id ? (
+                                            renderEditField(col, row)
+                                        ) : (
+                                            col.accessorKey === 'asset_status' ? (
+                                                row[col.accessorKey] === 1 ? 'Assigned' : 'UnAssigned'
+                                            ) : col.accessorKey === 'emp_name' && row.asset_status === 0 ? (
+                                                '-'  // Display dash if asset is UnAssigned
                                             ) : (
-                                                col.accessorKey === 'asset_status' 
-                                                    ? (row[col.accessorKey] === 1 ? 'Assigned' : 'UnAssigned')
-                                                    : (row[col.accessorKey] || '-')
-                                            )}
-                                        </TableCell>
+                                                row[col.accessorKey] || '-'  // Display employee name if Assigned
+                                            )
+                                        )}
+                                    </TableCell>
                                     ))}
                                     <TableCell className="flex items-center">
                                         {editingRow === row.asset_id ? (
@@ -281,6 +313,8 @@ export function DataTable({ data, column }) {
                     assetStatus={selectedAsset.asset_status}
                     onClose={closeModal} 
                     refreshData={handleRefreshData}
+                    empName={selectedAsset.emp_name}
+                    empId={selectedAsset.emp_id}
                 />
             )}
         </div>

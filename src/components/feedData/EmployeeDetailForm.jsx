@@ -10,7 +10,7 @@ import { getEmp_leave_balence } from '../../actions';
 
 const EmployeeForm = ({ resData, id, setGender,gender }) => {
 
-  
+  console.log("resdata",resData);
     const[updatedDetails,setUpdatedDetails]=useState([]);
     const [dateError, setDateError] = useState('');
     const [empIdError, setEmpIdError] = useState('');
@@ -122,6 +122,8 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
             return;
         }
 
+  
+
         // Validate date_of_joining
         // const joiningDate = new Date(formData.date_of_joining);
         // const year = joiningDate.getFullYear();
@@ -143,6 +145,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
             toast.error("Designation, Name, and Work Location must not contain special characters!");
             return; // Exit the function if validation fails
         }
+        
 
         console.log("updated",formData)
      const updatedresponse=  await updateEmpDetails(id, formData);
@@ -208,6 +211,7 @@ const EmployeeForm = ({ resData, id, setGender,gender }) => {
                                     >
                                         <option value="M">Male</option>
                                         <option value="F">Female</option>
+                                        <option value="O">Others</option>
                                     </select>
                                 </div>
                                 <div className='flex flex-col'>
