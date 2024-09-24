@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
 import { getallemp } from "../../../../actions";
@@ -28,25 +27,18 @@ export function DataTable({ data, column }) {
 
     useEffect(() => {
         if (data && data.length > 0 && employeeData.length > 0) {
-            console.log("Input data:", data);
-            console.log("Employee data for matching:", employeeData);
             const updatedData = data.map(item => {
-                console.log("Processing item:", item);
                 const matchingEmp = employeeData.find(emp => emp.asset_no === item.asset_no);
-                console.log("Matching employee:", matchingEmp);
                 const updatedItem = {
                     ...item,
                     emp_name: matchingEmp && matchingEmp.asset_status === 1 ? matchingEmp.emp_name : item.emp_name || '',
                     asset_status: matchingEmp ? matchingEmp.asset_status : item.asset_status
                 };
-                console.log("Updated item:", updatedItem);
                 return updatedItem;
             });
-            console.log("Final updated data:", updatedData);
             setTableData(updatedData);
             
             const nameList = updatedData.map(item => item.emp_name).filter(name => name !== '');
-            console.log("Names to be displayed in the table:", nameList);
         } else {
             console.log("Data or employeeData is empty:", { dataLength: data?.length, employeeDataLength: employeeData.length });
         }

@@ -13,14 +13,13 @@ const AccessCardHistory = () => {
     useEffect(() => {
         const fetchAllAccessCardDetails = async () => {
             const data = await getAllAccessCardDetails();
-            console.log("his",data);
             // console.log("historydata",data.data);
             setAccessCardDetails(data.data);
             setFilteredDetails(data.data); // Initialize filtered data with all details
         };
         fetchAllAccessCardDetails();
     }, []);
-console.log("data: ",filteredDetails)
+    
     useEffect(() => {
         // Filter the data based on the search term
         const filteredData = AccessCardDetails.filter((item) =>

@@ -117,6 +117,7 @@ const AccessCardManagement = () => {
     const response = await postAccessCardDetails(formattedData);
 
     if (response.statusCode === 201) {
+      toast.success("Access card created successfully");
       setFormData({
         card_type: '',
         emp_name: '',
@@ -128,8 +129,9 @@ const AccessCardManagement = () => {
         comments: '',
         user_id: '',
       });
+     
       setAccessCardData([...accessCardData, formattedData]);
-      toast.success("Access card created successfully");
+      
     
     } else {
       toast.error(response.resmessage);

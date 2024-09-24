@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react';
 import { DataTable } from "../assetsMaintenanceHistory/data-table";
 import { column } from "../assetsMaintenanceHistory/column";

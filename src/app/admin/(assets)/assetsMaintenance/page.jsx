@@ -107,9 +107,15 @@ const AssetsMaintenanceManagement = () => {
       return false;
     }
     
-    if (formData.service_cost && formData.service_cost.length > 9) {
-      toast.error("Service cost should not exceed 9 digits.");
-      return false;
+    if (formData.service_cost) {
+      if (!/^\d+$/.test(formData.service_cost)) {
+        toast.error("Service cost must be a numeric value.");
+        return false;
+      }
+      if (formData.service_cost.length > 9) {
+        toast.error("Service cost should not exceed 9 digits.");
+        return false;
+      }
     }
 
     return true;
@@ -251,8 +257,8 @@ const AssetsMaintenanceManagement = () => {
                     value={formData.service_cost}
                     onChange={handleChange}
                     className="mt-1 p-2 border rounded min-w-[356px] w-[420px] h-[38px] text-[#667085]"
-                    minlength={1}
-                    maxlength={9}
+                    minLength={1}
+                    maxLength={9}
                   />
                   {serviceCostError && (
                   <span className="text-red-500 text-sm">{serviceCostError}</span>

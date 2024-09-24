@@ -13,7 +13,6 @@ const AssetsHistory = () => {
     useEffect(() => {
         const fetchAllAssets = async () => {
             const data = await getAllAssets();
-            console.log("assun",data);
             setAssetsDetails(data);
             setFilteredAssets(data); // Initialize filtered data with all assets
         };

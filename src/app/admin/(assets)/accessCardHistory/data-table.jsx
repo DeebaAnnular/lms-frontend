@@ -127,7 +127,6 @@ export function DataTable({ data, column }) {
   const handleSaveClick = async () => {
     try {
       const { access_card_id, ...updateData } = editedData;
-      console.log("updateddata",updateData);
 
       const employeeHasCard = accessCardDetails.some(
         card => card.emp_id === updateData.emp_id && card.access_card_id !== access_card_id
