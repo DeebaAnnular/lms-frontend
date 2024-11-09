@@ -36,35 +36,52 @@ const Calendar = () => {
     const [dateOfJoining, setDateOfJoining] = useState(""); 
     const [leaveDates, setLeaveDates] = useState([]);
 
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${year}-${month}-${day}`;
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const employeeData = await getallemp();
                 const userId = parseInt(localStorage.getItem("user_id"));
-    
+                
                 if (userId) {
                     const userEmployee = employeeData.find(emp => emp.user_id === userId);
                     
                     if (userEmployee) {
+                        // Format date of joining
                         const dateOfJoiningRaw = new Date(userEmployee.date_of_joining);
-                        const formattedDate = dateOfJoiningRaw.toISOString().split('T')[0];
-                        setDateOfJoining(formattedDate);
-    
+                        const formattedJoiningDate = formatDate(dateOfJoiningRaw);
+                        setDateOfJoining(formattedJoiningDate);
+                        
                         // Fetch leave requests
                         const leaveRequests = await getAll_leave_req();
                         const userLeaveDates = [];
-    
+                        
                         leaveRequests.forEach(request => {
-                            if (request.user_id === userId && (request.status === 'pending' || request.status === 'approved')) {
+                            if (request.user_id === userId && 
+                                (request.status === 'pending' || request.status === 'approved') && request.leave_type !== 'work_from_home') {
+                                
                                 const fromDate = new Date(request.from_date);
                                 const toDate = new Date(request.to_date);
-    
-                                for (let date = new Date(fromDate); date <= toDate; date.setDate(date.getDate() + 1)) {
-                                    userLeaveDates.push(date.toISOString().split('T')[0]);
+                                
+                                // Loop through all dates and format them
+                                for (let date = new Date(fromDate); 
+                                     date <= toDate; 
+                                     date.setDate(date.getDate() + 1)) {
+                                    userLeaveDates.push(formatDate(date));
                                 }
                             }
                         });
-                        setLeaveDates([...new Set(userLeaveDates)]); // Remove duplicates
+                        
+                        // Remove duplicates before setting to state
+                        setLeaveDates([...new Set(userLeaveDates)]);
                     } else {
                         console.log("Employee not found");
                     }
@@ -73,7 +90,7 @@ const Calendar = () => {
                 console.error("Error fetching data:", error);
             }
         };
-    
+        
         fetchData();
     }, []);
 
@@ -216,12 +233,17 @@ const Calendar = () => {
             toast.error("The selected date is before the date of joining.")
             return; // Exit the function early if the date is before the date of joining
           }  
-        
+        console.log("naruto",leaveDates);
           if (leaveDates.some((data) => data === formattedDate)) {
+            // Log the specific date that matches the formattedDate
+            const matchedDate = leaveDates.find((data) => data === formattedDate);
+            console.log("Leave applied on this date:", matchedDate);
+        
             toast.error("Leave has been applied on this Date");
             setShow(false);
             return;
-          }
+        }
+        
         
     
         if (selectedDate >= thirtyDaysBefore && selectedDate <= thirtyDaysAfter) {
@@ -276,48 +298,49 @@ const Calendar = () => {
     };
 
     const submitTask = async (e) => {
-        console.log("inside", day)
+        console.log("inside", day);
         e.preventDefault();
+        
+        // Remove commas from the task name
+        const sanitizedTask = task.replace(/,/g, ''); // Remove all commas
+    
         const timeFormat = /^([01]\d|2[0-3]):([0-5]\d)$/;
-        if (task.trim() === "" || task.length < 5 || task.length > 50) {
-            toast.error(`Task name must be between 5 and 50 characters`)
+        if (sanitizedTask.trim() === "" || sanitizedTask.length < 5 || sanitizedTask.length > 350) {
+            toast.error(`Task name must be between 5 and 350 characters`);
             return;
         }
-
+    
         // Use the same time formatting logic here
         const formattedTime = handleTimeChange({ target: { value: time } });
-
+    
         if (!formattedTime.match(timeFormat)) {
-            toast.error(`Time must be in the format hh:mm`)
+            toast.error(`Time must be in the format hh:mm`);
             return;
         } 
-        
+    
         const newTask = {
             task_date: selectedDate,
-            task_name: task,
+            task_name: sanitizedTask, // Use sanitized task name
             task_time: formattedTime, // Use formatted time
             user_id: user.user_id,
         };
         try {
             const res = await postTask(newTask);
-
-            //success code
+    
+            // success code
             const response = await getAllTask(user.user_id);
             const tasksForDate = response.filter((task) => task.task_date === dateStr(day));
-            console.log(tasksForDate.filter(item => item.user_id == 2))
+            console.log(tasksForDate.filter(item => item.user_id == 2));
             setTasksForSelectedDate(tasksForDate);
-            fetchData()
-
+            fetchData();
+    
         } catch (error) {
             console.log("error", error);
         }
-
+    
         setTask("");
         setTime("");
-
-
     };
-
 
 
     const getStatusElement = (status) => {
@@ -387,6 +410,11 @@ const Calendar = () => {
 
     const handleSave = async (taskId) => {
 
+        if (editedTask.task_name.trim() === "" || editedTask.task_name.length < 5 || editedTask.task_name.length > 350) {
+            toast.error(`Task name must be between 5 and 350 characters`);
+            return; // Exit the function early if the validation fails
+        }
+
         const req_body = {
             task_name: editedTask.task_name,
             task_time: editedTask.task_time,
@@ -404,6 +432,7 @@ const Calendar = () => {
 
 
     };
+
 
     const handleCancel = () => {
         setEditingTaskId(null);
@@ -582,7 +611,7 @@ const Calendar = () => {
                                         className="w-full p-2 text-sm border rounded"
                                         value={task}
                                         minLength={5}
-                                        maxLength={50}
+                                        maxLength={350}
                                         onChange={(e) => setTask(e.target.value)}
                                         placeholder="Enter task name"
                                     />
@@ -662,6 +691,8 @@ const Calendar = () => {
                                                             onChange={handleInputChange}
                                                             className=" px-2 py-1 w-[80%] border-1"
                                                             placeholder="hh:mm"
+                                                            minLength={5}
+                                                            maxLength={350}
 
                                                         />
                                                     ) : (

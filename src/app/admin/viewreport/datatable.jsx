@@ -39,14 +39,16 @@ export function DataTable({ allData, userId, startDate, endDate }) {
   const [taskIds, setTaskIds] = useState([]);
   const [time, setTime] = useState({});
   const [selectedDate, setSelectedDate] = useState();
+  const[TaskTime,setTaskTime]=useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
-  const handleTaskClick = (tasks, taskId, Day) => {
+  const handleTaskClick = (tasks, taskId, Day,time) => {
     setSelectedDate(Day);
     setTaskDetails(tasks);
     setTaskIds(taskId);
+    setTaskTime(time);
     setShow(true);
   };
 
@@ -164,7 +166,8 @@ export function DataTable({ allData, userId, startDate, endDate }) {
               handleTaskClick(
                 row.original.task_name,
                 row.original.task_id,
-                row.original.day
+                row.original.day,
+                row.original.task_time
               )
             }
             className="cursor-pointer text-blue-500 "
@@ -332,35 +335,49 @@ export function DataTable({ allData, userId, startDate, endDate }) {
                   <TableHead className="p-0 px-3 pl-5 text-[13px] text-[#333843]">
                     Task
                   </TableHead>
+                  <TableHead className="p-0 px-3 pl-5 text-[13px] text-[#333843]">
+                    TaskTime
+                  </TableHead>
                   {/* <TableHead>Time</TableHead> */}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell className="p-0 w-[50%] text-[12px]">
-                    {taskIds &&
-                      taskIds.map((id, index) => (
-                        <p
-                          key={index + 1}
-                          className="py-2 px-3 pl-5 border-b text-[#667085]"
-                        >
-                          {id}
-                        </p>
-                      ))}
-                  </TableCell>
-                  <TableCell className="p-0 w-[50%] text-[12px]">
-                    {taskDetails &&
-                      taskDetails.map((task, index) => (
-                        <p
-                          key={index + 1}
-                          className="py-2 px-3  border-b text-[#667085]"
-                        >
-                          {capitalizeWords(task)}
-                        </p>
-                      ))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
+    <TableRow>
+        <TableCell className="p-0 w-[33%] text-[12px] overflow-hidden text-ellipsis whitespace-nowrap">
+            {taskIds &&
+                taskIds.map((id, index) => (
+                    <p
+                        key={index + 1}
+                        className="py-2 px-3 pl-5 border-b text-[#667085]"
+                    >
+                        {id}
+                    </p>
+                ))}
+        </TableCell>
+        <TableCell className="p-0 w-[33%] text-[12px] overflow-hidden text-ellipsis whitespace-nowrap">
+            {taskDetails &&
+                taskDetails.map((task, index) => (
+                    <p
+                        key={index + 1}
+                        className="py-2 px-3 border-b text-[#667085]"
+                    >
+                        {capitalizeWords(task)}
+                    </p>
+                ))}
+        </TableCell>
+        <TableCell className="p-0 w-[33%] text-[12px] overflow-hidden text-ellipsis whitespace-nowrap">
+            {TaskTime &&
+                TaskTime.map((row, index) => (
+                    <p
+                        key={index + 1}
+                        className="py-2 px-3 border-b text-[#667085]"
+                    >
+                        {row} {/* Display task time */}
+                    </p>
+                ))}
+        </TableCell>
+    </TableRow>
+</TableBody>
             </Table>
           </div>
         </div>
