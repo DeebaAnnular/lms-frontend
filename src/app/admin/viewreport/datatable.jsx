@@ -69,7 +69,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
   const handleApprove = async (task_id) => {
     try {
       const response = await fetch(
-        `https://lms-api.annularprojects.com:3001/api/task/approve_daily_task`,
+        `https://www.hrms.annulartech.net/api/task/approve_daily_task`,
         {
           method: "PUT",
           headers: {
@@ -114,7 +114,7 @@ export function DataTable({ allData, userId, startDate, endDate }) {
     const task_id = taskIds; // Use the stored task ID
     try {
         const response = await fetch(
-            `https://lms-api.annularprojects.com:3001/api/task/reject_daily_task`,
+            `https://www.hrms.annulartech.net/api/task/reject_daily_task`,
             {
                 method: "PUT",
                 headers: {

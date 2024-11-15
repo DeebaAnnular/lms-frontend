@@ -29,6 +29,6 @@ app.prepare().then(() => {
   // Start the server with HTTPS
   https.createServer(httpsOptions, server).listen(3000, (err) => {
     if (err) throw err;
-    console.log('> https://lms-api.annularprojects.com:3000');
+    console.log('> https://www.hrms.annulartech.net');
   });
 });

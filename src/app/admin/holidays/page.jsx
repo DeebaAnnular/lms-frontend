@@ -87,7 +87,7 @@ const Page = () => {
 
   const fetchHolidays = async () => {
     try {
-      const response = await fetch("https://lms-api.annularprojects.com:3001/api/holiday/get_all_holidays");
+      const response = await fetch("https://www.hrms.annulartech.net/api/holiday/get_all_holidays");
       if (!response.ok) {
         throw new Error("Failed to fetch holidays");
       }
@@ -134,7 +134,7 @@ const Page = () => {
       description,
     };
     try {
-      const response = await fetch("https://lms-api.annularprojects.com:3001/api/holiday/create_holiday", {
+      const response = await fetch("https://www.hrms.annulartech.net/api/holiday/create_holiday", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -163,7 +163,7 @@ const Page = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`https://lms-api.annularprojects.com:3001/api/holiday/delete_holiday/${id}`, {
+      const response = await fetch(`https://www.hrms.annulartech.net/api/holiday/delete_holiday/${id}`, {
         method: "DELETE",
       });
 

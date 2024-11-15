@@ -1,7 +1,7 @@
-export const api="https://lms-api.annularprojects.com:3001"
+export const api="https://www.hrms.annulartech.net"
 export const postAssetDetails = async (assetData) => {
     try {
-        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/create_asset', {
+        const response = await fetch('https://www.hrms.annulartech.net/api/assets/create_asset', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ export const postAssetDetails = async (assetData) => {
 
 export const getAllAssets = async () => {
     try {
-        const response = await fetch("https://lms-api.annularprojects.com:3001/api/assets/get_all_assets");
+        const response = await fetch("https://www.hrms.annulartech.net/api/assets/get_all_assets");
         if (!response.ok) {
             throw new Error('Network response was not ok: ' + response.statusText);
         }
@@ -62,7 +62,7 @@ export const updateAssetDetails = async (id, assetData) => {
 
 export const postAccessCardDetails = async (accessCardData) => {
     try {
-        const response = await fetch('https://lms-api.annularprojects.com:3001/api/access_card/create_access_card', {
+        const response = await fetch('https://www.hrms.annulartech.net/api/access_card/create_access_card', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export const postAccessCardDetails = async (accessCardData) => {
 
 export const getAllAccessCardDetails = async () => {
     try {
-        const response = await fetch('https://lms-api.annularprojects.com:3001/api/access_card/get_all_access_card', {
+        const response = await fetch('https://www.hrms.annulartech.net/api/access_card/get_all_access_card', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ export const getAllAccessCardDetails = async () => {
 
 export const getAccessCardbyId = async (id) => {
     try {
-        const response = await fetch(`https://lms-api.annularprojects.com:3001/api/access_card/get_access_card/${id}`);
+        const response = await fetch(`https://www.hrms.annulartech.net/api/access_card/get_access_card/${id}`);
         if (!response.ok) {
             throw new Error('Network response was not ok: ' + response.statusText);
         }
@@ -144,7 +144,7 @@ export const updateAccessCardDetails = async (id, accessCardData) => {
 
 export const returnAccessCard = async (id, returnDate) => {
     try {
-        const response = await fetch(`https://lms-api.annularprojects.com:3001/api/access_card/return/${id}`, {
+        const response = await fetch(`https://www.hrms.annulartech.net/api/access_card/return/${id}`, {
             method: 'PUT', // POST request for returning the access card
             headers: {
                 'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ export const deleteAccessCard = async (id) => {
 
 export const postAssetForMaintenance = async (assetData) => {
     try {
-        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/create_asset_for_maintenance', {
+        const response = await fetch('https://www.hrms.annulartech.net/api/assets/create_asset_for_maintenance', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -216,7 +216,7 @@ export const updateAssetForMaintenance = async (id, assetMaintenanceData) => {
     try {
         console.log("Asset Maintenance Data:", assetMaintenanceData);
 
-        const response = await fetch(`https://lms-api.annularprojects.com:3001/api/assets/update_asset_for_maintenance/${id}`, {
+        const response = await fetch(`https://www.hrms.annulartech.net/api/assets/update_asset_for_maintenance/${id}`, {
             method: 'PUT', // Use PUT method for updating
             headers: {
                 'Content-Type': 'application/json',
@@ -238,7 +238,7 @@ export const updateAssetForMaintenance = async (id, assetMaintenanceData) => {
 
 export const getAllAssetsForMaintenance = async () => {
     try {
-        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/get_all_assets_for_maintenance', {
+        const response = await fetch('https://www.hrms.annulartech.net/api/assets/get_all_assets_for_maintenance', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -259,7 +259,7 @@ export const getAllAssetsForMaintenance = async () => {
 
 export const postmapAssetWithEmployee = async (assetData) => {
     try {
-        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/map_asset_with_employee', {
+        const response = await fetch('https://www.hrms.annulartech.net/api/assets/map_asset_with_employee', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -281,7 +281,7 @@ export const postmapAssetWithEmployee = async (assetData) => {
 
 export const returnAssetToAdmin = async (assetData) => {
     try {
-        const response = await fetch('https://lms-api.annularprojects.com:3001/api/assets/return_asset_to_admin', {
+        const response = await fetch('https://www.hrms.annulartech.net/api/assets/return_asset_to_admin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -302,7 +302,7 @@ export const returnAssetToAdmin = async (assetData) => {
 
 export const deleteAsset = async (assetId) => {
     try {
-      const response = await fetch(`https://lms-api.annularprojects.com:3001/api/assets/delete_asset/${assetId}`, {
+      const response = await fetch(`https://www.hrms.annulartech.net/api/assets/delete_asset/${assetId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

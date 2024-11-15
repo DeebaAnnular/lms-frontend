@@ -134,7 +134,7 @@ export const postLeave_req = async (leaveData) => {
 
 export const deleteUser = async (userId) => {
     try {
-        const response = await fetch(`https://lms-api.annularprojects.com:3001/api/auth/delete_user/${userId}`, {
+        const response = await fetch(`https://www.hrms.annulartech.net/api/auth/delete_user/${userId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ export const deleteUser = async (userId) => {
 
 export const getRejectedAndApprovedLeaveList = async () => {
     try {
-        const response = await fetch('https://lms-api.annularprojects.com:3001/api/leave/get_all_rejected_and_approved_list');
+        const response = await fetch('https://www.hrms.annulartech.net/api/leave/get_all_rejected_and_approved_list');
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -399,7 +399,7 @@ export const getAllTaskByIdAdmin = async (weekId, startDate, endDate) => {
     export const handleApprove = async (task_id) => {
         try {
             const response = await fetch(
-                `https://lms-api.annularprojects.com:3001/api/task/approve_daily_task`,
+                `https://www.hrms.annulartech.net/api/task/approve_daily_task`,
                 {
                     method: "PUT",
                     headers: {
@@ -441,7 +441,7 @@ export const getAllTaskByIdAdmin = async (weekId, startDate, endDate) => {
 
         try {
             const response = await fetch(
-                `https://lms-api.annularprojects.com:3001/api/task/reject_daily_task`,
+                `https://www.hrms.annulartech.net/api/task/reject_daily_task`,
                 {
                     method: "PUT",
                     headers: {
